@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
 
-#include "llist.h"
+//#include "llist.h"
 
 #include <iostream>
 #include <vector>
@@ -15,6 +15,125 @@
 
 using namespace std;
 #if 1
+
+#include "Location_storage.h"
+
+#elif 0
+    // Create a map of strings to integers
+    map<string, uint32_t> mp;
+
+    // Insert some values into the map
+    mp["one-two"] = 1;
+    mp["two-tree"] = 3;
+    mp["three-one"] = 5;
+
+    // Iterate through the map and print the elements
+    for (auto it = mp.begin(); it != mp.end(); ++it) {
+        cout << "Start: " << it->first
+             << ", End: " << it->second << endl;
+    }
+    cout << "------\n";
+    cout << "one-two=" << mp["one-two"] << ", one-four=" << mp["one-four"] << endl;
+    // mp["one-two"] = "three";
+
+    cout << "------\n";
+
+    for (auto it = mp.begin(); it != mp.end(); ++it) {
+        cout << "Start: " << it->first
+             << ", End: " << it->second << endl;
+    }
+
+#elif 1
+void print_vector(vector <int> &v)
+{
+    for (int &i : v)
+        cout << (i == v.front() ? "{":"") << i << (i == v.back() ? "}":", ");
+
+    cout << endl;
+}
+int main()
+{
+
+    vector <int> v = {1,2,3,4,5};
+
+    print_vector(v);
+    for (auto i = v.begin(); i < v.end(); ++i)
+    {
+        if (*i == v[2])
+            v.erase(i);
+    }
+    print_vector(v);
+    return 0;
+}
+
+
+#elif 1
+typedef uint32_t CameraId_t;
+static vector<CameraId_t> collection= {123,4,345,2};
+#define CAMERA_ID_NONE 0xFFFFFFFF
+void print_collection()
+{
+    for (int i : collection)
+        cout << i << ", ";
+    cout << endl;
+}
+
+CameraId_t GetAvailableCamera()
+{
+  if (collection.empty())
+    return CAMERA_ID_NONE;
+
+  uint32_t idx  = rand() % collection.size();
+  cout << idx << endl;
+  return collection[idx];
+}
+
+uint32_t CheckoutById(CameraId_t id)
+{
+  if (collection.empty())
+    return -1;
+
+  for (auto &camid : collection)
+  {
+      if (id == camid)
+      {
+          camid = collection[collection.size()-1];
+          collection.resize(collection.size()-1);
+          // collection.erase(iterator);
+
+          print_collection();
+          return 0;
+      }
+  }
+
+  for (uint32_t i = 0; i < collection.size(); ++i)
+  {
+    if (id == collection[i])
+    {
+       collection[i] = collection[collection.size()-1];
+       collection.resize(collection.size()-1);
+       return 0;
+    }
+  }
+  return -2; // NOT FOUND
+
+}
+int CheckinById(CameraId_t cid)
+{
+  collection.push_back(cid);
+  return 0;
+}
+
+void main1()
+{
+    srand(rand());
+    print_collection();
+    CameraId_t cid = GetAvailableCamera();
+    CheckoutById(cid);
+    CheckinById(cid);
+    print_collection();
+}
+
 // power usage
 // 0-300    500
 // 300-500  20
@@ -79,6 +198,8 @@ void pu_update_now(uint32_t now_s, vector<PowerUsageInfo_t> &v)
 
 int main()
 {
+
+    main1();
     // lambda
 //    int x = 3, l = 5
 //    bool res = [](int val, int lim){return val > lim;}(5, x);
@@ -88,7 +209,6 @@ int main()
 //    for (auto i : v)
 //        cout << "val = " << i << endl;
     vector<PowerUsageInfo_t> v = {{100,500}, {500,200}, {1000,300}};
-
     cout << "is_base_of<SomeBase, PowerUsageInfo_t> = " << std::is_base_of <SomeBase, PowerUsageInfo_t>() << endl;
 
     uint32_t now_s = 700;

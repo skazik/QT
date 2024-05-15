@@ -10,4 +10,5 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
+    Location_storage.h \
     llist.h
