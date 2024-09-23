@@ -7,23 +7,23 @@
     <x>0</x>
     <y>0</y>
     <width>1237</width>
-    <height>629</height>
+    <height>628</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>FLX Serial test</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(48, 48, 48);</string>
+   <string notr="true">background-color: rgb(77, 118, 228);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="pushButton_up">
     <property name="geometry">
      <rect>
-      <x>101</x>
-      <y>25</y>
-      <width>30</width>
-      <height>24</height>
+      <x>86</x>
+      <y>183</y>
+      <width>60</width>
+      <height>28</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
@@ -46,10 +46,10 @@
    <widget class="QPushButton" name="pushButton_down">
     <property name="geometry">
      <rect>
-      <x>101</x>
-      <y>174</y>
-      <width>30</width>
-      <height>24</height>
+      <x>86</x>
+      <y>328</y>
+      <width>60</width>
+      <height>28</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -66,10 +66,10 @@
    <widget class="QLabel" name="remote_pic">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>2</y>
-      <width>221</width>
-      <height>221</height>
+      <x>10</x>
+      <y>170</y>
+      <width>211</width>
+      <height>201</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -97,10 +97,10 @@
    <widget class="QPushButton" name="pushButton_left">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>95</y>
-      <width>24</width>
-      <height>30</height>
+      <x>26</x>
+      <y>238</y>
+      <width>32</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
@@ -123,10 +123,10 @@
    <widget class="QPushButton" name="pushButton_right">
     <property name="geometry">
      <rect>
-      <x>182</x>
-      <y>95</y>
-      <width>24</width>
-      <height>30</height>
+      <x>174</x>
+      <y>238</y>
+      <width>32</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
@@ -149,10 +149,10 @@
    <widget class="QPushButton" name="pushButton_ok">
     <property name="geometry">
      <rect>
-      <x>94</x>
-      <y>90</y>
-      <width>44</width>
-      <height>41</height>
+      <x>91</x>
+      <y>244</y>
+      <width>48</width>
+      <height>46</height>
      </rect>
     </property>
     <property name="font">
@@ -203,7 +203,7 @@ color: rgb(206, 92, 0);</string>
     <property name="geometry">
      <rect>
       <x>98</x>
-      <y>390</y>
+      <y>380</y>
       <width>36</width>
       <height>36</height>
      </rect>
@@ -247,16 +247,25 @@ color: rgb(206, 92, 0);</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>220</y>
+      <y>0</y>
       <width>211</width>
       <height>170</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(20, 20, 20);</string>
+    </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::NoFrame</enum>
     </property>
     <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
     </property>
    </widget>
    <zorder>remote_pic</zorder>
