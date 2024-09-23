@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>FLX Serial test</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(48, 48, 48);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="pushButton_up">
     <property name="geometry">
@@ -199,10 +202,10 @@ color: rgb(206, 92, 0);</string>
    <widget class="QPushButton" name="pushButton_rear">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>182</y>
-      <width>44</width>
-      <height>40</height>
+      <x>98</x>
+      <y>390</y>
+      <width>36</width>
+      <height>36</height>
      </rect>
     </property>
     <property name="font">
@@ -227,11 +230,33 @@ color: rgb(206, 92, 0);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset theme="reload">
-      <normaloff>.</normaloff>.</iconset>
+     <iconset resource="app_resource.qrc">
+      <normaloff>:/pictures/rear.dn.24.png</normaloff>:/pictures/rear.dn.24.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>24</width>
+      <height>26</height>
+     </size>
     </property>
     <property name="default">
      <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QFrame" name="webcamView">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>220</y>
+      <width>211</width>
+      <height>170</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
    </widget>
    <zorder>remote_pic</zorder>
@@ -242,6 +267,7 @@ color: rgb(206, 92, 0);</string>
    <zorder>pushButton_ok</zorder>
    <zorder>textEdit</zorder>
    <zorder>pushButton_rear</zorder>
+   <zorder>webcamView</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

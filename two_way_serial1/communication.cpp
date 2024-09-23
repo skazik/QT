@@ -4,7 +4,6 @@
 #include <QApplication>
 
 #include "communication.h"
-#include "ui_mainwindow.h"
 #include "mainwindow.h"
 
 // Initialize the static instance pointer
@@ -47,7 +46,7 @@ void SerialCommunication::sendData(const QString &data) {
     if (serialPort->isOpen()) {
         QByteArray byteArray = data.toUtf8() + '\n';
         serialPort->write(byteArray);
-        qDebug() << "Sent to device:" << data;
+        // qDebug() << "Sent to device:" << data;
     }
 }
 

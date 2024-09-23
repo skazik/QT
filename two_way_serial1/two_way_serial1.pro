@@ -1,5 +1,7 @@
 QT += core gui
 QT += serialport
+QT += multimedia
+QT += multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,12 +20,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     communication.cpp \
+    key_filter.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    web_camera.cpp
 
 HEADERS += \
     communication.h \
-    mainwindow.h
+    key_filter.h \
+    mainwindow.h \
+    web_camera.h
 
 FORMS += \
     mainwindow.ui
