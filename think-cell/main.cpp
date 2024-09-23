@@ -12,9 +12,182 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <algorithm>
+
+#include <unistd.h>
 
 using namespace std;
+
 #if 1
+
+int serialize(unsigned char* outbuffer, float calls, float bytes)
+{
+    int offset = 0;
+    union {
+        float real;
+        uint32_t base;
+    } u_calls;
+    u_calls.real = calls;
+    *(outbuffer + offset + 0) = (u_calls.base >> (8 * 0)) & 0xFF;
+    *(outbuffer + offset + 1) = (u_calls.base >> (8 * 1)) & 0xFF;
+    *(outbuffer + offset + 2) = (u_calls.base >> (8 * 2)) & 0xFF;
+    *(outbuffer + offset + 3) = (u_calls.base >> (8 * 3)) & 0xFF;
+    offset += sizeof(calls);
+    union {
+        float real;
+        uint32_t base;
+    } u_bytes;
+    u_bytes.real = bytes;
+    *(outbuffer + offset + 0) = (u_bytes.base >> (8 * 0)) & 0xFF;
+    *(outbuffer + offset + 1) = (u_bytes.base >> (8 * 1)) & 0xFF;
+    *(outbuffer + offset + 2) = (u_bytes.base >> (8 * 2)) & 0xFF;
+    *(outbuffer + offset + 3) = (u_bytes.base >> (8 * 3)) & 0xFF;
+    offset += sizeof(bytes);
+    return offset;
+}
+class bbsample
+{
+public:
+    float calls;
+    float bytes;
+    bbsample()
+    {
+        calls = 12.3;
+        bytes = 234.567;
+    }
+    int serialize(unsigned char* outbuffer)
+    {
+        int offset = 0;
+        union {
+            float real;
+            uint32_t base;
+        } u_data = {this->calls};
+
+        for (int i = 0; i < 2; i++, u_data.real = this->bytes) {
+            for (int j = 0; j < 4; j++) {
+                *(outbuffer + offset + i) = (u_data.base >> (8 * i)) & 0xFF;
+            };
+            offset += i ? sizeof(this->bytes) : sizeof(this->calls);
+        }
+        return offset;
+    }
+};
+
+
+int main()
+{
+    unsigned char outbuffer[32] = "";
+    auto offset = serialize(outbuffer, 12.3, 234.567);
+    cout << "offset = " << offset << endl;
+    for (int i = 0; i < offset; i++)
+    {
+        cout << +outbuffer[i] << ", ";
+    }
+    cout << endl;
+
+    bbsample a;
+    offset = a.serialize(outbuffer);
+    cout << "offset = " << offset << endl;
+    for (int i = 0; i < offset; i++)
+    {
+        cout << +outbuffer[i] << ", ";
+    }
+    cout << endl;
+    return 0;
+}
+
+#elif 1
+int sum(int a, int b)
+{
+    return a+b;
+}
+void fibolike(int start, int count)
+{
+    int prev = 0, curr = start;
+    for (int i = 0; i < count; i++)
+    {
+        int tmp = sum(prev, curr);
+        prev = curr;
+        curr = tmp;
+        cout << tmp << ", ";
+    }
+    cout << endl;
+}
+int main ()
+{
+    fibolike(8,15);
+    return 0;
+
+    vector <int> v = {1,2,3,4,5};
+    for (auto i = v.begin(); i < v.end(); i++)
+    {
+        cout << *i << ", ";
+    }
+    cout << endl;
+
+    for (int &i:v)
+    {
+        cout << i << ", ";
+    }
+    cout << endl;
+
+    for (auto i = v.front(); i <= v.back(); i++)
+        cout << i << ", ";
+    cout << endl;
+
+
+    return 0;
+}
+
+#elif 1
+// create out of home routine
+void print_house_state( vector <int> &states)
+{
+    for (auto i : states)
+        cout << "[" << (i ? "*":" ") << "] ";
+    cout << endl;
+}
+void update_state()
+{
+    vector <int> v;
+    for (int i = 0 ; i < 5; ++i)
+    {
+        v.push_back(rand() % 2);
+    }
+    print_house_state(v);
+}
+
+int main()
+{
+    for (int i = 0 ; i < 5; ++i)
+    {
+        update_state();
+        usleep(1000000);
+    }
+    return 0;
+}
+#elif 1
+void print_vector(vector <int> &v)
+{
+    for (int &i : v)
+        cout << (i == v.front() ? "{":"") << i << (i == v.back() ? "}\n":", ");
+}
+
+int main()
+{
+
+    vector <int> v = {1,2,3,4,5};
+    print_vector(v);
+    for (auto i = v.begin(); i < v.end(); ++i)
+    {
+        if (*i == v[2])
+            v.erase(i);
+    }
+    print_vector(v);
+    return 0;
+}
+
+#elif 1
 
 #include "Location_storage.h"
 

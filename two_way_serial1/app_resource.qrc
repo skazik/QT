@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/pictures">
+        <file>remote_ctrl.jpg</file>
+    </qresource>
+</RCC>
