@@ -21,6 +21,7 @@ public:
 
     void on_serial_input(QString line);
     void on_keyboard_input(int key);
+    void on_camera_image_update(QImage image);
 
 protected:
     void showEvent(QShowEvent *event) override;  // Override showEvent
@@ -39,6 +40,10 @@ private slots: // for Camera
     void onStopCamera();   // Slot for stopping the camera
     void onCameraStarted();  // Slot when camera has started
     void onCameraStopped();  // Slot when camera has stopped
+
+    void on_quitButton_clicked();
+    void on_resetButton_clicked();
+    void on_zoomButton_clicked();
 
 private:
     Ui::MainWindow *ui;

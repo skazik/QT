@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1237</width>
+    <width>1280</width>
     <height>628</height>
    </rect>
   </property>
@@ -20,8 +20,8 @@
    <widget class="QPushButton" name="pushButton_up">
     <property name="geometry">
      <rect>
-      <x>86</x>
-      <y>183</y>
+      <x>92</x>
+      <y>245</y>
       <width>60</width>
       <height>28</height>
      </rect>
@@ -46,8 +46,8 @@
    <widget class="QPushButton" name="pushButton_down">
     <property name="geometry">
      <rect>
-      <x>86</x>
-      <y>328</y>
+      <x>92</x>
+      <y>390</y>
       <width>60</width>
       <height>28</height>
      </rect>
@@ -67,8 +67,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
-      <width>211</width>
+      <y>230</y>
+      <width>220</width>
       <height>201</height>
      </rect>
     </property>
@@ -97,8 +97,8 @@
    <widget class="QPushButton" name="pushButton_left">
     <property name="geometry">
      <rect>
-      <x>26</x>
-      <y>238</y>
+      <x>32</x>
+      <y>300</y>
       <width>32</width>
       <height>60</height>
      </rect>
@@ -123,8 +123,8 @@
    <widget class="QPushButton" name="pushButton_right">
     <property name="geometry">
      <rect>
-      <x>174</x>
-      <y>238</y>
+      <x>180</x>
+      <y>300</y>
       <width>32</width>
       <height>60</height>
      </rect>
@@ -149,8 +149,8 @@
    <widget class="QPushButton" name="pushButton_ok">
     <property name="geometry">
      <rect>
-      <x>91</x>
-      <y>244</y>
+      <x>97</x>
+      <y>306</y>
       <width>48</width>
       <height>46</height>
      </rect>
@@ -183,10 +183,10 @@ color: rgb(206, 92, 0);</string>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>2</y>
-      <width>1001</width>
-      <height>581</height>
+      <x>240</x>
+      <y>0</y>
+      <width>611</width>
+      <height>580</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -202,8 +202,8 @@ color: rgb(206, 92, 0);</string>
    <widget class="QPushButton" name="pushButton_rear">
     <property name="geometry">
      <rect>
-      <x>98</x>
-      <y>380</y>
+      <x>103</x>
+      <y>430</y>
       <width>36</width>
       <height>36</height>
      </rect>
@@ -223,8 +223,7 @@ color: rgb(206, 92, 0);</string>
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(46, 52, 54);
-color: rgb(206, 92, 0);</string>
+     <string notr="true">background-color: rgb(52, 101, 164);</string>
     </property>
     <property name="text">
      <string/>
@@ -246,10 +245,10 @@ color: rgb(206, 92, 0);</string>
    <widget class="QFrame" name="webcamView">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>-60</x>
       <y>0</y>
-      <width>211</width>
-      <height>170</height>
+      <width>341</width>
+      <height>230</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -268,22 +267,152 @@ color: rgb(206, 92, 0);</string>
      <number>0</number>
     </property>
    </widget>
+   <widget class="QPushButton" name="quitButton">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>560</y>
+      <width>216</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 32, 121);
+color: rgb(233, 185, 110);</string>
+    </property>
+    <property name="text">
+     <string>Quit</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="imageLabel">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>0</y>
+      <width>91</width>
+      <height>590</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Condensed</family>
+      <pointsize>19</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(52, 101, 164);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="resetButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset theme="start">
+      <normaloff>.</normaloff>.</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="zoomButton">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>0</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset theme="video">
+      <normaloff>.</normaloff>.</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="color_holder">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>10</width>
+      <height>590</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Condensed</family>
+      <pointsize>19</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(52, 101, 164);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <zorder>webcamView</zorder>
+   <zorder>imageLabel</zorder>
    <zorder>remote_pic</zorder>
    <zorder>pushButton_down</zorder>
    <zorder>pushButton_up</zorder>
    <zorder>pushButton_left</zorder>
    <zorder>pushButton_right</zorder>
    <zorder>pushButton_ok</zorder>
-   <zorder>textEdit</zorder>
    <zorder>pushButton_rear</zorder>
-   <zorder>webcamView</zorder>
+   <zorder>quitButton</zorder>
+   <zorder>resetButton</zorder>
+   <zorder>zoomButton</zorder>
+   <zorder>textEdit</zorder>
+   <zorder>color_holder</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1237</width>
+     <width>1280</width>
      <height>22</height>
     </rect>
    </property>

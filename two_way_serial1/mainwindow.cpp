@@ -5,6 +5,8 @@
 
 #include <QLayout>
 #include <QLayoutItem>
+#include <QCameraImageCapture>
+#include <QTimer>
 
 MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
@@ -14,6 +16,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     pMainWindow = this;
     send_message("Hello");
+
+    //set elements
+    ui->textEdit->setLineWrapMode(QTextEdit::NoWrap); // Disable line wrapping
+    statusBar()->setStyleSheet("QStatusBar {"
+                               "background: #3465A4; "
+                               "height: 20px; "
+                               "padding: 2px; "
+                               "font-size: 14px; }");
+
+    this->resize(width(), ui->quitButton->y()+ui->quitButton->height()+statusBar()->height()-6);
 
     // Create the WebCamera object
     webCamera = new WebCamera();
@@ -102,7 +114,7 @@ void MainWindow::send_message(QString txt)
     }
     QString tmp = "Send to ESP32: ";
     tmp += txt;
-    statusBar()->showMessage(tmp, 3000);
+    statusBar()->showMessage(tmp, 10000);
     Serial->sendData(txt);
     Serial->readData();
 }
@@ -123,6 +135,7 @@ void MainWindow::on_keyboard_input(int key)
     case Qt::Key_Return:
     case Qt::Key_Enter: str_to_send += 'K'; break;
     case Qt::Key_End:   str_to_send += 'r'; break;
+    case Qt::Key_Q:     on_quitButton_clicked(); break;
     default: return;
     }
     send_message(str_to_send);
@@ -134,4 +147,33 @@ void MainWindow::on_pushButton_right_clicked()  {on_keyboard_input(Qt::Key_Right
 void MainWindow::on_pushButton_left_clicked()   {on_keyboard_input(Qt::Key_Left);}
 void MainWindow::on_pushButton_ok_clicked()     {on_keyboard_input(Qt::Key_Enter);}
 void MainWindow::on_pushButton_rear_clicked()   {on_keyboard_input(Qt::Key_End);}
+void MainWindow::on_quitButton_clicked()        {QApplication::quit();}
 
+void MainWindow::on_camera_image_update(QImage image)
+{
+#ifdef NOT_SCALED_CONTENT // image for flip
+    // Get the QLabel's size
+    QSize labelSize = ui->imageLabel->size();
+
+    // Create a QPixmap from the QImage
+    QPixmap pixmap = QPixmap::fromImage(image);
+
+    // Scale the pixmap to fit within the label's size, while keeping the aspect ratio
+    QPixmap scaledPixmap = pixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    // Set the scaled pixmap to the label
+    ui->imageLabel->setPixmap(scaledPixmap);
+#else
+    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
+#endif
+}
+
+void MainWindow::on_resetButton_clicked()
+{
+    webCamera->setCameraZoom(true); // reset
+}
+
+void MainWindow::on_zoomButton_clicked()
+{
+    webCamera->setCameraZoom();
+}
