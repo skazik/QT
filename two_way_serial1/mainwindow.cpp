@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->resize(width(), ui->quitButton->y()+ui->quitButton->height()+statusBar()->height()-6);
 
+    // Access the QLedIndicator
+    // ui->ledIndicator->turnOff();   // Turn off the LED - red
+
     // Create the WebCamera object
     webCamera = new WebCamera();
 
@@ -117,6 +120,13 @@ void MainWindow::send_message(QString txt)
     statusBar()->showMessage(tmp, 10000);
     Serial->sendData(txt);
     Serial->readData();
+}
+
+void MainWindow::on_serial_connect(bool connected) {
+    if (connected)
+        ui->ledIndicator->turnOn();
+    else
+        ui->ledIndicator->turnOff();
 }
 
 void MainWindow::on_serial_input(QString line)

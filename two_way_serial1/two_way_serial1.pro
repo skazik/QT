@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     communication.cpp \
     key_filter.cpp \
+    led_indicator.cpp \
     main.cpp \
     mainwindow.cpp \
     web_camera.cpp
@@ -28,6 +29,7 @@ SOURCES += \
 HEADERS += \
     communication.h \
     key_filter.h \
+    led_indicator.h \
     mainwindow.h \
     web_camera.h
 

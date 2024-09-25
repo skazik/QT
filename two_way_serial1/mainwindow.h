@@ -19,6 +19,7 @@ public:
 
     static MainWindow * getMainWinPtr();
 
+    void on_serial_connect(bool connected);
     void on_serial_input(QString line);
     void on_keyboard_input(int key);
     void on_camera_image_update(QImage image);

@@ -33,8 +33,10 @@ void SerialCommunication::init(const QString &portName, qint32 baudRate) {
 
     if (serialPort->open(QIODevice::ReadWrite)) {
         qDebug() << "Serial port opened successfully";
+        MainWindow::getMainWinPtr()->on_serial_connect(true);
     } else {
         qDebug() << "Failed to open serial port:" << serialPort->errorString();
+        MainWindow::getMainWinPtr()->on_serial_connect(false);
     }
 
     // Connect the readyRead signal to the readData slot
