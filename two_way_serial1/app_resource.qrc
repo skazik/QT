@@ -2,5 +2,7 @@
     <qresource prefix="/pictures">
         <file>remote_ctrl.jpg</file>
         <file>rear.dn.24.png</file>
+        <file>Remote_2.jpg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

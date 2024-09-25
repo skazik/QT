@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     //set elements
     ui->textEdit->setLineWrapMode(QTextEdit::NoWrap); // Disable line wrapping
     statusBar()->setStyleSheet("QStatusBar {"
-                               "background: #3465A4; "
+                               "background-color: #3465A4;"
                                "height: 20px; "
                                "padding: 2px; "
                                "font-size: 14px; }");
@@ -121,7 +121,23 @@ void MainWindow::send_message(QString txt)
 
 void MainWindow::on_serial_input(QString line)
 {
+    static const char* kBaseStationPefix = "Base station - rssi:";
     ui->textEdit->append(line);
+
+    if (line.contains(kBaseStationPefix)) {
+        const char* tmp = strstr(line.toStdString().c_str(), kBaseStationPefix);
+        if (tmp) {
+            QString fmt;
+            int rssi = 0, throughput = 0, ms = 0;
+            if (3 == sscanf(tmp, "Base station - rssi: %d dB, throughput: %d b/s, %d m/s", &rssi, &throughput, &ms))
+            {
+                fmt.sprintf("rssi: %d dB", rssi);
+                ui->label_rssi->setText(fmt);
+                fmt.sprintf("throughput: %d b/s, %d m/s", throughput, ms);
+                ui->label_throu->setText(fmt);
+            }
+        }
+    }
 }
 
 void MainWindow::on_keyboard_input(int key)
