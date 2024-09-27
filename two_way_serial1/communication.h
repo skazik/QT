@@ -16,7 +16,8 @@ public:
     void init(const QString &portName, qint32 baudRate);
 
 public slots:
-    void sendData(const QString &data);
+    bool sendData(const QString &data);
+    bool sendData(QByteArray byteArray);
 
 public slots:
     void readData();

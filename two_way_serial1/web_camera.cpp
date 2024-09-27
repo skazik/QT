@@ -135,5 +135,5 @@ void WebCamera::setCameraZoom(bool reset) {
     } else {
         cameraFocus->zoomTo(cameraFocus->opticalZoom(), cameraFocus->digitalZoom()+1);
     }
-    qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
+    // qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
 }

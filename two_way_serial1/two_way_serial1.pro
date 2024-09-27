@@ -24,6 +24,7 @@ SOURCES += \
     led_indicator.cpp \
     main.cpp \
     mainwindow.cpp \
+    serializer.cpp \
     web_camera.cpp
 
 HEADERS += \
@@ -31,6 +32,7 @@ HEADERS += \
     key_filter.h \
     led_indicator.h \
     mainwindow.h \
+    serializer.h \
     web_camera.h
 
 FORMS += \

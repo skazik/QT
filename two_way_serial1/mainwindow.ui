@@ -20,9 +20,9 @@
    <widget class="QPushButton" name="pushButton_up">
     <property name="geometry">
      <rect>
-      <x>92</x>
+      <x>77</x>
       <y>245</y>
-      <width>60</width>
+      <width>90</width>
       <height>28</height>
      </rect>
     </property>
@@ -46,9 +46,9 @@
    <widget class="QPushButton" name="pushButton_down">
     <property name="geometry">
      <rect>
-      <x>92</x>
+      <x>77</x>
       <y>390</y>
-      <width>60</width>
+      <width>90</width>
       <height>28</height>
      </rect>
     </property>
@@ -98,9 +98,9 @@
     <property name="geometry">
      <rect>
       <x>32</x>
-      <y>300</y>
+      <y>285</y>
       <width>32</width>
-      <height>60</height>
+      <height>90</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
@@ -124,9 +124,9 @@
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>300</y>
+      <y>285</y>
       <width>32</width>
-      <height>60</height>
+      <height>90</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
@@ -149,16 +149,16 @@
    <widget class="QPushButton" name="pushButton_ok">
     <property name="geometry">
      <rect>
-      <x>97</x>
-      <y>306</y>
-      <width>48</width>
-      <height>46</height>
+      <x>90</x>
+      <y>300</y>
+      <width>62</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Standard Symbols PS [URW ]</family>
-      <pointsize>13</pointsize>
+      <family>Ubuntu</family>
+      <pointsize>16</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -203,7 +203,7 @@ color: rgb(206, 92, 0);</string>
     <property name="geometry">
      <rect>
       <x>103</x>
-      <y>480</y>
+      <y>450</y>
       <width>36</width>
       <height>36</height>
      </rect>
@@ -326,7 +326,7 @@ color: rgb(233, 185, 110);</string>
      <rect>
       <x>230</x>
       <y>0</y>
-      <width>1061</width>
+      <width>1001</width>
       <height>581</height>
      </rect>
     </property>
@@ -434,7 +434,7 @@ color: rgb(233, 185, 110);</string>
      <rect>
       <x>860</x>
       <y>0</y>
-      <width>411</width>
+      <width>364</width>
       <height>221</height>
      </rect>
     </property>
@@ -453,7 +453,7 @@ color: rgb(233, 185, 110);</string>
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>30</x>
        <y>10</y>
        <width>101</width>
        <height>17</height>
@@ -490,7 +490,7 @@ color: rgb(233, 185, 110);</string>
       <rect>
        <x>120</x>
        <y>32</y>
-       <width>201</width>
+       <width>230</width>
        <height>22</height>
       </rect>
      </property>
@@ -510,7 +510,7 @@ color: rgb(233, 185, 110);</string>
     <widget class="QLedIndicator" name="ledIndicator" native="true">
      <property name="geometry">
       <rect>
-       <x>390</x>
+       <x>10</x>
        <y>10</y>
        <width>10</width>
        <height>10</height>
@@ -518,6 +518,50 @@ color: rgb(233, 185, 110);</string>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(138, 226, 52);</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="hndl_loop">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>171</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 236);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string>handle controller loop:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="hndl_loop_val">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>60</y>
+       <width>161</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 236);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string>0 us</string>
      </property>
     </widget>
    </widget>

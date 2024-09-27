@@ -8,6 +8,8 @@
 #include <QCameraImageCapture>
 #include <QTimer>
 
+#include "serializer.h"
+
 MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
 
@@ -26,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
                                "font-size: 14px; }");
 
     this->resize(width(), ui->quitButton->y()+ui->quitButton->height()+statusBar()->height()-6);
-
     // Access the QLedIndicator
     // ui->ledIndicator->turnOff();   // Turn off the LED - red
 
@@ -45,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Ensure the WebCamera object is deleted when the thread finishes
     connect(cameraThread, &QThread::finished, webCamera, &QObject::deleteLater);
+    webCamera->setCameraZoom();
 }
 
 MainWindow::~MainWindow() {
@@ -107,6 +109,7 @@ void MainWindow::onCameraStopped() {
     qDebug() << "Camera stopped!";
 }
 
+
 void MainWindow::send_message(QString txt)
 {
     static SerialCommunication* Serial = get_instance();
@@ -118,8 +121,15 @@ void MainWindow::send_message(QString txt)
     QString tmp = "Send to ESP32: ";
     tmp += txt;
     statusBar()->showMessage(tmp, 10000);
-    Serial->sendData(txt);
-    Serial->readData();
+
+    auto msg = serialize_message(txt);
+    if (Serial->sendData(QByteArray((const char*) msg.byte_array,
+                                    sizeof(SerializedWireMessage)))) {
+        Serial->readData();
+    } else {
+        qDebug() << "sending ESP32 failed";
+        ui->ledIndicator->turnOff();
+    }
 }
 
 void MainWindow::on_serial_connect(bool connected) {
@@ -132,22 +142,44 @@ void MainWindow::on_serial_connect(bool connected) {
 void MainWindow::on_serial_input(QString line)
 {
     static const char* kBaseStationPefix = "Base station - rssi:";
-    ui->textEdit->append(line);
+    static const char* kHandleControllerPrefix = "handle controller loop:";
+
+    qDebug() << line;
+    const char* tmp = nullptr;
 
     if (line.contains(kBaseStationPefix)) {
-        const char* tmp = strstr(line.toStdString().c_str(), kBaseStationPefix);
-        if (tmp) {
+        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kBaseStationPefix))) {
             QString fmt;
-            int rssi = 0, throughput = 0, ms = 0;
-            if (3 == sscanf(tmp, "Base station - rssi: %d dB, throughput: %d b/s, %d m/s", &rssi, &throughput, &ms))
-            {
+            int rssi = 0;
+            float throughput = 0, ms = 0;
+
+            tmp += strlen(kBaseStationPefix);
+            if (3 == sscanf(tmp, " %d dB, throughput: %f b/s, %f m/s", &rssi, &throughput, &ms)) {
                 fmt.sprintf("rssi: %d dB", rssi);
                 ui->label_rssi->setText(fmt);
-                fmt.sprintf("throughput: %d b/s, %d m/s", throughput, ms);
+                fmt.sprintf("throughput: %.2f b/s, %.2f m/s", throughput, ms);
                 ui->label_throu->setText(fmt);
+                return;
             }
         }
+        qDebug() << "problem with parse: check formatting:\n" << line;
     }
+    else if (line.contains(kHandleControllerPrefix)) {
+        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kHandleControllerPrefix))) {
+            QString fmt;
+            int loop = 0;
+
+            tmp += strlen(kHandleControllerPrefix);
+            if (1 == sscanf(tmp, "  %dus", &loop)) {
+                fmt.sprintf("%dus", loop);
+                ui->hndl_loop_val->setText(fmt);
+                return;
+            }
+        }
+        qDebug() << "problem with parse: check formatting:\n" << line;
+    }
+
+    ui->textEdit->append(line);
 }
 
 void MainWindow::on_keyboard_input(int key)

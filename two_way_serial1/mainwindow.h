@@ -28,6 +28,7 @@ protected:
     void showEvent(QShowEvent *event) override;  // Override showEvent
 
 private slots: // for serial
+
     void send_message(QString txt);
     void on_pushButton_up_clicked();
     void on_pushButton_down_clicked();

@@ -44,12 +44,20 @@ void SerialCommunication::init(const QString &portName, qint32 baudRate) {
 }
 
 // Method to send data
-void SerialCommunication::sendData(const QString &data) {
+bool SerialCommunication::sendData(const QString &data) {
     if (serialPort->isOpen()) {
         QByteArray byteArray = data.toUtf8() + '\n';
-        serialPort->write(byteArray);
-        // qDebug() << "Sent to device:" << data;
+        if (0 < serialPort->write(byteArray))
+            return true;
     }
+    return false;
+}
+bool SerialCommunication::sendData(QByteArray byteArray) {
+    if (serialPort->isOpen()) {
+        if (0 < serialPort->write(byteArray))
+            return true;
+    }
+    return false;
 }
 
 // Method to read data
