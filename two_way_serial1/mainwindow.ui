@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>628</height>
+    <width>1233</width>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>77</x>
-      <y>245</y>
+      <y>235</y>
       <width>90</width>
       <height>28</height>
      </rect>
@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>77</x>
-      <y>390</y>
+      <y>380</y>
       <width>90</width>
       <height>28</height>
      </rect>
@@ -67,7 +67,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>230</y>
+      <y>220</y>
       <width>220</width>
       <height>201</height>
      </rect>
@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>32</x>
-      <y>285</y>
+      <y>275</y>
       <width>32</width>
       <height>90</height>
      </rect>
@@ -124,7 +124,7 @@
     <property name="geometry">
      <rect>
       <x>180</x>
-      <y>285</y>
+      <y>275</y>
       <width>32</width>
       <height>90</height>
      </rect>
@@ -150,7 +150,7 @@
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>300</y>
+      <y>290</y>
       <width>62</width>
       <height>60</height>
      </rect>
@@ -203,7 +203,7 @@ color: rgb(206, 92, 0);</string>
     <property name="geometry">
      <rect>
       <x>103</x>
-      <y>450</y>
+      <y>430</y>
       <width>36</width>
       <height>36</height>
      </rect>
@@ -266,43 +266,6 @@ color: rgb(206, 92, 0);</string>
     <property name="midLineWidth">
      <number>0</number>
     </property>
-    <widget class="QLabel" name="color_holder_2">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>0</y>
-       <width>220</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Ubuntu Condensed</family>
-       <pointsize>19</pointsize>
-       <weight>75</weight>
-       <italic>false</italic>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(52, 101, 164);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::AutoText</enum>
-     </property>
-     <property name="scaledContents">
-      <bool>true</bool>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
    </widget>
    <widget class="QPushButton" name="quitButton">
     <property name="geometry">
@@ -324,26 +287,27 @@ color: rgb(233, 185, 110);</string>
    <widget class="QLabel" name="imageLabel">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>0</y>
-      <width>1001</width>
-      <height>581</height>
+      <x>10</x>
+      <y>20</y>
+      <width>221</width>
+      <height>181</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Ubuntu Condensed</family>
-      <pointsize>19</pointsize>
+      <pointsize>15</pointsize>
       <weight>75</weight>
       <italic>false</italic>
       <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(52, 101, 164);</string>
+     <string notr="true">background-color: rgba(0, 0, 0, 100);
+</string>
     </property>
     <property name="text">
-     <string/>
+     <string>Loading....</string>
     </property>
     <property name="textFormat">
      <enum>Qt::AutoText</enum>
@@ -362,7 +326,7 @@ color: rgb(233, 185, 110);</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>210</y>
+      <y>200</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -378,8 +342,8 @@ color: rgb(233, 185, 110);</string>
    <widget class="QPushButton" name="zoomButton">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>210</y>
+      <x>40</x>
+      <y>200</y>
       <width>20</width>
       <height>20</height>
      </rect>
@@ -390,43 +354,6 @@ color: rgb(233, 185, 110);</string>
     <property name="icon">
      <iconset theme="video">
       <normaloff>.</normaloff>.</iconset>
-    </property>
-   </widget>
-   <widget class="QLabel" name="color_holder">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>10</width>
-      <height>590</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Ubuntu Condensed</family>
-      <pointsize>19</pointsize>
-      <weight>75</weight>
-      <italic>false</italic>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(52, 101, 164);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="textFormat">
-     <enum>Qt::AutoText</enum>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-    <property name="wordWrap">
-     <bool>true</bool>
     </property>
    </widget>
    <widget class="QFrame" name="frame">
@@ -564,6 +491,19 @@ color: rgb(233, 185, 110);</string>
       <string>0 us</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="portName">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>8</y>
+       <width>231</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 236);</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="startRecord">
     <property name="geometry">
@@ -651,33 +591,88 @@ color: rgb(233, 185, 110);</string>
      <string>Save</string>
     </property>
    </widget>
+   <widget class="QLabel" name="color_holder_2">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>0</y>
+      <width>1241</width>
+      <height>591</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Ubuntu Condensed</family>
+      <pointsize>19</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(52, 101, 164);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="flipButton">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>200</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset theme="rotate">
+      <normaloff>.</normaloff>.</iconset>
+    </property>
+   </widget>
    <zorder>webcamView</zorder>
-   <zorder>imageLabel</zorder>
+   <zorder>color_holder_2</zorder>
    <zorder>frame</zorder>
+   <zorder>recEdit</zorder>
+   <zorder>startRecord</zorder>
+   <zorder>saveButton</zorder>
+   <zorder>playButton</zorder>
+   <zorder>textEdit</zorder>
+   <zorder>pushButton_rear</zorder>
+   <zorder>zoomButton</zorder>
+   <zorder>resetButton</zorder>
+   <zorder>imageLabel</zorder>
+   <zorder>quitButton</zorder>
    <zorder>remote_pic</zorder>
    <zorder>pushButton_down</zorder>
-   <zorder>pushButton_up</zorder>
    <zorder>pushButton_left</zorder>
    <zorder>pushButton_right</zorder>
    <zorder>pushButton_ok</zorder>
-   <zorder>pushButton_rear</zorder>
-   <zorder>quitButton</zorder>
-   <zorder>resetButton</zorder>
-   <zorder>zoomButton</zorder>
-   <zorder>textEdit</zorder>
-   <zorder>color_holder</zorder>
-   <zorder>startRecord</zorder>
+   <zorder>pushButton_up</zorder>
+   <zorder>flipButton</zorder>
    <zorder>recordIndicator</zorder>
-   <zorder>playButton</zorder>
-   <zorder>recEdit</zorder>
-   <zorder>saveButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1280</width>
+     <width>1233</width>
      <height>22</height>
     </rect>
    </property>

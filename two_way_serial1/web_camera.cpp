@@ -8,13 +8,11 @@
 
 WebCamera::WebCamera(QObject *parent) : QObject(parent) {
 
-#ifdef FLIPPED_IMAGE_FROM_CAMERA
     // Initialize timer to capture image
     timerCapture = new QTimer(this);
     timerCapture->setInterval(100); // 500 milliseconds
     connect(timerCapture, &QTimer::timeout, this, &WebCamera::captureImage);
     timerCapture->start();
-#endif
 
     // Initialize the viewfinder (but do not attach it to the QWidget yet)
     viewfinder = new QCameraViewfinder();  // No parent
@@ -90,8 +88,9 @@ void WebCamera::captureImage() {
 void WebCamera::processCapturedImage(int id, const QImage &preview) {
     Q_UNUSED(id);
 
+    bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
     // Flip the image vertically (upside down)
-    QImage flippedImage = preview.mirrored(true, true); // Horizontal=true, Vertical=true
+    QImage flippedImage = preview.mirrored(flipped, flipped); // Horizontal=true, Vertical=true
 
     // Display the flipped image in the QLabel
     MainWindow:: getMainWinPtr()->on_camera_image_update(flippedImage);
@@ -100,36 +99,6 @@ void WebCamera::processCapturedImage(int id, const QImage &preview) {
 void WebCamera::setCameraZoom(bool reset) {
     QCameraFocus *cameraFocus = camera->focus();
 
-#ifdef CAMERA_SUPPORT_FOCUS_MANUAL
-    // Check if focus mode is supported
-    if (!cameraFocus) {
-        qDebug() << "Camera focus is not supported on this device.";
-        return;
-    }
-    else if (cameraFocus->isFocusModeSupported(QCameraFocus::ManualFocus)) {
-        // Set the focus mode to manual
-        cameraFocus->setFocusMode(QCameraFocus::ManualFocus);
-
-        // Set focus to the minimum possible distance
-        cameraFocus->setFocusPointMode(QCameraFocus::FocusPointCenter); // For fixed focus
-
-        // If supported, some cameras allow setting custom focus distance. This value is usually
-        // normalized (0.0 for minimum distance, 1.0 for infinity).
-        cameraFocus->setCustomFocusPoint(QPointF(0.0, 0.0)); // Focus on the minimum distance point.
-
-        qDebug() << "Manual Focus on the minimum distance point.";
-        qDebug() << "Current Focus: " << cameraFocus->focusMode();
-        return;
-    }
-
-    qDebug() << "Manual focus is not supported by this camera. Current: " << cameraFocus->focusMode();
-    if (cameraFocus->isFocusModeSupported(QCameraFocus::AutoFocus)) {
-        cameraFocus->setFocusMode(QCameraFocus::AutoFocus); // Set focus to QCameraFocus::MacroFocus
-        qDebug() << "Set focus to QCameraFocus::AutoFocus. Current Focus: " << cameraFocus->focusMode();
-        return;
-    }
-    qDebug() << "MacroFocus focus is not supported by this camera. Current: " << cameraFocus->focusMode();
-#endif
     if (reset) {
         cameraFocus->zoomTo(1,1);
     } else {

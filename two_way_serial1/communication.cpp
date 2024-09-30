@@ -37,6 +37,7 @@ void SerialCommunication::init(const QString &portName, qint32 baudRate) {
     } else {
         qDebug() << "Failed to open serial port:" << serialPort->errorString();
         MainWindow::getMainWinPtr()->on_serial_connect(false);
+        return;
     }
 
     // Connect the readyRead signal to the readData slot
@@ -72,30 +73,17 @@ void SerialCommunication::readData() {
     }
 }
 
-SerialCommunication* get_instance() {
+SerialCommunication* get_instance(QString portName) {
     static SerialCommunication* serialComm = nullptr;
 
     if (serialComm)
         return serialComm;
 
-    QString portName = "/dev/ttyACM0";  // Change this to match your serial port
-    qint32 baudRate = 115200;
+    qint32 baudRate{115200};
 
     // Get the singleton instance and initialize it
     serialComm = SerialCommunication::instance();
     serialComm->init(portName, baudRate);
 
     return serialComm;
-//    QTextStream input(stdin);
-//    QTextStream output(stdout);
-
-//    // Timer to periodically ask for user input
-//    QTimer* timer = new QTimer();
-//    QObject::connect(timer, &QTimer::timeout, [&]() {
-//        output << "Enter data to send to the device: " << flush;
-//        QString userInput = input.readLine();
-//        serialComm->sendData(userInput);
-//    });
-
-//    timer->start(1000); // Prompt for input every second
 }

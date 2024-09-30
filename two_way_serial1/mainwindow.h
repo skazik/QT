@@ -26,8 +26,9 @@ public:
 
     void on_serial_connect(bool connected);
     void on_serial_input(QString line);
-    void on_keyboard_input(int key);
+    bool on_keyboard_input(int key);
     void on_camera_image_update(QImage image);
+    bool is_camera_flipped() {return cameraFlipped;}
 
 protected:
     void showEvent(QShowEvent *event) override;  // Override showEvent
@@ -58,8 +59,9 @@ private slots: // for Camera
     void onTimerTimeout();
     void onPlaybackStopped(QString str = "");
     void onPlaybackStarted(QString str = "");
-
     void on_saveButton_clicked();
+    void on_flipButton_clicked();
+    void on_portName_returnPressed();
 
 private:
     Ui::MainWindow *ui;
@@ -73,5 +75,6 @@ private:
     int lastRecTimeSeconds{0};
     int playbackCount{0};
     bool playbackInProgress{false};
+    bool cameraFlipped{false};
 };
 #endif // MAINWINDOW_H

@@ -5,12 +5,16 @@
 #include <QSerialPort>
 #include <QString>
 
+static QString _portName{"/dev/ttyACM0"};
+
 class SerialCommunication : public QObject {
     Q_OBJECT
 
 public:
     // Static method to access the singleton instance
     static SerialCommunication* instance();
+    static QString get_port_name() {return _portName;}
+    static void set_port_name(QString _name) {_portName = _name;}
 
     // Method to initialize the serial communication (call once during init)
     void init(const QString &portName, qint32 baudRate);
@@ -33,6 +37,7 @@ private:
     static SerialCommunication* m_instance;
 };
 
-SerialCommunication* get_instance();
+SerialCommunication* get_instance(QString portName);
+
 
 #endif // SERIALCOMMUNICATION_H

@@ -15,8 +15,7 @@ protected:
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent *keyEvent = (QKeyEvent *)event;
 //            qDebug() << "Key pressed in event filter:" << QKeySequence(keyEvent->key()).toString();
-            MainWindow::getMainWinPtr()->on_keyboard_input(keyEvent->key());
-            return true; // Stop further handling of the event
+            return MainWindow::getMainWinPtr()->on_keyboard_input(keyEvent->key());
         }
         return QObject::eventFilter(obj, event);
     }

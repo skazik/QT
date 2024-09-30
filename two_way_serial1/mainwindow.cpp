@@ -13,12 +13,12 @@
 
 MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
+const char * kConfigFileName{"2wconfig.bin"};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), cameraThread(new QThread(this)) {
     ui->setupUi(this);
     pMainWindow = this;
-    send_message("Hello");
 
     //set elements
     ui->textEdit->setLineWrapMode(QTextEdit::NoWrap); // Disable line wrapping
@@ -47,10 +47,28 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cameraThread, &QThread::finished, webCamera, &QObject::deleteLater);
     webCamera->setCameraZoom();
 
-    // Access the QLedIndicator
-//    ui->ledIndicator->turnOff();   // Turn off the LED - red
+    // restore some config
+    QFile fin(kConfigFileName);
+    if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&fin);
+         for (int i = 0; !in.atEnd(); i++) {
+             QString line = in.readLine();  // Read line-by-line
+             qDebug() << line;              // Output each line
+             line = line.trimmed();
+             switch(i) {
+             case 0: cameraFlipped = line.contains("1"); break;
+             case 1: SerialCommunication::set_port_name(QString(line));
+             default: break;
+             }
+         }
+        fin.close();
+    }
+
     ui->recordIndicator->setRecordSchema();
     ui->recordIndicator->turnOff();
+
+    ui->portName->setText(SerialCommunication::get_port_name());
+    send_message("Hello");
 
 }
 
@@ -60,6 +78,16 @@ MainWindow::~MainWindow() {
         cameraThread->quit();   // Signal the thread to stop
         cameraThread->wait();    // Wait for it to finish
     }
+
+    // save some config
+    QFile fout(kConfigFileName);
+    if (fout.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&fout);
+        out << (cameraFlipped ? "1":"0") << endl;
+        out << SerialCommunication::get_port_name().toStdString().c_str() << endl;
+        fout.close();
+    }
+
     delete ui;
 }
 
@@ -127,7 +155,7 @@ void MainWindow::send_message(QString txt)
             ui->recEdit->append(str);
     }
 
-    static SerialCommunication* Serial = get_instance();
+    static SerialCommunication* Serial = get_instance(ui->portName->text());
     if (!Serial)
     {
         statusBar()->showMessage("SerialCommunication failed", 5000);
@@ -198,13 +226,17 @@ void MainWindow::on_serial_input(QString line)
     ui->textEdit->append(line);
 }
 
-void MainWindow::on_keyboard_input(int key)
+bool MainWindow::on_keyboard_input(int key)
 {
+    if (ui->portName->hasFocus())
+        return false;
+
     if (key == Qt::Key_Q) {
         on_quitButton_clicked();
-        return;
+        return true;
     }
     send_message(translate_key_to_cmd(key));
+    return true;
 }
 
 void MainWindow::on_pushButton_up_clicked()     {on_keyboard_input(Qt::Key_Up);}
@@ -386,4 +418,16 @@ void MainWindow::on_saveButton_clicked()
     } else {
         QMessageBox::warning(nullptr, "Error", "No destination file selected.");
     }
+}
+
+void MainWindow::on_flipButton_clicked()
+{
+    cameraFlipped = !cameraFlipped;
+}
+
+void MainWindow::on_portName_returnPressed()
+{
+    SerialCommunication::set_port_name(ui->portName->text());
+    ui->portName->clearFocus();
+    // ui->imageLabel->setFocus();
 }
