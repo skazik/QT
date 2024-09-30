@@ -59,5 +59,8 @@ union SerializedMessage {
 SerializedMessage serialize_message(QString txt);
 void save_delay(QTextStream &out, int &sec);
 QString save_command(QString &cmd, QTextStream &out, int &sec);
+std::vector<std::string> parseCSV(const std::string& csv);
+QString translate_key_to_cmd(int key);
+QString translate_script_cmd(std::string input);
 
 #endif // SERIALIZER_H

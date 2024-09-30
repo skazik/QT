@@ -116,6 +116,9 @@ void MainWindow::onCameraStopped() {
 
 void MainWindow::send_message(QString txt)
 {
+    if (txt.isEmpty())
+        return;
+
     if (ui->recordIndicator->isOn()) {
         QString str = save_command(txt, playRecordStream, lastRecTimeSeconds);
         if (str.isEmpty())
@@ -133,6 +136,7 @@ void MainWindow::send_message(QString txt)
     QString tmp = "Send to ESP32: ";
     tmp += txt;
     statusBar()->showMessage(tmp, 10000);
+//    qDebug() << tmp;
 
     auto msg = serialize_message(txt);
     if (Serial->sendData(QByteArray((const char*) msg.byte_array,
@@ -196,19 +200,11 @@ void MainWindow::on_serial_input(QString line)
 
 void MainWindow::on_keyboard_input(int key)
 {
-    QString str_to_send{"*"};
-    switch (key) {
-    case Qt::Key_Up:    str_to_send += 'U'; break;
-    case Qt::Key_Down:  str_to_send += 'D'; break;
-    case Qt::Key_Left:  str_to_send += 'L'; break;
-    case Qt::Key_Right: str_to_send += 'R'; break;
-    case Qt::Key_Return:
-    case Qt::Key_Enter: str_to_send += 'K'; break;
-    case Qt::Key_End:   str_to_send += 'r'; break;
-    case Qt::Key_Q:     on_quitButton_clicked(); break;
-    default: return;
+    if (key == Qt::Key_Q) {
+        on_quitButton_clicked();
+        return;
     }
-    send_message(str_to_send);
+    send_message(translate_key_to_cmd(key));
 }
 
 void MainWindow::on_pushButton_up_clicked()     {on_keyboard_input(Qt::Key_Up);}
@@ -221,21 +217,7 @@ void MainWindow::on_quitButton_clicked()        {QApplication::quit();}
 
 void MainWindow::on_camera_image_update(QImage image)
 {
-#ifdef NOT_SCALED_CONTENT // image for flip
-    // Get the QLabel's size
-    QSize labelSize = ui->imageLabel->size();
-
-    // Create a QPixmap from the QImage
-    QPixmap pixmap = QPixmap::fromImage(image);
-
-    // Scale the pixmap to fit within the label's size, while keeping the aspect ratio
-    QPixmap scaledPixmap = pixmap.scaled(labelSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    // Set the scaled pixmap to the label
-    ui->imageLabel->setPixmap(scaledPixmap);
-#else
     ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-#endif
 }
 
 void MainWindow::on_resetButton_clicked()
@@ -354,7 +336,7 @@ void MainWindow::onTimerTimeout(){
 
      // Move the cursor to the second line (e.g., line 2)
      cursor.movePosition(QTextCursor::Start);      // Move to the start of the document
-     if (cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, playbackCount++)) {  // Move to the second line
+     if (cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, playbackCount++)) {
 
          // Select the entire line
          cursor.select(QTextCursor::LineUnderCursor);
@@ -369,7 +351,14 @@ void MainWindow::onTimerTimeout(){
          // Show the QTextEdit
          ui->recEdit->show();
 
-        QTimer::singleShot(1000, this, &MainWindow::onTimerTimeout);
+         // parse the string, send and arm timer-------------------
+         std::vector<std::string> v = parseCSV(cursor.selectedText().toStdString());
+         send_message(translate_script_cmd(v[0]));
+         int timeout = (v.size() < 2) || v[1].empty() ? 1000 : std::stoi(v[1])*1000;
+         QTimer::singleShot(timeout, this, &MainWindow::onTimerTimeout);
+         qDebug() << "v.size()=" << v.size() << " : " << QString::fromStdString(v[0])
+                 << " timeout:" << timeout/1000;
+
      }
      else {
          onPlaybackStopped("-------- done -------");
