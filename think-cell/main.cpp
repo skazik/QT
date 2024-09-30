@@ -19,6 +19,108 @@
 using namespace std;
 
 #if 1
+struct Point {
+    int x{4}, y{5};
+};
+
+class Dot {
+public:
+    Dot(Point& pt) : m_dot(pt) {
+        cout << m_dot.x << " " << m_dot.y << endl;
+    }
+    ~Dot() {}
+private:
+    Point& m_dot;
+};
+//Point &get_point() {
+//    Point a{1,2};
+//    return a; // main.cpp:37:12: warning: reference to stack memory associated with local variable 'a' returned
+//}
+
+void ex_point() {
+    // Dot m(get_point()); // warning: reference to local variable ‘a’ returned [-Wreturn-local-addr]
+    // Dot m(Point a{1,2}); // - same problem
+    Point a{1,2};
+    Dot m(a);
+    cout << "--------------------ex_point-------\n";
+}
+////////////////////////////////////////////////////////////////////////
+struct Diamond1 : virtual public Point {
+    int power{7};
+};
+
+struct Diamond2 : virtual public Point {
+    int power{10};
+};
+struct DoubleInherit : public Diamond1 , public Diamond2 {
+};
+
+void ex_diamond() {
+    DoubleInherit di;
+    cout << di.x << ", " << di.y << endl;
+    cout << di.Diamond1::power << endl;
+    cout << "--------------------ex_diamond-------\n";
+}
+//////////////////////////////////////////////////////////////////////
+struct mvec {
+    mvec() : y(5.9) { // allowed but warning main.cpp:66:16: warning: implicit conversion from 'double' to 'int' changes value from 5.9 to 5
+        str = std::to_string(x) + std::to_string(y);
+    };
+//    int x{2.7}, y, z; // main.cpp:67:11: error: implicit conversion from 'double' to 'int' changes value from 2.7 to 2
+    int x{2}, y, z;
+    std::string str{"default"};
+//    mvec() = default; // works on curley braces only
+    mvec(int a, int v, int c) : x(a), y(v), z(c) {}
+};
+
+void ex_vector() {
+    mvec v1; // warning: ‘v1.mvec::x’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+    mvec v2{};
+    mvec v3(1,2,3);
+    cout << "mvec v1;         :" << v1.x << ", " << v1.y << ", " << v1.z <<  ", " << v1.str << endl;
+    cout << "mvec v2{};       :" << v2.x << ", " << v2.y << ", " << v2.z <<  ", " << v2.str << endl;
+    cout << "mvec v3(1,2,3);  :" << v3.x << ", " << v3.y << ", " << v3.z <<  ", " << v3.str << endl;
+    cout << "--------------------ex_vector-------\n";
+}
+
+void ex_array() {
+    std::array<int,5> a{13,15};
+    for (auto i : a) cout << i << ", ";
+    cout << endl;
+
+    std::array<int,5> b[2] = {{1,2},{3,4}};
+    for (auto i : b[0]) cout << i << ", ";
+    cout << endl;
+
+    cout << "--------------------ex_array-------\n";
+}
+
+void ex_delegate() {
+    struct cl {
+        cl() : x{0}, y{0} {};
+        cl(std::string _n) : cl() { // HERE IS DELEGATE CONSTRUCTOR
+            name = _n;
+        }
+        int x,y;
+        std::string name{""};
+    };
+    cl temp("hello");
+    cout << temp.name << temp.x << temp.y << endl;
+    cout << "--------------------ex_delegate-------\n";
+}
+
+int main() {
+    ex_point();
+    ex_diamond();
+    ex_vector();
+    ex_array();
+    ex_delegate();
+
+    return 0;
+}
+
+
+#elif 1
 
 int serialize(unsigned char* outbuffer, float calls, float bytes)
 {

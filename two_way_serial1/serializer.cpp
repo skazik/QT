@@ -1,4 +1,5 @@
 #include "serializer.h"
+#include <QTime>
 
 uint8_t calculate_crc_8(const std::vector<uint8_t>& data) {
     uint8_t crc = 0x00;  // Initial value
@@ -77,4 +78,39 @@ SerializedMessage serialize_message(QString txt) {
             sizeof (MessagePayloadType));
     msg.msg.payload_crc = calculate_message_crc(msg.msg.payload);
     return msg;
+}
+
+void save_delay(QTextStream &out, int &sec) {
+    if (sec > 0)
+    {
+        QTime currentTime = QTime::currentTime();
+        int delay = currentTime.hour() * 3600 + currentTime.minute() * 60 + currentTime.second() - sec;
+        if (delay > 1) {
+            out << "," << delay;
+        } // else the default 1 sec will be used
+        out << endl;
+        sec = 0;
+    }
+}
+
+QString save_command(QString &cmd, QTextStream &out, int &sec) {
+    save_delay(out, sec);
+    QString rec{""};
+    if (const char *tmp = strstr(cmd.toStdString().c_str(), "*")) {
+        switch (*(++tmp)) {
+        case 'K': rec = "OK"; break;
+        case 'r': rec = "RearButton"; break;
+        case 'U': rec = "Up"; break;
+        case 'D': rec = "Down"; break;
+        case 'R': rec = "Right"; break;
+        case 'L': rec = "Left"; break;
+        default:
+            qWarning("wrong format of the SCM command!");
+            return rec;
+        }
+    }
+    out << rec;
+    QTime currentTime = QTime::currentTime();
+    sec = currentTime.hour() * 3600 + currentTime.minute() * 60 + currentTime.second();
+    return rec;
 }

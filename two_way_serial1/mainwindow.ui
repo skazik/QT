@@ -565,6 +565,92 @@ color: rgb(233, 185, 110);</string>
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="startRecord">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>230</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(211, 215, 207);</string>
+    </property>
+    <property name="text">
+     <string>Record </string>
+    </property>
+   </widget>
+   <widget class="QLedIndicator" name="recordIndicator" native="true">
+    <property name="geometry">
+     <rect>
+      <x>862</x>
+      <y>232</y>
+      <width>10</width>
+      <height>10</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(211, 215, 207);</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="playButton">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>230</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(211, 215, 207);</string>
+    </property>
+    <property name="text">
+     <string>Play</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="recEdit">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>260</y>
+      <width>364</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveButton">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1060</x>
+      <y>230</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(211, 215, 207);</string>
+    </property>
+    <property name="text">
+     <string>Save</string>
+    </property>
+   </widget>
    <zorder>webcamView</zorder>
    <zorder>imageLabel</zorder>
    <zorder>frame</zorder>
@@ -580,6 +666,11 @@ color: rgb(233, 185, 110);</string>
    <zorder>zoomButton</zorder>
    <zorder>textEdit</zorder>
    <zorder>color_holder</zorder>
+   <zorder>startRecord</zorder>
+   <zorder>recordIndicator</zorder>
+   <zorder>playButton</zorder>
+   <zorder>recEdit</zorder>
+   <zorder>saveButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

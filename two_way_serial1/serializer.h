@@ -57,5 +57,7 @@ union SerializedMessage {
 };
 
 SerializedMessage serialize_message(QString txt);
+void save_delay(QTextStream &out, int &sec);
+QString save_command(QString &cmd, QTextStream &out, int &sec);
 
 #endif // SERIALIZER_H

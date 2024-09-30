@@ -5,6 +5,11 @@
 #include "web_camera.h"
 #include <QThread>
 
+#include <QFile>
+#include <QTextStream>  // for text handling
+#include <QIODevice>    // for handling input/output modes
+#include <QTimer>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -46,6 +51,15 @@ private slots: // for Camera
     void on_quitButton_clicked();
     void on_resetButton_clicked();
     void on_zoomButton_clicked();
+    void on_startRecord_clicked();
+
+    void cleanPlayEdit();
+    void on_playButton_clicked();
+    void onTimerTimeout();
+    void onPlaybackStopped(QString str = "");
+    void onPlaybackStarted(QString str = "");
+
+    void on_saveButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -53,5 +67,11 @@ private:
 
     QThread *cameraThread;
     WebCamera *webCamera;
+    QString kTemporaryFileName{"qfile.txt"};
+    QFile inOutFileTmp{kTemporaryFileName};
+    QTextStream playRecordStream;
+    int lastRecTimeSeconds{0};
+    int playbackCount{0};
+    bool playbackInProgress{false};
 };
 #endif // MAINWINDOW_H

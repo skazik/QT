@@ -40,12 +40,11 @@ bool QLedIndicator::isOn() const
 void QLedIndicator::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
-
     // Draw a circle to represent the LED
     if (_isOn)
-        painter.setBrush(QBrush(Qt::green));  // LED is on (green)
+        painter.setBrush(_recordSchema ? QBrush(Qt::red) : QBrush(Qt::green));  // LED is on (green)
     else
-        painter.setBrush(QBrush(Qt::red));    // LED is off (red)
+        painter.setBrush(_recordSchema ? QBrush(my_grey) : QBrush(Qt::red));    // LED is off (red)
 
     painter.setPen(Qt::black);  // Optional: Black outline
     painter.drawEllipse(0, 0, width() - 1, height() - 1);

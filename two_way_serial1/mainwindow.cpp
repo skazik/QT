@@ -2,13 +2,14 @@
 #include "ui_mainwindow.h"
 #include "communication.h"
 #include "web_camera.h"
+#include "serializer.h"
 
 #include <QLayout>
 #include <QLayoutItem>
 #include <QCameraImageCapture>
 #include <QTimer>
-
-#include "serializer.h"
+#include <QFileDialog>
+#include <QMessageBox>
 
 MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
@@ -28,8 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
                                "font-size: 14px; }");
 
     this->resize(width(), ui->quitButton->y()+ui->quitButton->height()+statusBar()->height()-6);
-    // Access the QLedIndicator
-    // ui->ledIndicator->turnOff();   // Turn off the LED - red
 
     // Create the WebCamera object
     webCamera = new WebCamera();
@@ -47,6 +46,12 @@ MainWindow::MainWindow(QWidget *parent)
     // Ensure the WebCamera object is deleted when the thread finishes
     connect(cameraThread, &QThread::finished, webCamera, &QObject::deleteLater);
     webCamera->setCameraZoom();
+
+    // Access the QLedIndicator
+//    ui->ledIndicator->turnOff();   // Turn off the LED - red
+    ui->recordIndicator->setRecordSchema();
+    ui->recordIndicator->turnOff();
+
 }
 
 MainWindow::~MainWindow() {
@@ -109,9 +114,16 @@ void MainWindow::onCameraStopped() {
     qDebug() << "Camera stopped!";
 }
 
-
 void MainWindow::send_message(QString txt)
 {
+    if (ui->recordIndicator->isOn()) {
+        QString str = save_command(txt, playRecordStream, lastRecTimeSeconds);
+        if (str.isEmpty())
+            ui->recEdit->append("--error formating--");
+        else
+            ui->recEdit->append(str);
+    }
+
     static SerialCommunication* Serial = get_instance();
     if (!Serial)
     {
@@ -184,7 +196,7 @@ void MainWindow::on_serial_input(QString line)
 
 void MainWindow::on_keyboard_input(int key)
 {
-    QString str_to_send{"FLX"};
+    QString str_to_send{"*"};
     switch (key) {
     case Qt::Key_Up:    str_to_send += 'U'; break;
     case Qt::Key_Down:  str_to_send += 'D'; break;
@@ -234,4 +246,155 @@ void MainWindow::on_resetButton_clicked()
 void MainWindow::on_zoomButton_clicked()
 {
     webCamera->setCameraZoom();
+}
+
+void MainWindow::on_startRecord_clicked()
+{
+    if (ui->recordIndicator->isOn()) {
+        ui->startRecord->setText("Record");
+        ui->recordIndicator->turnOff();
+        ui->playButton->setEnabled(true);
+
+        save_delay(playRecordStream, lastRecTimeSeconds);
+        inOutFileTmp.close();
+
+    }
+    else {
+        cleanPlayEdit();
+        ui->recEdit->clear();
+        ui->startRecord->setText("Stop");
+        ui->playButton->setEnabled(false);
+        ui->recordIndicator->turnOn();
+        ui->playButton->setEnabled(false);
+
+        if (!inOutFileTmp.open(QIODevice::WriteOnly| QIODevice::Text)) {
+            qWarning("Could not open file for writing");
+            return;
+        }
+        playRecordStream.setDevice(&inOutFileTmp);
+        lastRecTimeSeconds = 0;
+    }
+}
+
+void MainWindow::cleanPlayEdit() {
+    // Get a QTextCursor and select all text
+    QTextCursor cursor = ui->recEdit->textCursor();
+    cursor.select(QTextCursor::Document);
+
+    // Create a QTextCharFormat with no background (default formatting)
+    QTextCharFormat fmt;
+    fmt.clearBackground();  // Clear any background formatting
+
+    // Apply this format to the entire document to reset highlights
+    cursor.setCharFormat(fmt);
+
+    // Reposition cursor at the start of the document
+    cursor.movePosition(QTextCursor::Start);
+    ui->recEdit->setTextCursor(cursor);
+
+    // Show the QTextEdit
+    ui->recEdit->show();
+
+    playbackCount = 0;
+}
+
+void MainWindow::on_playButton_clicked()
+{
+    if (ui->playButton->text().contains("Stop")) {
+        onPlaybackStopped("-- playback stopped --");
+        return;
+    }
+
+    ui->recEdit->clear();
+
+    if (!inOutFileTmp.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning("Could not open file for reading");
+        ui->recEdit->append("Could not open file for reading");
+        return;
+    }
+
+    playRecordStream.setDevice(&inOutFileTmp);
+    while (!playRecordStream.atEnd()) {
+        QString line = playRecordStream.readLine();
+        ui->recEdit->append(line);
+        // qDebug() << line;  // Output the line
+    }
+    inOutFileTmp.close();
+
+    onPlaybackStarted();
+    cleanPlayEdit();
+
+    QTimer::singleShot(100, this, &MainWindow::onTimerTimeout);
+}
+
+void MainWindow::onPlaybackStopped(QString str) {
+    playbackInProgress = false;
+    ui->playButton->setText("Play");
+    ui->startRecord->setEnabled(true);
+    if (!str.isEmpty())
+        ui->recEdit->append(str);
+}
+
+void MainWindow::onPlaybackStarted(QString str) {
+    playbackInProgress = true;
+    ui->playButton->setText("Stop");
+    ui->startRecord->setEnabled(false);
+    if (!str.isEmpty())
+        ui->recEdit->append(str);
+}
+
+void MainWindow::onTimerTimeout(){
+    // qDebug() << "Timer timeout! Performing routine...";
+
+    if (!playbackInProgress)
+        return;
+
+    // Get a QTextCursor
+     QTextCursor cursor = ui->recEdit->textCursor();
+
+     // Move the cursor to the second line (e.g., line 2)
+     cursor.movePosition(QTextCursor::Start);      // Move to the start of the document
+     if (cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, playbackCount++)) {  // Move to the second line
+
+         // Select the entire line
+         cursor.select(QTextCursor::LineUnderCursor);
+
+         // Create a format for highlighting (e.g., yellow background)
+         QTextCharFormat fmt;
+         fmt.setBackground(QColor(Qt::yellow));
+
+         // Apply the format to the selected line
+         cursor.setCharFormat(fmt);
+
+         // Show the QTextEdit
+         ui->recEdit->show();
+
+        QTimer::singleShot(1000, this, &MainWindow::onTimerTimeout);
+     }
+     else {
+         onPlaybackStopped("-------- done -------");
+     }
+}
+
+void MainWindow::on_saveButton_clicked()
+{
+    // Open the save file dialog
+    QString fileName = QFileDialog::getSaveFileName(
+        nullptr,                   // Parent widget
+        "Save File",              // Dialog title
+        "",                       // Default directory
+        "Text Files (*.txt);;All Files (*)" // File filters
+    );
+
+    // Check if the user selected a file
+    if (!fileName.isEmpty()) {
+        // Copy the file to the destination
+        if (inOutFileTmp.copy(fileName)) {
+            QMessageBox::information(nullptr, "Success", "File copied successfully!");
+        } else {
+            QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + inOutFileTmp.errorString());
+        }
+    } else {
+        QMessageBox::warning(nullptr, "Error", "No destination file selected.");
+    }
 }
