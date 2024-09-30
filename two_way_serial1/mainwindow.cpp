@@ -431,3 +431,35 @@ void MainWindow::on_portName_returnPressed()
     ui->portName->clearFocus();
     // ui->imageLabel->setFocus();
 }
+
+void MainWindow::on_loadButton_clicked()
+{
+    // Open the save file dialog
+    QString fileName = QFileDialog::getOpenFileName(
+        nullptr,                   // Parent widget
+        "Open File",              // Dialog title
+        "",                       // Default directory
+        "Text Files (*.txt);;All Files (*)" // File filters
+    );
+
+    // Check if the user selected a file
+    if (!fileName.isEmpty()) {
+        QFile fin(fileName);
+        if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            ui->recEdit->clear();
+            cleanPlayEdit();
+
+            QTextStream in(&fin);
+            while (!in.atEnd()) {
+                QString line = in.readLine();  // Read line-by-line
+                ui->recEdit->append(line);
+            }
+            fin.close();
+        }
+        else {
+            QMessageBox::warning(nullptr, "Error", "Failed to open file " + fileName);
+        }
+    } else {
+        QMessageBox::warning(nullptr, "Error", "No file selected.");
+    }
+}

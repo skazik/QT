@@ -508,9 +508,9 @@ color: rgb(233, 185, 110);</string>
    <widget class="QPushButton" name="startRecord">
     <property name="geometry">
      <rect>
-      <x>860</x>
+      <x>865</x>
       <y>230</y>
-      <width>89</width>
+      <width>80</width>
       <height>25</height>
      </rect>
     </property>
@@ -524,7 +524,7 @@ color: rgb(233, 185, 110);</string>
    <widget class="QLedIndicator" name="recordIndicator" native="true">
     <property name="geometry">
      <rect>
-      <x>862</x>
+      <x>867</x>
       <y>232</y>
       <width>10</width>
       <height>10</height>
@@ -540,9 +540,9 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>955</x>
       <y>230</y>
-      <width>89</width>
+      <width>80</width>
       <height>25</height>
      </rect>
     </property>
@@ -578,9 +578,9 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="geometry">
      <rect>
-      <x>1060</x>
+      <x>1045</x>
       <y>230</y>
-      <width>89</width>
+      <width>80</width>
       <height>25</height>
      </rect>
     </property>
@@ -645,6 +645,25 @@ color: rgb(233, 185, 110);</string>
       <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
+   <widget class="QPushButton" name="loadButton">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1135</x>
+      <y>230</y>
+      <width>80</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(211, 215, 207);</string>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
    <zorder>webcamView</zorder>
    <zorder>color_holder_2</zorder>
    <zorder>frame</zorder>
@@ -666,6 +685,7 @@ color: rgb(233, 185, 110);</string>
    <zorder>pushButton_up</zorder>
    <zorder>flipButton</zorder>
    <zorder>recordIndicator</zorder>
+   <zorder>loadButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
