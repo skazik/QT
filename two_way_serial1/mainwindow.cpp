@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     //set elements
     ui->textEdit->setLineWrapMode(QTextEdit::NoWrap); // Disable line wrapping
     statusBar()->setStyleSheet("QStatusBar {"
-                               "background-color: #3465A4;"
+                               "background-color: #424242;"
+                               "color: #9999FF;"
                                "height: 20px; "
                                "padding: 2px; "
                                "font-size: 14px; }");
@@ -35,10 +36,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Move the WebCamera object to the camera thread
     webCamera->moveToThread(cameraThread);
-
-    // example how to connect signals to slots (buttons to function) manually
-    // connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::onStartCamera);
-    // connect(ui->stopButton, &QPushButton::clicked, this, &MainWindow::onStopCamera);
 
     connect(webCamera, &WebCamera::cameraStarted, this, &MainWindow::onCameraStarted);
     connect(webCamera, &WebCamera::cameraStopped, this, &MainWindow::onCameraStopped);
@@ -69,7 +66,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->portName->setText(SerialCommunication::get_port_name());
     send_message("Hello");
-
 }
 
 MainWindow::~MainWindow() {

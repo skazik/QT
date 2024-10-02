@@ -1,27 +1,51 @@
 #include "web_camera.h"
 
 #include <QCameraInfo>
+#include <opencv2/opencv.hpp>
+#include <QVideoFrame>
 #include <QImage>
-#include <QPixmap>
+
 
 #include "mainwindow.h"
 
 WebCamera::WebCamera(QObject *parent) : QObject(parent) {
 
+#if 0 // capture use - saving to disk - bad
     // Initialize timer to capture image
-    timerCapture = new QTimer(this);
-    timerCapture->setInterval(100); // 500 milliseconds
-    connect(timerCapture, &QTimer::timeout, this, &WebCamera::captureImage);
-    timerCapture->start();
+//    timerCapture = new QTimer(this);
+//    timerCapture->setInterval(100); // 500 milliseconds
+//    connect(timerCapture, &QTimer::timeout, this, &WebCamera::captureImage);
+//    timerCapture->start();
 
     // Initialize the viewfinder (but do not attach it to the QWidget yet)
     viewfinder = new QCameraViewfinder();  // No parent
     camera = new QCamera(getPreferredCamera(), this); // QCameraInfo::defaultCamera(), this); // Set parent to this
     imageCapture = new QCameraImageCapture(camera, this);
+
+    // Prevent imageCapture from saving the image to disk
+    imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+
     // Connect the captured signal to process the image
     connect(imageCapture, &QCameraImageCapture::imageCaptured, this, &WebCamera::processCapturedImage);
 
     camera->setViewfinder(viewfinder);  // Set the viewfinder here
+
+    // Initialize the timer for periodic image capture
+    captureTimer = new QTimer(this);
+    connect(captureTimer, &QTimer::timeout, this, &WebCamera::captureImage); // Timer will trigger image capture
+#endif
+
+    viewfinder = new QCameraViewfinder();
+    camera = new QCamera(QCameraInfo::defaultCamera(), this);
+    camera->setViewfinder(viewfinder);
+
+    // Set up video probe to intercept video frames
+    videoProbe = new QVideoProbe(this);
+
+    if (videoProbe->setSource(camera)) {
+        // Connect video frame captured by the probe to a processing function
+        connect(videoProbe, &QVideoProbe::videoFrameProbed, this, &WebCamera::processVideoFrame);
+    }
 }
 
 WebCamera::~WebCamera() {
@@ -38,6 +62,7 @@ QCameraViewfinder* WebCamera::getViewfinder() {
 void WebCamera::startCamera() {
     if (camera) {
         camera->start();
+//        captureTimer->start(1000); // Start capturing images every second
         emit cameraStarted();
     } else {
         qDebug() << "Camera is not initialized!";
@@ -78,22 +103,90 @@ QCameraInfo WebCamera::getPreferredCamera() {
     return cameras.first();
 }
 
-void WebCamera::captureImage() {
-    camera->searchAndLock();
-    imageCapture->capture(); // Capture an image from the camera
-    // Unlock the camera after capturing
-    camera->unlock();
+//void WebCamera::captureImage() {
+//    if (camera && imageCapture->isReadyForCapture()) {
+//        camera->searchAndLock(); // Lock the camera for capturing
+//        imageCapture->capture(); // Capture the image
+//        camera->unlock(); // Unlock the camera after capturing
+//    } else {
+//        qDebug() << "Camera is not ready for capture!";
+//    }
+
+//}
+
+//void WebCamera::processCapturedImage(int id, const QImage &preview) {
+//    Q_UNUSED(id);
+
+//    bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
+//    // Flip the image vertically (upside down)
+//    QImage flippedImage = preview.mirrored(flipped, flipped); // Horizontal=true, Vertical=true
+
+//    // Display the flipped image in the QLabel
+//    MainWindow:: getMainWinPtr()->on_camera_image_update(flippedImage);
+//}
+#if 0
+void WebCamera::processVideoFrame(const QVideoFrame &frame) {
+    // Convert the frame to an image format (if possible)
+    if (frame.isValid()) {
+        QVideoFrame cloneFrame(frame); // Clone frame to make it mutable
+        cloneFrame.map(QAbstractVideoBuffer::ReadOnly); // Map the frame to read data
+
+        // You may need to convert this to QImage depending on your format
+        QImage image(cloneFrame.bits(), cloneFrame.width(), cloneFrame.height(), QImage::Format_RGB32);
+
+        // Flip the image if needed
+        bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
+        QImage flippedImage = image.mirrored(flipped, flipped).copy();
+
+        cloneFrame.unmap(); // Unmap the frame
+
+        // Display the flipped image in the QLabel
+        MainWindow::getMainWinPtr()->on_camera_image_update(flippedImage);
+
+    }
 }
+#endif
 
-void WebCamera::processCapturedImage(int id, const QImage &preview) {
-    Q_UNUSED(id);
+void WebCamera::processVideoFrame(const QVideoFrame &frame) {
+    if (!frame.isValid()) {
+        qDebug() << "Invalid frame";
+        return;
+    }
 
-    bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
-    // Flip the image vertically (upside down)
-    QImage flippedImage = preview.mirrored(flipped, flipped); // Horizontal=true, Vertical=true
+    QVideoFrame cloneFrame(frame);  // Clone the frame to make it mutable
+    cloneFrame.map(QAbstractVideoBuffer::ReadOnly);  // Map the frame to access its data
 
-    // Display the flipped image in the QLabel
-    MainWindow:: getMainWinPtr()->on_camera_image_update(flippedImage);
+    // Check if the frame is in YV12 format
+    if (cloneFrame.pixelFormat() == QVideoFrame::Format_YV12) {
+//        qDebug() << "YV12 format detected. Converting to RGB...";
+
+        // Get frame size
+        int width = cloneFrame.width();
+        int height = cloneFrame.height();
+
+        // Create an OpenCV Mat from the YV12 data
+        cv::Mat yv12Frame(height + height / 2, width, CV_8UC1, (uchar*)cloneFrame.bits());
+
+        // Convert YV12 to RGB using OpenCV
+        cv::Mat rgbFrame;
+        cv::cvtColor(yv12Frame, rgbFrame, cv::COLOR_YUV2RGB_YV12);
+
+        // Convert OpenCV Mat to QImage for display in Qt
+        QImage image(rgbFrame.data, rgbFrame.cols, rgbFrame.rows, rgbFrame.step, QImage::Format_RGB888);
+
+        // Make a deep copy of the image and unmap the frame
+        bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
+        QImage flippedImage = image.mirrored(flipped, flipped).copy();  // Flip image horizontally
+
+        cloneFrame.unmap();  // Unmap the frame after processing
+
+        // Display the flipped image in the UI label
+        MainWindow::getMainWinPtr()->on_camera_image_update(flippedImage);
+//        qDebug() << "Captured and displayed a flipped frame.";
+    } else {
+        qDebug() << "Unsupported video frame format!";
+        cloneFrame.unmap();
+    }
 }
 
 void WebCamera::setCameraZoom(bool reset) {

@@ -3,6 +3,7 @@
         <file>remote_ctrl.jpg</file>
         <file>rear.dn.24.png</file>
         <file>Remote_2.jpg</file>
+        <file>remote4.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
