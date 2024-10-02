@@ -5,7 +5,12 @@ import csv
 import time
 from io import StringIO
 from translations import translate_script_cmd
-from twoway_communication import open_serial, close_serial, send_to_device
+from serial_comms import open_serial, close_serial, send_to_device, read_from_device
+
+# Set the correct port for your device (e.g., /dev/ttyUSB0 or /dev/ttyACM0)
+SERIAL_PORT = '/dev/ttyACM0'    # SERIAL_PORT = '/dev/ttyUSB0'
+BAUD_RATE = 115200
+
 
 def parse_csv_string(csv_string):
     """
@@ -42,11 +47,11 @@ def read_file_line_by_line(file_path):
                     # print(row)
                     cmd_bytearray = translate_script_cmd(row[0])
                     timeout_int = int(row[1]) if len(row) > 1 else 1
-                    print(row[0], "timeout:", timeout_int, "->",
-                          cmd_bytearray, flush=True)
+#                    print("CMD:", row[0], ", timeout:", timeout_int, "->",
+#                          cmd_bytearray, flush=True)
                     send_to_device(cmd_bytearray, timeout_int)
-                    time.sleep(1)
-
+    except KeyboardInterrupt:
+        print("\nCtrl+C detected! Exiting the loop safely.")
     except FileNotFoundError:
         print(f"The file at {file_path} was not found.")
     except Exception as e:
@@ -55,16 +60,22 @@ def read_file_line_by_line(file_path):
 
 def main():
     # Set up argument parser
-    parser = argparse.ArgumentParser(description="Read a file line by line.")
+    parser = argparse.ArgumentParser(description="Read CMD script "
+                                     "and send to device.")
     parser.add_argument('filename', type=str,
-                        help='The path to the file you want to read')
+                        help='The path to the script file')
+    # Adding an optional argument
+    parser.add_argument('-p', '--port', type=str, default=SERIAL_PORT,
+                        help='optional SERIAL_PORT, default: "/dev/ttyACM0"')
+    parser.add_argument('-b', '--baud', type=int, default=BAUD_RATE,
+                        help='optional BAUD_RATE, default: 115200.')
 
     # Parse command-line arguments
     args = parser.parse_args()
 
     # Validate if file exists
     if os.path.isfile(args.filename):
-        open_serial()
+        open_serial(args.port, args.baud)
         read_file_line_by_line(args.filename)
         close_serial()
     else:
