@@ -42,22 +42,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Ensure the WebCamera object is deleted when the thread finishes
     connect(cameraThread, &QThread::finished, webCamera, &QObject::deleteLater);
-    webCamera->setCameraZoom();
 
     // restore some config
     QFile fin(kConfigFileName);
     if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&fin);
+        qDebug() << "---------------config loaded:--------------";
          for (int i = 0; !in.atEnd(); i++) {
              QString line = in.readLine();  // Read line-by-line
-             qDebug() << line;              // Output each line
              line = line.trimmed();
              switch(i) {
-             case 0: cameraFlipped = line.contains("1"); break;
-             case 1: SerialCommunication::set_port_name(QString(line));
-             default: break;
+             case 0:
+                 cameraFlipped = line.contains("1");
+                 qDebug() << "cameraFlipped: " << line;
+                 break;
+             case 1:
+                 SerialCommunication::set_port_name(QString(line));
+                 qDebug() << "port_name: " << line;
+                 break;
+             case 2:
+                 webCamera->setCameraZoom(false, line.toUInt());
+                 qDebug() << "CameraZoom: " << line;
+                 break;
              }
          }
+         qDebug() << "-------------------------------------------";
         fin.close();
     }
 
@@ -69,21 +78,21 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-    if (cameraThread->isRunning()) {
-        QMetaObject::invokeMethod(webCamera, "stopCamera", Qt::QueuedConnection);
-        cameraThread->quit();   // Signal the thread to stop
-        cameraThread->wait();    // Wait for it to finish
-    }
-
     // save some config
     QFile fout(kConfigFileName);
     if (fout.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&fout);
         out << (cameraFlipped ? "1":"0") << endl;
         out << SerialCommunication::get_port_name().toStdString().c_str() << endl;
+        out << webCamera->getCameraZoom() << endl;
         fout.close();
     }
 
+    if (cameraThread->isRunning()) {
+        QMetaObject::invokeMethod(webCamera, "stopCamera", Qt::QueuedConnection);
+        cameraThread->quit();   // Signal the thread to stop
+        cameraThread->wait();    // Wait for it to finish
+    }
     delete ui;
 }
 

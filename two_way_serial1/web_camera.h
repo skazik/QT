@@ -6,7 +6,6 @@
 #include <QCameraInfo>
 #include <QVideoProbe>
 #include <QVideoFrame>
-#include <QTimer>
 #include <QImage>
 
 class WebCamera : public QObject {
@@ -21,11 +20,10 @@ public:
 public slots:
     void startCamera();    // Slot to start the camera
     void stopCamera();     // Slot to stop the camera
-    void setCameraZoom(bool reset = false);
+    void setCameraZoom(bool reset = false, int digital_zoom = 0);
+    int  getCameraZoom() { return camera->focus()->digitalZoom();}
 
 private slots:
-//    void captureImage(); // Slot to capture the image
-//    void processCapturedImage(int id, const QImage &preview); // Slot to process and flip the captured image
     void processVideoFrame(const QVideoFrame &frame); // Process frames directly
 
 signals:
@@ -37,8 +35,6 @@ private:
     QCameraViewfinder *viewfinder;  // Camera viewfinder
     QCameraInfo getPreferredCamera();  // Method to get preferred camera
     QVideoProbe *videoProbe; // Probe to capture video frames
-//    QCameraImageCapture *imageCapture;
-//    QTimer *captureTimer;  // Timer to trigger capture
 };
 
 #endif // WEBCAMERA_H

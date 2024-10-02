@@ -9,34 +9,8 @@
 #include "mainwindow.h"
 
 WebCamera::WebCamera(QObject *parent) : QObject(parent) {
-
-#if 0 // capture use - saving to disk - bad
-    // Initialize timer to capture image
-//    timerCapture = new QTimer(this);
-//    timerCapture->setInterval(100); // 500 milliseconds
-//    connect(timerCapture, &QTimer::timeout, this, &WebCamera::captureImage);
-//    timerCapture->start();
-
-    // Initialize the viewfinder (but do not attach it to the QWidget yet)
-    viewfinder = new QCameraViewfinder();  // No parent
-    camera = new QCamera(getPreferredCamera(), this); // QCameraInfo::defaultCamera(), this); // Set parent to this
-    imageCapture = new QCameraImageCapture(camera, this);
-
-    // Prevent imageCapture from saving the image to disk
-    imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-
-    // Connect the captured signal to process the image
-    connect(imageCapture, &QCameraImageCapture::imageCaptured, this, &WebCamera::processCapturedImage);
-
-    camera->setViewfinder(viewfinder);  // Set the viewfinder here
-
-    // Initialize the timer for periodic image capture
-    captureTimer = new QTimer(this);
-    connect(captureTimer, &QTimer::timeout, this, &WebCamera::captureImage); // Timer will trigger image capture
-#endif
-
     viewfinder = new QCameraViewfinder();
-    camera = new QCamera(QCameraInfo::defaultCamera(), this);
+    camera = new QCamera(getPreferredCamera(), this);
     camera->setViewfinder(viewfinder);
 
     // Set up video probe to intercept video frames
@@ -62,7 +36,6 @@ QCameraViewfinder* WebCamera::getViewfinder() {
 void WebCamera::startCamera() {
     if (camera) {
         camera->start();
-//        captureTimer->start(1000); // Start capturing images every second
         emit cameraStarted();
     } else {
         qDebug() << "Camera is not initialized!";
@@ -79,8 +52,6 @@ void WebCamera::stopCamera() {
 }
 
 QCameraInfo WebCamera::getPreferredCamera() {
-//    QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-//    return cameras.isEmpty() ? QCameraInfo() : cameras.first();  // Select the first available camera
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
 
     // If only one camera, return it (usually the built-in one)
@@ -90,8 +61,7 @@ QCameraInfo WebCamera::getPreferredCamera() {
 
     // Try to find an external camera by checking the description
     for (const QCameraInfo &cameraInfo : cameras) {
-        // qDebug() << cameraInfo.deviceName();
-        // qDebug() << cameraInfo.description();
+         qDebug() << cameraInfo.deviceName() << " " << cameraInfo.description();
 
         if (!((cameraInfo.deviceName().contains("video0", Qt::CaseInsensitive)) ||
             (cameraInfo.description().contains("integrated", Qt::CaseInsensitive)))) {
@@ -102,50 +72,6 @@ QCameraInfo WebCamera::getPreferredCamera() {
     // Fall back to the first available camera (likely built-in)
     return cameras.first();
 }
-
-//void WebCamera::captureImage() {
-//    if (camera && imageCapture->isReadyForCapture()) {
-//        camera->searchAndLock(); // Lock the camera for capturing
-//        imageCapture->capture(); // Capture the image
-//        camera->unlock(); // Unlock the camera after capturing
-//    } else {
-//        qDebug() << "Camera is not ready for capture!";
-//    }
-
-//}
-
-//void WebCamera::processCapturedImage(int id, const QImage &preview) {
-//    Q_UNUSED(id);
-
-//    bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
-//    // Flip the image vertically (upside down)
-//    QImage flippedImage = preview.mirrored(flipped, flipped); // Horizontal=true, Vertical=true
-
-//    // Display the flipped image in the QLabel
-//    MainWindow:: getMainWinPtr()->on_camera_image_update(flippedImage);
-//}
-#if 0
-void WebCamera::processVideoFrame(const QVideoFrame &frame) {
-    // Convert the frame to an image format (if possible)
-    if (frame.isValid()) {
-        QVideoFrame cloneFrame(frame); // Clone frame to make it mutable
-        cloneFrame.map(QAbstractVideoBuffer::ReadOnly); // Map the frame to read data
-
-        // You may need to convert this to QImage depending on your format
-        QImage image(cloneFrame.bits(), cloneFrame.width(), cloneFrame.height(), QImage::Format_RGB32);
-
-        // Flip the image if needed
-        bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
-        QImage flippedImage = image.mirrored(flipped, flipped).copy();
-
-        cloneFrame.unmap(); // Unmap the frame
-
-        // Display the flipped image in the QLabel
-        MainWindow::getMainWinPtr()->on_camera_image_update(flippedImage);
-
-    }
-}
-#endif
 
 void WebCamera::processVideoFrame(const QVideoFrame &frame) {
     if (!frame.isValid()) {
@@ -189,13 +115,12 @@ void WebCamera::processVideoFrame(const QVideoFrame &frame) {
     }
 }
 
-void WebCamera::setCameraZoom(bool reset) {
+void WebCamera::setCameraZoom(bool reset, int digital_zoom) {
     QCameraFocus *cameraFocus = camera->focus();
-
     if (reset) {
         cameraFocus->zoomTo(1,1);
     } else {
-        cameraFocus->zoomTo(cameraFocus->opticalZoom(), cameraFocus->digitalZoom()+1);
+        cameraFocus->zoomTo(1, digital_zoom ? digital_zoom : cameraFocus->digitalZoom()+1);
     }
     // qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
 }
