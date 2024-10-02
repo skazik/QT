@@ -414,6 +414,15 @@ void MainWindow::on_saveButton_clicked()
 
     // Check if the user selected a file
     if (!fileName.isEmpty()) {
+        // Check if the destination file exists
+        if (QFile::exists(fileName)) {
+            // Attempt to remove the existing file
+            if (!QFile::remove(fileName)) {
+                QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + fileName);
+                return;
+            }
+        }
+
         // Copy the file to the destination
         if (inOutFileTmp.copy(fileName)) {
             QMessageBox::information(nullptr, "Success", "File copied successfully!");
