@@ -1,0 +1,3 @@
+{
+    "files": ["serial_comms.py","main.py","translations.py","test_script_file.txt"]
+}
