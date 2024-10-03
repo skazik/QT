@@ -3,6 +3,11 @@
 #include <functional> // for std::hash
 #include <algorithm> // For std::transform
 #include <cctype>    // For std::tolower
+#include <iostream>
+#include <iomanip>  // for std::setprecision, std::fixed
+#include <sstream>  // for std::ostringstream
+
+namespace serializer {
 
 uint8_t calculate_crc_8(const std::vector<uint8_t>& data) {
     uint8_t crc = 0x00;  // Initial value
@@ -205,3 +210,78 @@ QString translate_script_cmd(std::string input) {
     }
     return QString{""};
 }
+
+std::string serialize_float(float value) {
+    std::ostringstream ss;
+    // Force the sign to appear (even for positive values)
+    // ss << std::showpos;
+    // Fixed-point notation, with 1 digit after the decimal point
+    ss << std::fixed << std::setprecision(1);
+    // Serialize the float value
+    ss << value << ",";
+    return ss.str();
+}
+
+const uint8_t* string_to_byte_array(const std::string& str) {
+    return reinterpret_cast<const uint8_t*>(str.data());
+}
+
+std::string byte_array_to_string(const uint8_t* byte_array, int size) {
+    // Create a string from the byte array using the pointer and size
+    std::string result{};
+    for (int i = 0; i < size; i++) {
+        std::cout << std::hex << static_cast<int>(byte_array[i]) << " ";
+        result += static_cast<char>(byte_array[i]);  // Cast uint8_t to char
+    }
+    std::cout << std::endl;
+    return result;
+}
+
+void serialize_velocity(uint8_t *result) {
+    serializer::VelocityTarget test{0.5f,-0.5f, 5.0f, 1.2f};
+    // float is 0.0 one digit after dot
+    std::cout << serialize_float(test.velocity) << std::endl;
+    std::cout << serialize_float(test.acceleration) << std::endl;
+    std::cout << serialize_float(test.max_velocity) << std::endl;
+    std::cout << serialize_float(test.max_acceleration) << std::endl;
+
+    std::string collect = serialize_float(test.velocity);
+    collect += serialize_float(test.acceleration);
+    collect += serialize_float(test.max_velocity);
+    collect += serialize_float(test.max_acceleration);
+
+    auto byte_array = string_to_byte_array(collect);
+    // Print the byte array
+    memset(result, 0, kVelocityByteArraySize);
+    for (size_t i = 0; i < collect.size(); ++i) {
+        std::cout << std::hex << static_cast<int>(byte_array[i]) << " ";
+        result[i] = byte_array[i];
+    }
+    std::cout << std::endl;
+}
+
+std::string deserialize_velocity(const uint8_t *byte_array) {
+    size_t size = kVelocityByteArraySize;
+
+    // Deserialize the byte array back to std::string
+    std::string result = byte_array_to_string(byte_array, size);
+
+    // Output the string
+    std::cout << result << std::endl;
+
+    serializer::VelocityTarget test{};
+    sscanf(result.c_str(), "%f,%f,%f,%f,",
+                &test.velocity,
+                &test.acceleration,
+                &test.max_velocity,
+                &test.max_acceleration);
+
+    std::cout << test.velocity << std::endl;
+    std::cout << test.acceleration << std::endl;
+    std::cout << test.max_velocity << std::endl;
+    std::cout << test.max_acceleration << std::endl;
+
+    return result;
+}
+
+} // namespace

@@ -153,7 +153,7 @@ void MainWindow::send_message(QString txt)
         return;
 
     if (ui->recordIndicator->isOn()) {
-        QString str = save_command(txt, playRecordStream, lastRecTimeSeconds);
+        QString str = serializer::save_command(txt, playRecordStream, lastRecTimeSeconds);
         if (str.isEmpty())
             ui->recEdit->append("--error formating--");
         else
@@ -171,9 +171,9 @@ void MainWindow::send_message(QString txt)
     statusBar()->showMessage(tmp, 10000);
 //    qDebug() << tmp;
 
-    auto msg = serialize_message(txt);
+    auto msg = serializer::serialize_message(txt);
     if (Serial->sendData(QByteArray((const char*) msg.byte_array,
-                                    sizeof(SerializedWireMessage)))) {
+                                    sizeof(serializer::SerializedWireMessage)))) {
         Serial->readData();
     } else {
         qDebug() << "sending ESP32 failed";
@@ -240,7 +240,7 @@ bool MainWindow::on_keyboard_input(int key)
         on_quitButton_clicked();
         return true;
     }
-    send_message(translate_key_to_cmd(key));
+    send_message(serializer::translate_key_to_cmd(key));
     return true;
 }
 
@@ -274,7 +274,7 @@ void MainWindow::on_startRecord_clicked()
         ui->recordIndicator->turnOff();
         ui->playButton->setEnabled(true);
 
-        save_delay(playRecordStream, lastRecTimeSeconds);
+        serializer::save_delay(playRecordStream, lastRecTimeSeconds);
         inOutFileTmp.close();
 
     }
@@ -389,8 +389,8 @@ void MainWindow::onTimerTimeout(){
          ui->recEdit->show();
 
          // parse the string, send and arm timer-------------------
-         std::vector<std::string> v = parseCSV(cursor.selectedText().toStdString());
-         send_message(translate_script_cmd(v[0]));
+         std::vector<std::string> v = serializer::parseCSV(cursor.selectedText().toStdString());
+         send_message(serializer::translate_script_cmd(v[0]));
          int timeout = (v.size() < 2) || v[1].empty() ? 1000 : std::stoi(v[1])*1000;
          QTimer::singleShot(timeout, this, &MainWindow::onTimerTimeout);
          qDebug() << "v.size()=" << v.size() << " : " << QString::fromStdString(v[0])
@@ -476,4 +476,10 @@ void MainWindow::on_loadButton_clicked()
     } else {
         QMessageBox::warning(nullptr, "Error", "No file selected.");
     }
+}
+
+void MainWindow::on_flipButton_2_clicked()
+{   uint8_t result[serializer::kVelocityByteArraySize];
+    serializer::serialize_velocity(result);
+    serializer::deserialize_velocity(result);
 }

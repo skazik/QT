@@ -65,6 +65,8 @@ private slots: // for Camera
 
     void on_loadButton_clicked();
 
+    void on_flipButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
     static MainWindow * pMainWindow;

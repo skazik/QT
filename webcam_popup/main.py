@@ -4,13 +4,14 @@ import numpy as np
 import signal
 from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import Qt, QTimer
 
 class WebcamWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Set window properties (normal, resizable window)
+        # Set window properties: resizable and always on top
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)  # This flag ensures the window stays on top
         self.setWindowTitle("Webcam Feed")
         self.resize(400, 250)  # Set initial window size
 
