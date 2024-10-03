@@ -26,6 +26,7 @@ def translate_script_cmd(input_str):
             'Key_OK': 'K',
             'Key_Rear': 'r'
         }
+#        print(key_mapping.get(key, ''))
         data_to_send[6] = ord(key_mapping.get(key, ''))
         return data_to_send
 

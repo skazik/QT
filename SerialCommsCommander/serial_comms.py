@@ -51,11 +51,11 @@ def read_from_device():
 
 def send_to_device(data_to_send, timeout):
     global ser
-    print("send_to_device:", data_to_send, ", timeout:", timeout, flush=True)
+#    print("send_to_device:", data_to_send, ", timeout:", timeout, flush=True)
     ser.write(data_to_send)
 
     tm = Timeout(1)
-    tm.set(timeout+1)
+    tm.set(timeout)
 
     while not tm.expired():
         read_from_device()

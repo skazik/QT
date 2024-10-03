@@ -41,7 +41,7 @@ def read_file_line_by_line(file_path):
     try:
         with open(file_path, 'r') as file:
             for line in file:
-                # print(line.strip())
+                print(line.strip())
                 parsed_data = parse_csv_string(line)
                 for row in parsed_data:
                     # print(row)
