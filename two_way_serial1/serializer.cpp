@@ -62,7 +62,7 @@ calculate_header_crc(const SerializedWireMessageHeader& header) noexcept {
 inline uint16_t
 calculate_message_crc(MessagePayloadType payload) noexcept {
     std::vector<uint8_t> data;
-    for (int i = 0; i < (int) sizeof(MessagePayloadType); i++)
+    for (int i = 0; i < (int) sizeof(MessagePayloadType); ++i)
         data.insert(data.end(),payload[i]);
     return calculate_crc_16(data);
 }
@@ -73,18 +73,20 @@ make_header(SerialMessageType message_type) noexcept {
     header.start_transmission = kStartTransmissionHeader;
     header.message_type = message_type;
     header.crc = calculate_header_crc(header);
+//    std::cout << "header.crc  " << header.crc << std::endl;
     return header;
 }
 
 SerializedMessage serialize_message(QString txt) {
     SerializedMessage msg;
-    SerializedHeader hdr = {make_header(SerialMessageType::String)};
+    SerializedHeader hdr = {make_header(SerialMessageType::SerialCommand)};
     msg.msg.header = hdr.hdr;
     memset(&msg.msg.payload, 0, sizeof (MessagePayloadType));
     std::strncpy((char*) &msg.msg.payload[0],
             txt.toStdString().c_str(),
             sizeof (MessagePayloadType));
     msg.msg.payload_crc = calculate_message_crc(msg.msg.payload);
+//    std::cout << "msg.msg.payload_crc " << msg.msg.payload_crc << std::endl;
     return msg;
 }
 
@@ -229,7 +231,7 @@ const uint8_t* string_to_byte_array(const std::string& str) {
 std::string byte_array_to_string(const uint8_t* byte_array, int size) {
     // Create a string from the byte array using the pointer and size
     std::string result{};
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; ++i) {
         std::cout << std::hex << static_cast<int>(byte_array[i]) << " ";
         result += static_cast<char>(byte_array[i]);  // Cast uint8_t to char
     }
@@ -237,50 +239,89 @@ std::string byte_array_to_string(const uint8_t* byte_array, int size) {
     return result;
 }
 
+uint8_t get_serial_byte_from_float(float value) {
+    uint8_t sign = value < 0 ? 0x40 : 0;
+
+    value = std::abs(value);
+    uint8_t integer = static_cast<int>(value);
+    uint8_t fraction = (value - static_cast<int>(value))*10;
+
+    // validate
+    if (integer > 5) integer = 5;
+    if (fraction > 5) fraction = 5;
+
+    uint8_t result = (sign | ((integer & 0x7) << 3) | (fraction & 0x7));
+    return result;
+
+}
+
+float get_float_from_serial_byte(uint8_t value) {
+    bool sign = value & 0x40;
+    uint8_t integer = (value >> 3) & 0x7;
+    uint8_t fraction =(value >> 0) & 0x7;
+    float result = (float) fraction/10 + integer;
+    if (sign) result = -result;
+    return result;
+}
+
 void serialize_velocity(uint8_t *result) {
-    serializer::VelocityTarget test{0.5f,-0.5f, 5.0f, 1.2f};
-    // float is 0.0 one digit after dot
-    std::cout << serialize_float(test.velocity) << std::endl;
-    std::cout << serialize_float(test.acceleration) << std::endl;
-    std::cout << serialize_float(test.max_velocity) << std::endl;
-    std::cout << serialize_float(test.max_acceleration) << std::endl;
+    serializer::VelocityTarget test{0.5f,-0.5f, 5.0f, -1.2f};
 
-    std::string collect = serialize_float(test.velocity);
-    collect += serialize_float(test.acceleration);
-    collect += serialize_float(test.max_velocity);
-    collect += serialize_float(test.max_acceleration);
+//    std::cout << serialize_float(test.velocity) << std::endl;
+//    std::cout << serialize_float(test.acceleration) << std::endl;
+//    std::cout << serialize_float(test.max_velocity) << std::endl;
+//    std::cout << serialize_float(test.max_acceleration) << std::endl;
 
-    auto byte_array = string_to_byte_array(collect);
-    // Print the byte array
-    memset(result, 0, kVelocityByteArraySize);
-    for (size_t i = 0; i < collect.size(); ++i) {
-        std::cout << std::hex << static_cast<int>(byte_array[i]) << " ";
-        result[i] = byte_array[i];
+    std::string line_in_script = serialize_float(test.velocity);
+    line_in_script += serialize_float(test.acceleration);
+    line_in_script += serialize_float(test.max_velocity);
+    line_in_script += serialize_float(test.max_acceleration);
+
+//    auto byte_array = string_to_byte_array(line_in_script);
+//    // Print the byte array
+//    memset(result, 0, kVelocityByteArraySize);
+//    for (size_t i = 0; i < line_in_script.size(); ++i) {
+//        std::cout << std::hex << static_cast<int>(byte_array[i]) << " ";
+//        result[i] = byte_array[i];
+//    }
+//    std::cout << std::endl;
+
+    // serialized wire
+    std::cout << "serialized wire format:";
+    serializer::VelocityTarget input{};
+    sscanf(line_in_script.c_str(), "%f,%f,%f,%f,",
+                &input.velocity,
+                &input.acceleration,
+                &input.max_velocity,
+                &input.max_acceleration);
+    uint8_t velocity_payload[4];
+    velocity_payload[0] = get_serial_byte_from_float(input.velocity);
+    velocity_payload[1] = get_serial_byte_from_float(input.acceleration);
+    velocity_payload[2] = get_serial_byte_from_float(input.max_velocity);
+    velocity_payload[3] = get_serial_byte_from_float(input.max_acceleration);
+    for (size_t i = 0; i < sizeof(velocity_payload); ++i) {
+        std::cout << std::hex << std::setw(2) << std::setfill('0')
+                  << static_cast<int>(velocity_payload[i]) << " ";
+        result[i] = velocity_payload[i];
     }
     std::cout << std::endl;
 }
 
 std::string deserialize_velocity(const uint8_t *byte_array) {
-    size_t size = kVelocityByteArraySize;
-
-    // Deserialize the byte array back to std::string
-    std::string result = byte_array_to_string(byte_array, size);
-
-    // Output the string
-    std::cout << result << std::endl;
-
     serializer::VelocityTarget test{};
-    sscanf(result.c_str(), "%f,%f,%f,%f,",
-                &test.velocity,
-                &test.acceleration,
-                &test.max_velocity,
-                &test.max_acceleration);
+    test.velocity = get_float_from_serial_byte(byte_array[0]);
+    test.acceleration = get_float_from_serial_byte(byte_array[1]);
+    test.max_velocity = get_float_from_serial_byte(byte_array[2]);
+    test.max_acceleration = get_float_from_serial_byte(byte_array[3]);
 
-    std::cout << test.velocity << std::endl;
-    std::cout << test.acceleration << std::endl;
-    std::cout << test.max_velocity << std::endl;
-    std::cout << test.max_acceleration << std::endl;
+    std::stringstream ss;
+    ss  << test.velocity << ", "
+        << test.acceleration << ", "
+        << test.max_velocity << ", "
+        << test.max_acceleration;
 
+    std::string result = ss.str();
+    std::cout << result << std::endl;
     return result;
 }
 

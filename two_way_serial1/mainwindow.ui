@@ -626,7 +626,7 @@ color: rgb(233, 185, 110);</string>
      <string>Load</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="flipButton_2">
+   <widget class="QPushButton" name="testButton">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -639,7 +639,24 @@ color: rgb(233, 185, 110);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset theme="text"/>
+     <iconset theme="text">
+      <normaloff>.</normaloff>.</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="captureButton">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>194</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset theme="camera-photo"/>
     </property>
    </widget>
    <zorder>remote_pic</zorder>
@@ -663,7 +680,8 @@ color: rgb(233, 185, 110);</string>
    <zorder>loadButton</zorder>
    <zorder>textEdit</zorder>
    <zorder>imageLabel</zorder>
-   <zorder>flipButton_2</zorder>
+   <zorder>testButton</zorder>
+   <zorder>captureButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

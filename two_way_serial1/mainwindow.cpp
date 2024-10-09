@@ -192,11 +192,21 @@ void MainWindow::on_serial_input(QString line)
 {
     static const char* kBaseStationPefix = "Base station - rssi:";
     static const char* kHandleControllerPrefix = "handle controller loop:";
+    static const char* kSerialCommandEcho = "[*" ;// "[Bgn";
 
     qDebug() << line;
     const char* tmp = nullptr;
 
-    if (line.contains(kBaseStationPefix)) {
+    if (line.contains(kSerialCommandEcho)) {
+        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kSerialCommandEcho))) {
+            QString qtmp(tmp);
+            ui->textEdit->append(qtmp);
+            qDebug() << qtmp;
+            return;
+        }
+        qDebug() << "problem with parse: check formatting:\n" << line;
+    }
+    else if (line.contains(kBaseStationPefix)) {
         if (nullptr != (tmp = strstr(line.toStdString().c_str(), kBaseStationPefix))) {
             QString fmt;
             int rssi = 0;
@@ -478,8 +488,14 @@ void MainWindow::on_loadButton_clicked()
     }
 }
 
-void MainWindow::on_flipButton_2_clicked()
-{   uint8_t result[serializer::kVelocityByteArraySize];
+void MainWindow::on_testButton_clicked()
+{
+    uint8_t result[serializer::kVelocityByteArraySize];
     serializer::serialize_velocity(result);
     serializer::deserialize_velocity(result);
+}
+
+void MainWindow::on_captureButton_clicked()
+{
+    webCamera->saveLastFrame();
 }

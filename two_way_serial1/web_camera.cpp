@@ -4,7 +4,8 @@
 #include <opencv2/opencv.hpp>
 #include <QVideoFrame>
 #include <QImage>
-
+#include <QDir>         // For handling file paths
+#include <QDateTime>
 
 #include "mainwindow.h"
 
@@ -102,7 +103,7 @@ void WebCamera::processVideoFrame(const QVideoFrame &frame) {
 
         // Make a deep copy of the image and unmap the frame
         bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
-        QImage flippedImage = image.mirrored(flipped, flipped).copy();  // Flip image horizontally
+        flippedImage = image.mirrored(flipped, flipped).copy();
 
         cloneFrame.unmap();  // Unmap the frame after processing
 
@@ -123,4 +124,28 @@ void WebCamera::setCameraZoom(bool reset, int digital_zoom) {
         cameraFocus->zoomTo(1, digital_zoom ? digital_zoom : cameraFocus->digitalZoom()+1);
     }
     // qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
+}
+
+void WebCamera::saveLastFrame() {
+    // Ensure we have a valid frame to capture
+    if (!flippedImage.isNull()) {
+
+        // Get current date and time
+        QString currentTime = QDateTime::currentDateTime().toString("MMdd_HHmmss");
+
+        // Define the directory where you want to save the image
+        QString dirPath = QDir::homePath() + "/flx/ui/";
+
+        // Generate a unique filename based on the current date and time
+        QString uniqueFilename = dirPath + "ui_image_" + currentTime + ".jpg";
+
+        // Save the last frame (the flipped image or current frame) to the predefined path
+        if (flippedImage.save(uniqueFilename)) {
+            qDebug() << "Image saved successfully to:" << uniqueFilename;
+        } else {
+            qDebug() << "Failed to save the image.";
+        }
+    } else {
+        qDebug() << "No frame available to capture.";
+    }
 }

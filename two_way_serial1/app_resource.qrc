@@ -4,6 +4,7 @@
         <file>rear.dn.24.png</file>
         <file>Remote_2.jpg</file>
         <file>remote4.png</file>
+        <file>icon.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

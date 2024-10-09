@@ -64,8 +64,9 @@ private slots: // for Camera
     void on_portName_returnPressed();
 
     void on_loadButton_clicked();
+    void on_testButton_clicked();
 
-    void on_flipButton_2_clicked();
+    void on_captureButton_clicked();
 
 private:
     Ui::MainWindow *ui;

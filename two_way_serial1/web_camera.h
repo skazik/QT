@@ -22,6 +22,7 @@ public slots:
     void stopCamera();     // Slot to stop the camera
     void setCameraZoom(bool reset = false, int digital_zoom = 0);
     int  getCameraZoom() { return camera->focus()->digitalZoom();}
+    void saveLastFrame();
 
 private slots:
     void processVideoFrame(const QVideoFrame &frame); // Process frames directly
@@ -35,6 +36,7 @@ private:
     QCameraViewfinder *viewfinder;  // Camera viewfinder
     QCameraInfo getPreferredCamera();  // Method to get preferred camera
     QVideoProbe *videoProbe; // Probe to capture video frames
+    QImage flippedImage;
 };
 
 #endif // WEBCAMERA_H

@@ -5,7 +5,7 @@
 
 namespace serializer {
 
-constexpr int kVelocityByteArraySize = 20;
+constexpr int kVelocityByteArraySize = 4;
 
 static constexpr auto kStartTransmissionHeaderSize = 3U;
 static constexpr std::array<uint8_t, kStartTransmissionHeaderSize> kStartTransmissionHeader = {
@@ -24,7 +24,8 @@ enum class SerialMessageType : uint8_t {
     String = 10,
     Msp430StringCommand = 11,
     Msp430Log = 12,
-    Msp430UpdatePacket = 13
+    Msp430UpdatePacket = 13,
+    SerialCommand = 14
 };
 typedef uint8_t HeaderChecksumType;
 typedef uint16_t PayloadChecksumType;
@@ -53,10 +54,17 @@ union SerializedMessage {
 };
 
 struct VelocityTarget {
-    float velocity;           // = static_cast<float>(action.normalized.y)
-    float acceleration;       // = 0.0
-    float max_velocity;       // = 1.0
-    float max_acceleration;   // = static_cast<float>(bend_acceleration)
+    float velocity;           // range [-5.0..5.0]
+    float acceleration;       // range [-5.0..5.0]
+    float max_velocity;       // range [-5.0..5.0]
+    float max_acceleration;   // range [-5.0..5.0]
+};
+
+struct serialized_float {
+    uint8_t reserved : 1; // reserved for for alignment and future use
+    uint8_t sign     : 1; // if set to 1 then negative, othervise positive
+    uint8_t integer  : 3; // range [0..7]
+    uint8_t fraction : 3; // range [0..7]
 };
 
 SerializedMessage serialize_message(QString txt);
