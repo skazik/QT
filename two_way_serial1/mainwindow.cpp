@@ -3,6 +3,7 @@
 #include "communication.h"
 #include "web_camera.h"
 #include "serializer.h"
+#include "navigator.hpp"
 
 #include <QLayout>
 #include <QLayoutItem>
@@ -254,12 +255,12 @@ bool MainWindow::on_keyboard_input(int key)
     return true;
 }
 
-void MainWindow::on_pushButton_up_clicked()     {on_keyboard_input(Qt::Key_Up);}
-void MainWindow::on_pushButton_down_clicked()   {on_keyboard_input(Qt::Key_Down);}
-void MainWindow::on_pushButton_right_clicked()  {on_keyboard_input(Qt::Key_Right);}
-void MainWindow::on_pushButton_left_clicked()   {on_keyboard_input(Qt::Key_Left);}
-void MainWindow::on_pushButton_ok_clicked()     {on_keyboard_input(Qt::Key_Enter);}
-void MainWindow::on_pushButton_rear_clicked()   {on_keyboard_input(Qt::Key_End);}
+void MainWindow::on_pushButton_up_clicked()     { on_keyboard_input(Qt::Key_Up);}
+void MainWindow::on_pushButton_down_clicked()   { on_keyboard_input(Qt::Key_Down);}
+void MainWindow::on_pushButton_right_clicked()  {navigator_get()->navigateRight(); on_keyboard_input(Qt::Key_Right);}
+void MainWindow::on_pushButton_left_clicked()   {navigator_get()->navigateLeft(); on_keyboard_input(Qt::Key_Left);}
+void MainWindow::on_pushButton_ok_clicked()     {navigator_get()->navigateEnter(); on_keyboard_input(Qt::Key_Enter);}
+void MainWindow::on_pushButton_rear_clicked()   {navigator_get()->navigateBack(); on_keyboard_input(Qt::Key_End);}
 void MainWindow::on_quitButton_clicked()        {QApplication::quit();}
 
 void MainWindow::on_camera_image_update(QImage image)
