@@ -3,7 +3,6 @@
 #include "communication.h"
 #include "web_camera.h"
 #include "serializer.h"
-#include "navigator.hpp"
 
 #include <QLayout>
 #include <QLayoutItem>
@@ -76,6 +75,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->portName->setText(SerialCommunication::get_port_name());
     send_message("Hello");
+
+    if (tree.parseCSV("../tabview-tree.csv")) {
+//        tree.printTree(); // Display the tree structure
+        navigator.setRoot(tree.getRoot());
+//        navigator::test_navigator(navigator);
+        navigator.onEnter(); // Main Menu
+        ui->navi_page->setText(navigator.onEnter().c_str()); // Bend & Rotate
+    }
 }
 
 MainWindow::~MainWindow() {
@@ -251,16 +258,35 @@ bool MainWindow::on_keyboard_input(int key)
         on_quitButton_clicked();
         return true;
     }
+    if (navigator_sync) switch (key) {
+    case Qt::Key_Up:
+        break;
+    case Qt::Key_Down:
+        break;
+    case Qt::Key_Right:
+        ui->navi_page->setText(navigator.onRight().c_str());
+        break;
+    case Qt::Key_Left:
+        ui->navi_page->setText(navigator.onLeft().c_str());
+        break;
+    case Qt::Key_Enter:
+        ui->navi_page->setText(navigator.onEnter().c_str());
+        break;
+    case Qt::Key_End:
+        ui->navi_page->setText(navigator.onBack().c_str());
+        break;
+    }
+
     send_message(serializer::translate_key_to_cmd(key));
     return true;
 }
 
 void MainWindow::on_pushButton_up_clicked()     { on_keyboard_input(Qt::Key_Up);}
 void MainWindow::on_pushButton_down_clicked()   { on_keyboard_input(Qt::Key_Down);}
-void MainWindow::on_pushButton_right_clicked()  {navigator_get()->navigateRight(); on_keyboard_input(Qt::Key_Right);}
-void MainWindow::on_pushButton_left_clicked()   {navigator_get()->navigateLeft(); on_keyboard_input(Qt::Key_Left);}
-void MainWindow::on_pushButton_ok_clicked()     {navigator_get()->navigateEnter(); on_keyboard_input(Qt::Key_Enter);}
-void MainWindow::on_pushButton_rear_clicked()   {navigator_get()->navigateBack(); on_keyboard_input(Qt::Key_End);}
+void MainWindow::on_pushButton_right_clicked()  { on_keyboard_input(Qt::Key_Right);}
+void MainWindow::on_pushButton_left_clicked()   { on_keyboard_input(Qt::Key_Left);}
+void MainWindow::on_pushButton_ok_clicked()     { on_keyboard_input(Qt::Key_Enter);}
+void MainWindow::on_pushButton_rear_clicked()   { on_keyboard_input(Qt::Key_End);}
 void MainWindow::on_quitButton_clicked()        {QApplication::quit();}
 
 void MainWindow::on_camera_image_update(QImage image)
@@ -499,4 +525,9 @@ void MainWindow::on_testButton_clicked()
 void MainWindow::on_captureButton_clicked()
 {
     webCamera->saveLastFrame();
+}
+
+void MainWindow::on_navigator_ckeck_toggled(bool checked)
+{
+    navigator_sync = checked;
 }

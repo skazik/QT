@@ -503,6 +503,41 @@ color: rgb(233, 185, 110);</string>
       <string notr="true">background-color: rgb(238, 238, 236);</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="navigator_ckeck">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>131</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Navigator Sync</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navi_page">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>90</y>
+       <width>210</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 236);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string>Bend &amp; Rotate</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="startRecord">
     <property name="geometry">
@@ -656,7 +691,8 @@ color: rgb(233, 185, 110);</string>
      <string/>
     </property>
     <property name="icon">
-     <iconset theme="camera-photo"/>
+     <iconset theme="camera-photo">
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <zorder>remote_pic</zorder>

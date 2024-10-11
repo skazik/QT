@@ -1,15 +1,15 @@
+#include <QApplication>
+
 #include "mainwindow.h"
 #include "communication.h"
 #include "key_filter.h"
+#include "csv_reader.h"
 #include "navigator.hpp"
 
-#include <QApplication>
 int main(int argc, char *argv[])
 {
-    navigator_init();
     QApplication app(argc, argv);
     MainWindow w;
-
     app.setWindowIcon(QIcon(":/pictures/icon.png"));  // Path to your resource
 
     KeyFilter keyFilter;

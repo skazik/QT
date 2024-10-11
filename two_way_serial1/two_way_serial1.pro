@@ -6,6 +6,7 @@ QT += multimediawidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
+CONFIG += debug
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -26,16 +27,18 @@ LIBS += `pkg-config --cflags --libs opencv4`
 
 SOURCES += \
     communication.cpp \
+    csv_reader.cpp \
     key_filter.cpp \
     led_indicator.cpp \
+    navigator.cpp \
     main.cpp \
     mainwindow.cpp \
-    navigator.cpp \
     serializer.cpp \
     web_camera.cpp
 
 HEADERS += \
     communication.h \
+    csv_reader.h \
     key_filter.h \
     led_indicator.h \
     mainwindow.h \

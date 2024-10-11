@@ -10,6 +10,9 @@
 #include <QIODevice>    // for handling input/output modes
 #include <QTimer>
 
+#include "csv_reader.h"
+#include "navigator.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -68,6 +71,8 @@ private slots: // for Camera
 
     void on_captureButton_clicked();
 
+    void on_navigator_ckeck_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
     static MainWindow * pMainWindow;
@@ -81,5 +86,8 @@ private:
     int playbackCount{0};
     bool playbackInProgress{false};
     bool cameraFlipped{false};
+    bool navigator_sync{false};
+    csv_reader::PageTree tree;
+    navigator::Navigator navigator;
 };
 #endif // MAINWINDOW_H

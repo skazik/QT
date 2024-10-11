@@ -1,68 +1,111 @@
 #include "navigator.hpp"
+#include "csv_reader.h"
+#include "string.h"
 
-// Creating the root page
-static Page root("page_root", "Root", 1);
+namespace navigator {
 
-// Creating the sub-pages of page_startup
-static Page page_startup("page_startup", "Main Menu", 6);
+Navigator::Navigator(csv_reader::PageNode* root)
+    : currentNode(root) {}
 
-// Create the PageNavigator and start navigating
-static PageNavigator navigator(page_startup);
-
-PageNavigator* navigator_get() {
-    return &navigator;
+void Navigator::setRoot(csv_reader::PageNode* root) {
+    currentNode = root;
 }
 
-// Recursive function to display the page hierarchy
-void displayPages(const Page& page, int indent) {
-    for (int i = 0; i < indent; ++i) {
-        std::cout << "  ";  // Indentation for hierarchy
+std::string Navigator::onRight() {
+    if (!currentNode || history.empty())
+        return "";
+    csv_reader::PageNode *parent = history.back();
+    if (parent && parent->currentIndex < parent->children.size() - 1 ) {
+        currentNode = parent->children[++parent->currentIndex].get();
     }
-    std::cout << "Page: " << page.page_display_name << " (" << page.page_name << ")\n";
+    if (qdebug_on) printCurrentPage("onRight");
+    return currentNode->name;
+}
 
-    // Recursively display sub-pages
-    for (const auto& sub_page : page.sub_pages) {
-        displayPages(sub_page, indent + 1);
+std::string Navigator::onLeft() {
+    if (!currentNode || history.empty())
+        return "";
+    csv_reader::PageNode *parent = history.back();
+    if (parent && parent->currentIndex > 0) {
+        currentNode = parent->children[--parent->currentIndex].get();
+    }
+    if (qdebug_on) printCurrentPage("onLeft");
+    return currentNode->name;
+}
+
+std::string Navigator::onEnter() {
+    if (!currentNode)
+        return "";
+    if (currentNode && !currentNode->children.empty()) {
+        history.push_back(currentNode); // Save current node to history
+        csv_reader::PageNode * child = currentNode->children[currentNode->currentIndex].get();
+        if (child) {
+            currentNode = child;
+            current_level++;
+        }
+    }
+    if (qdebug_on) printCurrentPage("onEnter");
+    return currentNode->name;
+}
+
+std::string Navigator::onBack() {
+    if (!currentNode || history.empty())
+        return "";
+    if (!history.empty()) {
+        currentNode = history.back(); // Go back to the previous node
+        history.pop_back(); // Remove it from history
+        current_level--;
+    }
+    if (qdebug_on) printCurrentPage("onBack");
+    return currentNode->name;
+}
+
+void Navigator::printCurrentPage(const char *info) const {
+    if (!currentNode)
+        return;
+    for (int i = 0; i < current_level; i++) {
+        std::cout << "  ";
+    }
+    if (strlen(info)) {
+        std::cout << info << " ";
+    }
+    if (currentNode) {
+        // << " tabView: " << currentNode->children[currentNode->currentIndex].get()->name
+        std::cout << currentNode->name << std::endl;
+    } else {
+        std::cout << "No current page." << std::endl;
     }
 }
 
-void navigator_init() {
-    Page page_shape_selection("page_shape_selection", "Shape Selection", 5);
-    page_shape_selection.addSubPage(Page("page_straight", "Straight", 1));
-    page_shape_selection.addSubPage(Page("page_elbow_1", "Elbow 1", 1));
-    page_shape_selection.addSubPage(Page("page_elbow_2", "Elbow 2", 1));
-    page_shape_selection.addSubPage(Page("page_elbow_3", "Elbow 3", 1));
-    page_shape_selection.addSubPage(Page("page_stairstep", "Stairstep", 1));
+void test_navigator(Navigator& navigator) {
+    navigator.onEnter(); // Main
+    navigator.onEnter(); // B&R
+    navigator.onEnter(); // segment
+    navigator.onRight();  // no act
+    navigator.onLeft(); // no act
+    navigator.onEnter(); // Link1
+    navigator.onBack();
+    navigator.onBack();
 
-    Page bend_rotate("page_bend_and_rotate", "Bend & Rotate", 1);
-    bend_rotate.addSubPage(Page("page_bend_and_rotate_1", "Bend & Rotate 1", 1));
-    bend_rotate.sub_pages[0].addSubPage(Page("page_bend_and_rotate_link_1", "Link 1", 0));
+    navigator.onRight(); // LED
+    navigator.onRight(); // Shape S
+        navigator.onEnter(); // Stright
+        navigator.onRight(); // El1
+        navigator.onRight(); // El2
+        navigator.onRight(); // El3
+        navigator.onRight(); // Stairs
+        navigator.onRight(); // Stairs
 
-    Page joint_control("page_joint_control", "Joint Control", 1);
-    joint_control.addSubPage(Page("page_joint_control_1", "Joint Control 1", 1));
-    joint_control.sub_pages[0].addSubPage(Page("page_joint_control_link_1", "Link 1", 0));
-
-    Page led_lights("page_led_lights", "LED Lights", 1);
-    led_lights.addSubPage(Page("page_brightness_control", "Brightness Control", 0));
-
-    Page setup("page_setup", "Setup", 3);
-    setup.addSubPage(Page("page_calibrate_joystick", "Calibrate Joystick", 1));
-    setup.sub_pages[0].addSubPage(Page("page_calibrate_joystick_sub", "Calibrate Joystick", 0));
-    setup.addSubPage(Page("page_pack_robot", "Pack Robot", 1));
-    setup.sub_pages[1].addSubPage(Page("page_pack_robot_sub", "Pack Robot", 0));
-    setup.addSubPage(Page("page_unpack_robot", "Unpack Robot", 1));
-    setup.sub_pages[2].addSubPage(Page("page_unpack_robot_sub", "Unpack Robot", 0));
-
-    Page information("page_information", "Information", 1);
-    information.addSubPage(Page("page_information_sub", "Information", 0));
-
-    page_startup.addSubPage(page_shape_selection);
-    page_startup.addSubPage(bend_rotate);
-    page_startup.addSubPage(joint_control);
-    page_startup.addSubPage(led_lights);
-    page_startup.addSubPage(setup);
-    page_startup.addSubPage(information);
-
-    // Adding the startup page to the root
-    root.addSubPage(page_startup);
+    navigator.onBack(); // Shape S
+    navigator.onRight();  // JControl
+    navigator.onRight();  // Setup
+    navigator.onRight();  // Information
+    navigator.onLeft(); // Setup
+        navigator.onEnter(); // Pack R
+        navigator.onRight(); // Unpack
+        navigator.onRight(); // Sys Connection
+        navigator.onRight(); // Calibrate Joystick
+        navigator.onRight(); // Robot Calibra
 }
+
+} // namespace navigator
