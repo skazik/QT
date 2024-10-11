@@ -76,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->portName->setText(SerialCommunication::get_port_name());
     send_message("Hello");
 
-    if (tree.parseCSV("../tabview-tree.csv")) {
-//        tree.printTree(); // Display the tree structure
+    if (tree.parseCSV("tabview-tree.csv")) {
+        tree.printTree(); // Display the tree structure
         navigator.setRoot(tree.getRoot());
 //        navigator::test_navigator(navigator);
         navigator.onEnter(); // Main Menu

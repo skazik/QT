@@ -51,8 +51,9 @@ std::string Navigator::onEnter() {
 std::string Navigator::onBack() {
     if (!currentNode || history.empty())
         return "";
-    if (!history.empty()) {
-        currentNode = history.back(); // Go back to the previous node
+    csv_reader::PageNode* previous = history.back(); // Go back to the previous node
+    if (!strstr(previous->name.c_str(), "Menu")) {
+        currentNode = previous;
         history.pop_back(); // Remove it from history
         current_level--;
     }
