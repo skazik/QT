@@ -15,6 +15,8 @@ MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
 const char * kConfigFileName{"2wconfig.bin"};
 
+void MainWindow::on_quitButton_clicked()        {QApplication::quit();}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), cameraThread(new QThread(this)) {
     ui->setupUi(this);
@@ -103,6 +105,10 @@ MainWindow::~MainWindow() {
         cameraThread->wait();    // Wait for it to finish
     }
     delete ui;
+}
+
+void MainWindow::on_camera_image_update(QImage image) {
+    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
 }
 
 void MainWindow::showEvent(QShowEvent *event) {
@@ -280,29 +286,6 @@ bool MainWindow::on_keyboard_input(int key)
 
     send_message(serializer::translate_key_to_cmd(key));
     return true;
-}
-
-void MainWindow::on_pushButton_up_clicked()     { on_keyboard_input(Qt::Key_Up);}
-void MainWindow::on_pushButton_down_clicked()   { on_keyboard_input(Qt::Key_Down);}
-void MainWindow::on_pushButton_right_clicked()  { on_keyboard_input(Qt::Key_Right);}
-void MainWindow::on_pushButton_left_clicked()   { on_keyboard_input(Qt::Key_Left);}
-void MainWindow::on_pushButton_ok_clicked()     { on_keyboard_input(Qt::Key_Enter);}
-void MainWindow::on_pushButton_rear_clicked()   { on_keyboard_input(Qt::Key_End);}
-void MainWindow::on_quitButton_clicked()        {QApplication::quit();}
-
-void MainWindow::on_camera_image_update(QImage image)
-{
-    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
-}
-
-void MainWindow::on_resetButton_clicked()
-{
-    webCamera->setCameraZoom(true); // reset
-}
-
-void MainWindow::on_zoomButton_clicked()
-{
-    webCamera->setCameraZoom();
 }
 
 void MainWindow::on_startRecord_clicked()
@@ -564,14 +547,4 @@ void MainWindow::on_testButton_clicked()
     uint8_t result[serializer::kVelocityByteArraySize];
     serializer::serialize_velocity(result);
     serializer::deserialize_velocity(result);
-}
-
-void MainWindow::on_captureButton_clicked()
-{
-    webCamera->saveLastFrame();
-}
-
-void MainWindow::on_navigator_ckeck_toggled(bool checked)
-{
-    navigator_sync = checked;
 }
