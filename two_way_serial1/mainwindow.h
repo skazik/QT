@@ -65,6 +65,9 @@ private slots: // for Camera
     void on_saveButton_clicked();
     void on_flipButton_clicked();
     void on_portName_returnPressed();
+    void load_rec_edit_from_tmp();
+    void copy_to_file(QString dest);
+    void copy_from_file(QString src);
 
     void on_loadButton_clicked();
     void on_testButton_clicked();

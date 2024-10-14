@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
         fin.close();
     }
 
+    load_rec_edit_from_tmp();
     ui->recordIndicator->setRecordSchema();
     ui->recordIndicator->turnOff();
 
@@ -77,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     send_message("Hello");
 
     if (tree.parseCSV("tabview-tree.csv")) {
-        tree.printTree(); // Display the tree structure
+//        tree.printTree(); // Display the tree structure
         navigator.setRoot(tree.getRoot());
 //        navigator::test_navigator(navigator);
         navigator.onEnter(); // Main Menu
@@ -422,7 +423,9 @@ void MainWindow::onTimerTimeout(){
          // Apply the format to the selected line
          cursor.setCharFormat(fmt);
 
-         // Show the QTextEdit
+         // scroll to position and Show the QTextEdit
+         ui->recEdit->setTextCursor(cursor);
+         ui->recEdit->ensureCursorVisible();
          ui->recEdit->show();
 
          // parse the string, send and arm timer-------------------
@@ -439,8 +442,52 @@ void MainWindow::onTimerTimeout(){
      }
 }
 
+void MainWindow::copy_to_file(QString dest) {
+    // Check if the destination file exists
+    if (QFile::exists(dest)) {
+        // Attempt to remove the existing file
+        if (!QFile::remove(dest)) {
+            QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + dest);
+            return;
+        }
+    }
+
+    // Copy the file to the destination
+    if (inOutFileTmp.copy(dest)) {
+        QMessageBox::information(nullptr, "Success", "File copied successfully!");
+    } else {
+        QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + inOutFileTmp.errorString());
+    }
+}
+
+void MainWindow::copy_from_file(QString src) {
+    inOutFileTmp.close();
+    // Check if the destination file exists
+    if (QFile::exists(inOutFileTmp.fileName())) {
+        // Attempt to remove the existing file
+        if (!QFile::remove(inOutFileTmp.fileName())) {
+            QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + inOutFileTmp.fileName());
+            return;
+        }
+    }
+
+    QFile input(src);
+    // Copy the file to the destination
+    if (input.copy(inOutFileTmp.fileName())) {
+//        QMessageBox::information(nullptr, "Success", "File copied successfully!");
+    } else {
+        QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + src);
+    }
+}
+
+
 void MainWindow::on_saveButton_clicked()
 {
+    if (QThread::currentThread() != qApp->thread()) {
+        return;
+    }
+    QThread::sleep(1);  // Sleep for 1 second to switch content
+
     // Open the save file dialog
     QString fileName = QFileDialog::getSaveFileName(
         nullptr,                   // Parent widget
@@ -451,21 +498,7 @@ void MainWindow::on_saveButton_clicked()
 
     // Check if the user selected a file
     if (!fileName.isEmpty()) {
-        // Check if the destination file exists
-        if (QFile::exists(fileName)) {
-            // Attempt to remove the existing file
-            if (!QFile::remove(fileName)) {
-                QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + fileName);
-                return;
-            }
-        }
-
-        // Copy the file to the destination
-        if (inOutFileTmp.copy(fileName)) {
-            QMessageBox::information(nullptr, "Success", "File copied successfully!");
-        } else {
-            QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + inOutFileTmp.errorString());
-        }
+        copy_to_file(fileName);
     } else {
         QMessageBox::warning(nullptr, "Error", "No destination file selected.");
     }
@@ -483,8 +516,32 @@ void MainWindow::on_portName_returnPressed()
     // ui->imageLabel->setFocus();
 }
 
+void MainWindow::load_rec_edit_from_tmp() {
+    if (inOutFileTmp.exists()) {
+        if (inOutFileTmp.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            ui->recEdit->clear();
+            cleanPlayEdit();
+
+            QTextStream in(&inOutFileTmp);
+            while (!in.atEnd()) {
+                QString line = in.readLine();  // Read line-by-line
+                ui->recEdit->append(line);
+            }
+            inOutFileTmp.close();
+        }
+        else {
+            QMessageBox::warning(nullptr, "Error", "Failed to open file " + inOutFileTmp.fileName());
+        }
+    }
+}
+
 void MainWindow::on_loadButton_clicked()
 {
+    if (QThread::currentThread() != qApp->thread()) {
+        return;
+    }
+    QThread::sleep(1);  // Sleep for 1 second to switch content
+
     // Open the save file dialog
     QString fileName = QFileDialog::getOpenFileName(
         nullptr,                   // Parent widget
@@ -495,21 +552,8 @@ void MainWindow::on_loadButton_clicked()
 
     // Check if the user selected a file
     if (!fileName.isEmpty()) {
-        QFile fin(fileName);
-        if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            ui->recEdit->clear();
-            cleanPlayEdit();
-
-            QTextStream in(&fin);
-            while (!in.atEnd()) {
-                QString line = in.readLine();  // Read line-by-line
-                ui->recEdit->append(line);
-            }
-            fin.close();
-        }
-        else {
-            QMessageBox::warning(nullptr, "Error", "Failed to open file " + fileName);
-        }
+        copy_from_file(fileName);
+        load_rec_edit_from_tmp();
     } else {
         QMessageBox::warning(nullptr, "Error", "No file selected.");
     }
