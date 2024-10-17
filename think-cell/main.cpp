@@ -18,6 +18,16 @@
 using namespace std;
 
 #if 1
+int main() {
+    const char * array[]={"u","d","l","ri","k","re","l","ri","k","re"};
+    int size = sizeof(array)/sizeof(char*);
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));  // Use current time in seconds
+    const char *command = array[rand() % size];
+    printf("command %s\n", command);
+
+    return 0;
+}
+#elif 1
 struct Point {
     int x{4}, y{5};
 };

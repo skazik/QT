@@ -31,6 +31,9 @@ public:
     // Method to print the current page name
     void printCurrentPage(const char *info = "") const;
 
+    int get_current_level() { return current_level; }
+    std::string get_current_parent() { return history.back()->name; }
+
 private:
     csv_reader::PageNode* currentNode{nullptr}; // Pointer to the current node
     std::vector<csv_reader::PageNode*> history; // Stack of visited nodes

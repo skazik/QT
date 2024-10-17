@@ -17,9 +17,10 @@ std::string Navigator::onRight() {
     csv_reader::PageNode *parent = history.back();
     if (parent && parent->currentIndex < parent->children.size() - 1 ) {
         currentNode = parent->children[++parent->currentIndex].get();
+        if (qdebug_on) printCurrentPage("onRight");
+        return currentNode->name;
     }
-    if (qdebug_on) printCurrentPage("onRight");
-    return currentNode->name;
+    return "";
 }
 
 std::string Navigator::onLeft() {
@@ -28,9 +29,10 @@ std::string Navigator::onLeft() {
     csv_reader::PageNode *parent = history.back();
     if (parent && parent->currentIndex > 0) {
         currentNode = parent->children[--parent->currentIndex].get();
+        if (qdebug_on) printCurrentPage("onLeft");
+        return currentNode->name;
     }
-    if (qdebug_on) printCurrentPage("onLeft");
-    return currentNode->name;
+    return "";
 }
 
 std::string Navigator::onEnter() {

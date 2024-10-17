@@ -76,6 +76,11 @@ private slots: // for Camera
     void on_navigator_ckeck_toggled(bool checked) { navigator_sync = checked; }
 
 private:
+    void SaveConfig();
+    void RestoreConfig();
+    void parseAndLoadCsvPageTree();
+
+private:
     Ui::MainWindow *ui;
     static MainWindow * pMainWindow;
 
@@ -91,5 +96,15 @@ private:
     bool navigator_sync{false};
     csv_reader::PageTree tree;
     navigator::Navigator navigator;
+
+    static inline const QVector<QString> page_names = {
+        "Bend & Rotate",
+        "LED Lights",
+        "Shape Selection",
+        "Joint Control",
+        "Setup",
+        "Information"
+    };
 };
+
 #endif // MAINWINDOW_H

@@ -46,31 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(cameraThread, &QThread::finished, webCamera, &QObject::deleteLater);
 
     // restore some config
-    QFile fin(kConfigFileName);
-    if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&fin);
-        qDebug() << "---------------config loaded:--------------";
-         for (int i = 0; !in.atEnd(); i++) {
-             QString line = in.readLine();  // Read line-by-line
-             line = line.trimmed();
-             switch(i) {
-             case 0:
-                 cameraFlipped = line.contains("1");
-                 qDebug() << "cameraFlipped: " << line;
-                 break;
-             case 1:
-                 SerialCommunication::set_port_name(QString(line));
-                 qDebug() << "port_name: " << line;
-                 break;
-             case 2:
-                 webCamera->setCameraZoom(false, line.toUInt());
-                 qDebug() << "CameraZoom: " << line;
-                 break;
-             }
-         }
-         qDebug() << "-------------------------------------------";
-        fin.close();
-    }
+    this->RestoreConfig();
 
     load_rec_edit_from_tmp();
     ui->recordIndicator->setRecordSchema();
@@ -79,25 +55,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->portName->setText(SerialCommunication::get_port_name());
     send_message("Hello");
 
-    if (tree.parseCSV("tabview-tree.csv")) {
-//        tree.printTree(); // Display the tree structure
-        navigator.setRoot(tree.getRoot());
-//        navigator::test_navigator(navigator);
-        navigator.onEnter(); // Main Menu
-        ui->navi_page->setText(navigator.onEnter().c_str()); // Bend & Rotate
-    }
+    this->parseAndLoadCsvPageTree();
 }
 
 MainWindow::~MainWindow() {
     // save some config
-    QFile fout(kConfigFileName);
-    if (fout.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&fout);
-        out << (cameraFlipped ? "1":"0") << endl;
-        out << SerialCommunication::get_port_name().toStdString().c_str() << endl;
-        out << webCamera->getCameraZoom() << endl;
-        fout.close();
-    }
+    this->SaveConfig();
 
     if (cameraThread->isRunning()) {
         QMetaObject::invokeMethod(webCamera, "stopCamera", Qt::QueuedConnection);
@@ -208,11 +171,22 @@ void MainWindow::on_serial_input(QString line)
     static const char* kBaseStationPefix = "Base station - rssi:";
     static const char* kHandleControllerPrefix = "handle controller loop:";
     static const char* kSerialCommandEcho = "[*" ;// "[Bgn";
+    static const char* kScrActNotification = "feature_idx:";
 
     qDebug() << line;
     const char* tmp = nullptr;
 
-    if (line.contains(kSerialCommandEcho)) {
+    if (line.contains(kScrActNotification)) {
+        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kScrActNotification))) {
+            tmp += strlen(kScrActNotification);
+            uint8_t page_active = static_cast<uint8_t>(*tmp) - '0';
+            if (page_active < page_names.size())
+            {
+                ui->ContRep->setText(page_names[page_active]);
+            }
+        }
+    }
+    else if (line.contains(kSerialCommandEcho)) {
         if (nullptr != (tmp = strstr(line.toStdString().c_str(), kSerialCommandEcho))) {
             QString qtmp(tmp);
             ui->textEdit->append(qtmp);
@@ -254,6 +228,8 @@ void MainWindow::on_serial_input(QString line)
     }
 
     ui->textEdit->append(line);
+    ui->textEdit->moveCursor(QTextCursor::End);
+    ui->textEdit->ensureCursorVisible();
 }
 
 bool MainWindow::on_keyboard_input(int key)
@@ -278,6 +254,10 @@ bool MainWindow::on_keyboard_input(int key)
         break;
     case Qt::Key_Enter:
         ui->navi_page->setText(navigator.onEnter().c_str());
+        qDebug() << "level " << navigator.get_current_level();
+        if (3 == navigator.get_current_level()) {
+            ui->ContExp->setText(navigator.get_current_parent().c_str());
+        }
         break;
     case Qt::Key_End:
         ui->navi_page->setText(navigator.onBack().c_str());
@@ -541,10 +521,113 @@ void MainWindow::on_loadButton_clicked()
         QMessageBox::warning(nullptr, "Error", "No file selected.");
     }
 }
+using namespace navigator;
+static int resursionl = 0;
+void traversePageTree(Navigator& navigator) {
+    if (resursionl++ > 100)
+        exit(-1);
+
+    // Visit the current node (print or process)
+    navigator.printCurrentPage("Visiting");
+
+    // Attempt to enter sub-level (children) if possible.
+    int initialLevel = navigator.get_current_level();
+    std::string enterResult = navigator.onEnter();
+
+    int level = navigator.get_current_level();
+    std::cout << "level " << level << std::endl << std::flush;
+
+    // Check if `onEnter` led to a valid child.
+    if (level  > initialLevel) {
+        // We are now at a child node.
+        do {
+            // Recursively visit each child.
+            traversePageTree(navigator);
+
+            // Try to move to the next child (sibling) at this level.
+            std::string rightResult = navigator.onRight();
+
+            // Break if there are no more siblings.
+            if (navigator.get_current_level() <= initialLevel || rightResult.empty()) {
+                break;
+            }
+
+            // Print for each right move.
+            navigator.printCurrentPage("Moving right to");
+        } while (true);
+
+        // After visiting all children, go back up to the parent level.
+        navigator.onBack();
+        navigator.printCurrentPage("Returning to parent");
+        level = navigator.get_current_level();
+        std::cout << "level " << level << std::endl << std::flush;
+    }
+    // If no child was entered, we're at a leaf node, and the recursion will return naturally.
+    resursionl--;
+}
 
 void MainWindow::on_testButton_clicked()
 {
     uint8_t result[serializer::kVelocityByteArraySize];
     serializer::serialize_velocity(result);
     serializer::deserialize_velocity(result);
+    std::cout << "----------serialization-test completed-------------\n";
+
+    navigator.setRoot(tree.getRoot());
+    traversePageTree(navigator);
+    navigator.setRoot(tree.getRoot());
+    navigator.onEnter(); // Main Menu
+    ui->navi_page->setText(navigator.onEnter().c_str()); // Bend & Rotate
+    std::cout << "----------navigator-test completed-------------\n" << std::flush;
+
+}
+
+void MainWindow::SaveConfig() {
+    QFile fout(kConfigFileName);
+    if (fout.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&fout);
+        out << (cameraFlipped ? "1":"0") << endl;
+        out << SerialCommunication::get_port_name().toStdString().c_str() << endl;
+        out << webCamera->getCameraZoom() << endl;
+        fout.close();
+    }
+}
+
+void MainWindow::RestoreConfig() {
+    QFile fin(kConfigFileName);
+    if (fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&fin);
+        qDebug() << "---------------config loaded:--------------";
+         for (int i = 0; !in.atEnd(); i++) {
+             QString line = in.readLine();  // Read line-by-line
+             line = line.trimmed();
+             switch(i) {
+             case 0:
+                 cameraFlipped = line.contains("1");
+                 qDebug() << "cameraFlipped: " << line;
+                 break;
+             case 1:
+                 SerialCommunication::set_port_name(QString(line));
+                 qDebug() << "port_name: " << line;
+                 break;
+             case 2:
+                 webCamera->setCameraZoom(false, line.toUInt());
+                 qDebug() << "CameraZoom: " << line;
+                 break;
+             }
+         }
+         qDebug() << "-------------------------------------------";
+        fin.close();
+    }
+}
+void MainWindow::parseAndLoadCsvPageTree() {
+    if (tree.parseCSV("tabview-tree.csv")) {
+//        tree.printTree(); // Display the tree structure
+
+        navigator.setRoot(tree.getRoot());
+//        navigator::test_navigator(navigator);
+
+        navigator.onEnter(); // Main Menu
+        ui->navi_page->setText(navigator.onEnter().c_str()); // Bend & Rotate
+    }
 }
