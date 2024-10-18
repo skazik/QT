@@ -1,0 +1,3 @@
+{
+    "files": ["translations.py","main.py","csv_parser.py","test_script_file.txt","tabview-tree.csv","serial_comms.py","navigator.py"]
+}
