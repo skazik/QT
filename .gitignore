@@ -16,3 +16,4 @@ build-tabviews-Desktop-Debug/
 eez_parser/PageTree*
 eez_parser/main.pyproject*
 eez_parser/eez.extract*
+eez_parser/excel/*
