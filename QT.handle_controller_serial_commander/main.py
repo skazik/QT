@@ -1,12 +1,22 @@
 import argparse
 import os
 
-from translations import get_serial_connection, rand_and_send, translate_and_send
+from page_tree import PageTree
+from translations import csv_to_json, get_serial_connection, rand_and_send, translate_and_send
 
 SERIAL_PORT = "/dev/ttyACM0"  # SERIAL_PORT = '/dev/ttyUSB0'  #
 BAUD_RATE = 115200
 RAND_DEFAULT = 0
 TEST_SCRIPT = "test_script_file.txt"
+
+
+def test_and_validate():
+    # for testing & validation - not used, please don't delete
+    ptree = PageTree()
+    ptree.print_tree()
+    ptree.print_and_save_tree("tmp.ui.eez.def")
+    json_file_path = csv_to_json('tmp.test_script_file.txt')
+    print(f"JSON data written to: {json_file_path}")
 
 
 def main():
@@ -43,15 +53,20 @@ def main():
         default=RAND_DEFAULT,
         help="optional random commands, default: 0 (none).",
     )
+    parser.add_argument("-t", "--test", action="store_true", help="Run in test mode.")
 
     # Parse command-line arguments
     args = parser.parse_args()
 
-    # open serail
-    get_serial_connection().open_serial(args.port, args.baud)
+    if args.test:
+        print("Test mode is enabled. Serial comms is not used")
+        test_and_validate()
+    else:
+        # open serail
+        get_serial_connection().open_serial(args.port, args.baud)
 
     if args.rand > RAND_DEFAULT:
-        rand_and_send(args.rand)
+        rand_and_send(args.rand, args.test)
 
     # Validate if file exists
     elif os.path.isfile(args.script):
@@ -59,8 +74,9 @@ def main():
     else:
         print(f"Error: The file '{args.script}' does not exist.", flush=True)
 
-    # close serial
-    get_serial_connection().close_serial()
+    if not args.test:
+        # close serial
+        get_serial_connection().close_serial()
 
 
 if __name__ == "__main__":

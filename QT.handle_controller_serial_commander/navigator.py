@@ -1,13 +1,30 @@
-from csv_parser import page_tree_instance
-from serial_comms import Sync
+from page_tree import PageTree
 
 
 class Navigator:
-    def __init__(self, root):
-        self.current_node = root  # root is a PageNode
-        self.history = []
-        self.current_level = 0
-        self.qdebug_on = True  # For debugging output
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.history = []
+            cls._instance.current_level = 0
+            cls._instance.qdebug_on = True
+            cls._instance.current_feature = ""
+
+            # Initialize the Navigator with the root of the PageTree
+            page_tree = PageTree()
+            cls._instance.current_node = page_tree.root
+            # advance to level 3
+            cls._instance.on_enter()
+            cls._instance.on_enter()
+        return cls._instance
+
+    def __init__(self):
+        pass
+
+    def get_current_feature(self):
+        return self.current_feature
 
     def get_current_view_idx(self):
         parent = self.history[-1]
@@ -62,7 +79,7 @@ class Navigator:
             self.history.append(self.current_node)
 
             if self.current_level == 2:
-                Sync.set_current_feature(self.current_node.name)
+                self.current_feature = self.current_node.name
 
             self.current_node = self.current_node.children[
                 self.current_node.current_index
@@ -89,9 +106,3 @@ class Navigator:
     def print_current_page(self, info):
         if self.current_node:
             print(f"{info}: {self.current_node.name}")
-
-
-# Initialize the Navigator with the root of the PageTree
-navigator = Navigator(page_tree_instance.root)
-navigator.on_enter()
-navigator.on_enter()

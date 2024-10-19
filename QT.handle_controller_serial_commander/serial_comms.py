@@ -3,15 +3,8 @@ import sys
 import time
 
 import serial
-from csv_parser import page_tree_instance
-
-
-class Sync:
-    current_feature = ""
-
-    @staticmethod
-    def set_current_feature(feature):
-        Sync.current_feature = feature
+from navigator import Navigator
+from page_tree import PageTree
 
 
 class Timeout:
@@ -63,6 +56,7 @@ class SerialConnection:
     def read_from_device(self):
         # Read the response from the device
         if self.ser and self.ser.is_open:
+            navigator = Navigator()
             while self.ser.in_waiting > 0:
                 incoming_data = self.ser.readline().decode("utf-8").strip()
                 if (
@@ -74,8 +68,6 @@ class SerialConnection:
                 elif "view_idx:" in incoming_data:
                     match = re.search(r"view_idx:(\d)", incoming_data)
                     if match:
-                        from translations import navigator
-
                         current = navigator.get_current_view_idx()
                         reported = int(match.group(1))
                         if reported == current:
@@ -91,19 +83,19 @@ class SerialConnection:
                 elif "feature_idx:" in incoming_data:
                     match = re.search(r"feature_idx:(\d)", incoming_data)
                     if match:
-                        reported = page_tree_instance.get_feature_name(
-                            int(match.group(1))
-                        )
-                        if Sync.current_feature == reported:
+                        page_tree = PageTree()
+                        reported = page_tree.get_feature_name(int(match.group(1)))
+                        if navigator.get_current_feature() == reported:
                             print(f"        [in sync]:{reported}", flush=True)
                         else:
                             print(
                                 f"    [error: feature mismatch]--------------- "
-                                f"{Sync.current_feature} != {reported}",
+                                f"{navigator.get_current_feature()} != {reported}",
                                 flush=True,
                             )
-                else:
-                    print(f"[Received]:: {incoming_data}", flush=True)
+                # for debugging unexpected delivery from device
+                # else:
+                #     print(f"[Received]:: {incoming_data}", flush=True)
         else:
             print("Serial port is not open", flush=True)
 

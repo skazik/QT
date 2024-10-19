@@ -1,18 +1,22 @@
-usage: main.py [-h] [-p PORT] [-b BAUD] filename
+usage:
+```
+python3 main.py [-h] [-s SCRIPT] [-p PORT] [-b BAUD] [-r RAND] [-t]
+```
 
-Read CMD script and send to device.
-
-positional arguments:
-  filename              The path to the script file
+Read `CMD` script and send to device.
 
 optional arguments:
+```
   -h, --help            show this help message and exit
+  -s SCRIPT, --script SCRIPT
+                        optional, default: "test_script_file.txt"
   -p PORT, --port PORT  optional SERIAL_PORT, default: "/dev/ttyACM0"
   -b BAUD, --baud BAUD  optional BAUD_RATE, default: 115200.
-  
-  
+  -r RAND, --rand RAND  optional random commands, default: 0 (none).
+  -t, --test            Run in test mode.
+```
+
 usage example:
-python main.py -p /dev/ttyUSB0 test_script_file.txt
-
-Files in the folder:
-
+```
+python main.py -p /dev/ttyUSB0 -s test_script.txt
+```

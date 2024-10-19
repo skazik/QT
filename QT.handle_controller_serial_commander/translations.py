@@ -1,9 +1,9 @@
-import csv
 import random
 import time
 from io import StringIO
 
-from navigator import navigator
+import pandas as pd
+from navigator import Navigator
 from serial_comms import SerialConnection
 
 serial_connection = SerialConnection()
@@ -13,44 +13,74 @@ def get_serial_connection():
     return serial_connection
 
 
-def parse_csv_string(csv_string):
+import json
+import os
+
+def csv_to_json(filename):
+    json_output = []
+
+    with open(filename) as file:
+        for line in file:
+            line = line.strip()
+
+            # Skip comments and empty lines
+            if line.startswith("//") or not line:
+                continue
+
+            # Parse the line into command, timeout, and expected values
+            parts = line.split(',')
+            command = parts[0]
+            timeout = parts[1] if len(parts) > 1 else "1"
+            expected = parts[2] if len(parts) > 2 else "none"
+
+            # Append to JSON output list
+            json_output.append({
+                "command": command,
+                "timeout": timeout,
+                "expected": expected
+            })
+
+    # Convert the list to JSON format
+    json_data = json.dumps(json_output, indent=4)
+
+    # Extract the part after the first period
+    base_name = filename.split('.', 1)[-1]
+    # Change the file extension to .json
+    json_filename = os.path.splitext(base_name)[0] + '.json'
+
+    # Write the JSON output to the file
+    with open(json_filename, 'w') as json_file:
+        json_file.write(json_data)
+
+    return json_filename
+
+
+def parse_csv_string(csv_string, header=None):
     """
-    Parses a CSV string and returns the data as a list of rows.
-
-    Args:
-        csv_string (str): The CSV data as a string.
-
-    Returns:
-        list: A list of rows, where each row is a list of values.
+    Parses a CSV string and returns the data as a list of rows,
+    where each row is a list of values.
     """
-    csv_data = []
-
-    # Use StringIO to treat the string as a file-like object
     csv_file = StringIO(csv_string)
-
-    # Use the csv.reader to parse the CSV string
-    csv_reader = csv.reader(csv_file)
-
-    # Iterate through the csv_reader and append rows to the csv_data list
-    for row in csv_reader:
-        csv_data.append(row)
-
-    return csv_data
+    df = pd.read_csv(csv_file, header=header, skip_blank_lines=False, dtype=str)
+    df = df.fillna("")
+    return df.values.tolist()
 
 
-def rand_and_send(count_max):
+def rand_and_send(count_max, test):
     array = ["u", "d", "l", "ri", "k", "re", "re"]
 
     # Seed the random number generator with the current time in seconds
     random.seed(int(time.time()))
-    input("sync start <Bend & Rotate> and press ENTER to continue...")
+    if not test:
+        input("sync start <Bend & Rotate> and press ENTER to continue...")
 
     try:
         for _count in range(count_max):
             parsed_data = parse_csv_string(random.choice(array))
             for row in parsed_data:
                 cmd_bytearray = translate_script_cmd(row[0])
-                serial_connection.send_to_device(cmd_bytearray, 1)
+                if not test:
+                    serial_connection.send_to_device(cmd_bytearray, 1)
     except KeyboardInterrupt:
         print("\nCtrl+C detected! Exiting the loop safely.", flush=True)
     except Exception as e:
@@ -70,7 +100,6 @@ def translate_and_send(file_path):
                             "sync Handle Controller starting screen with script and press ENTER to continue..."
                         )
                     continue
-
                 parsed_data = parse_csv_string(line)
                 for row in parsed_data:
                     cmd_bytearray = translate_script_cmd(row[0])
@@ -126,6 +155,7 @@ def translate_script_cmd(input_str):
         data_to_send[6] = ord(key_mapping.get(key, ""))
         return data_to_send
 
+    navigator = Navigator()
     # Calculate the hash for comparison
     if input_str in ["u", "up"]:
         return translate_key_to_cmd("Key_Up")

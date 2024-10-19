@@ -1,3 +1,3 @@
 {
-    "files": ["translations.py","main.py","csv_parser.py","test_script_file.txt","tabview-tree.csv","serial_comms.py","navigator.py"]
+    "files": ["navigator.py","translations.py","serial_comms.py","short_test.txt","test_script_file.json","tabview-tree.csv","page_tree.py","README.md","main.py"]
 }
