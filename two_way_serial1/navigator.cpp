@@ -1,20 +1,20 @@
 #include "navigator.hpp"
-#include "csv_reader.h"
+#include "page_tree.h"
 #include "string.h"
 
 namespace navigator {
 
-Navigator::Navigator(csv_reader::PageNode* root)
+Navigator::Navigator(page_tree::PageNode* root)
     : currentNode(root) {}
 
-void Navigator::setRoot(csv_reader::PageNode* root) {
+void Navigator::setRoot(page_tree::PageNode* root) {
     currentNode = root;
 }
 
 std::string Navigator::onRight() {
     if (!currentNode || history.empty())
         return "";
-    csv_reader::PageNode *parent = history.back();
+    page_tree::PageNode *parent = history.back();
     if (parent && parent->currentIndex < parent->children.size() - 1 ) {
         currentNode = parent->children[++parent->currentIndex].get();
         if (qdebug_on) printCurrentPage("onRight");
@@ -26,7 +26,7 @@ std::string Navigator::onRight() {
 std::string Navigator::onLeft() {
     if (!currentNode || history.empty())
         return "";
-    csv_reader::PageNode *parent = history.back();
+    page_tree::PageNode *parent = history.back();
     if (parent && parent->currentIndex > 0) {
         currentNode = parent->children[--parent->currentIndex].get();
         if (qdebug_on) printCurrentPage("onLeft");
@@ -40,7 +40,7 @@ std::string Navigator::onEnter() {
         return "";
     if (currentNode && !currentNode->children.empty()) {
         history.push_back(currentNode); // Save current node to history
-        csv_reader::PageNode * child = currentNode->children[currentNode->currentIndex].get();
+        page_tree::PageNode * child = currentNode->children[currentNode->currentIndex].get();
         if (child) {
             currentNode = child;
             current_level++;
@@ -53,7 +53,7 @@ std::string Navigator::onEnter() {
 std::string Navigator::onBack() {
     if (!currentNode || history.empty())
         return "";
-    csv_reader::PageNode* previous = history.back(); // Go back to the previous node
+    page_tree::PageNode* previous = history.back(); // Go back to the previous node
     if (!strstr(previous->name.c_str(), "Menu")) {
         currentNode = previous;
         history.pop_back(); // Remove it from history

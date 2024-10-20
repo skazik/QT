@@ -19,30 +19,37 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+copy_files.commands = cp $$PWD/tabview-tree.csv $$OUT_PWD/
+copy_files.depends = $$SOURCES
+
+QMAKE_EXTRA_TARGETS += copy_files
+PRE_TARGETDEPS += copy_files
+
 # Add OpenCV to INCLUDEPATH
 INCLUDEPATH += /usr/include/opencv4
+INCLUDEPATH += $$PWD/../common/json/include
 
 # Link OpenCV libraries (use pkg-config to get the correct flags)
 LIBS += `pkg-config --cflags --libs opencv4`
 
 SOURCES += \
     communication.cpp \
-    csv_reader.cpp \
     key_filter.cpp \
     led_indicator.cpp \
     navigator.cpp \
     main.cpp \
     mainwindow.cpp \
+    page_tree.cpp \
     serializer.cpp \
     web_camera.cpp
 
 HEADERS += \
     communication.h \
-    csv_reader.h \
     key_filter.h \
     led_indicator.h \
     mainwindow.h \
     navigator.hpp \
+    page_tree.h \
     serializer.h \
     web_camera.h
 

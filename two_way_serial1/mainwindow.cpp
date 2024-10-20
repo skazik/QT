@@ -11,6 +11,13 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <memory>
+#include <string>
+#include <stack>
+
 MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
 const char * kConfigFileName{"2wconfig.bin"};
@@ -521,50 +528,108 @@ void MainWindow::on_loadButton_clicked()
         QMessageBox::warning(nullptr, "Error", "No file selected.");
     }
 }
-using namespace navigator;
-static int resursionl = 0;
-void traversePageTree(Navigator& navigator) {
-    if (resursionl++ > 100)
-        exit(-1);
+using namespace page_tree;
+constexpr const char* kRootNodeSkipName = "Main Menu";
+bool MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_json, bool skip_print_on_enter) {
+    assert(currentNode);
 
-    // Visit the current node (print or process)
-    navigator.printCurrentPage("Visiting");
-
-    // Attempt to enter sub-level (children) if possible.
-    int initialLevel = navigator.get_current_level();
-    std::string enterResult = navigator.onEnter();
-
-    int level = navigator.get_current_level();
-    std::cout << "level " << level << std::endl << std::flush;
-
-    // Check if `onEnter` led to a valid child.
-    if (level  > initialLevel) {
-        // We are now at a child node.
-        do {
-            // Recursively visit each child.
-            traversePageTree(navigator);
-
-            // Try to move to the next child (sibling) at this level.
-            std::string rightResult = navigator.onRight();
-
-            // Break if there are no more siblings.
-            if (navigator.get_current_level() <= initialLevel || rightResult.empty()) {
-                break;
-            }
-
-            // Print for each right move.
-            navigator.printCurrentPage("Moving right to");
-        } while (true);
-
-        // After visiting all children, go back up to the parent level.
-        navigator.onBack();
-        navigator.printCurrentPage("Returning to parent");
-        level = navigator.get_current_level();
-        std::cout << "level " << level << std::endl << std::flush;
+    // Process the current node as "OK" when visiting it initially except "Main Menu"
+    if (!skip_print_on_enter && currentNode->name.compare((kRootNodeSkipName))) {
+        json entry = {
+            {"command", "OK"},
+            {"timeout", "1"},
+            {"expected", currentNode->name}
+        };
+        output_json.push_back(entry);
+        std::cout << entry.dump() << std::endl << std::flush;
     }
-    // If no child was entered, we're at a leaf node, and the recursion will return naturally.
-    resursionl--;
+
+    if (currentNode->children.size() <= 0) {
+        // no children - return back
+        return true;
+    }
+
+    // Recursively traverse through each child node
+    bool _skip_print_enter = false;
+    for (int index = 0; index < (int) currentNode->children.size(); index++) {
+        auto child = currentNode->children[index].get();
+
+        // Recursive call for the child node
+        bool _print_return = traversePageTreeRecursive(child, output_json, _skip_print_enter);
+//        // After returning from recursion, process the move back as "Rear" except Main Menu
+//        if (_skip_print_return || (currentNode->children.size() == 1)) { //  && currentNode->name.compare((kRootNodeSkipName))) {
+//        if (!(index < (int) currentNode->children.size()-1)) {
+//            json rearEntry = {
+//                {"command", "Rear"},
+//                {"timeout", "1"},
+//                {"expected", currentNode->name}
+//            };
+//            output_json.push_back(rearEntry);
+//            std::cout << rearEntry.dump() << std::endl << std::flush;
+//            std::cout << "-----------------------\n" << std::flush;
+
+//        }
+        // After returning from recursion, go to the next child if exist,
+        if (index < (int) currentNode->children.size()-1) {
+            // Process the move to the child as "Right"
+            json rightEntry = {
+                {"command", "Right"},
+                {"timeout", "1"},
+                {"expected", currentNode->children[index+1].get()->name}
+            };
+            output_json.push_back(rightEntry);
+            std::cout << rightEntry.dump() << std::endl << std::flush;
+            _skip_print_enter = true;
+        }
+        else if (_print_return) {
+            json rearEntry = {
+                {"command", "Rear"},
+                {"timeout", "1"},
+                {"expected", currentNode->name}
+            };
+            output_json.push_back(rearEntry);
+            std::cout << rearEntry.dump() << std::endl << std::flush;
+            std::cout << "-----------------------\n" << std::flush;
+        }
+    }
+
+    // here we are at the last child - then go back to the first child
+    // one by one and return to previous level
+    int index = currentNode->children.size()-2;
+    if (index >= 0) {
+        for (; index >= 0; index--) {
+            auto prechild = currentNode->children[index].get();
+
+            // Process the move to the child as "Left"
+            json leftEntry = {
+                {"command", "Left"},
+                {"timeout", "1"},
+                {"expected", prechild->name}
+            };
+            output_json.push_back(leftEntry);
+            std::cout << leftEntry.dump() << std::endl << std::flush;
+        }
+        return true;
+    }
+    return false;
 }
+
+void MainWindow::traversePageTree() {
+    std::ofstream outfile("tmp_traverse_test.json");
+    json output_json = json::array();  // Store all JSON commands here
+
+    PageNode* root = tree.getRoot();
+    if (!root) return;
+    root = root->children[0].get();
+
+    // Start the recursive traversal from the root node
+    traversePageTreeRecursive(root, output_json);
+
+    // Write the output JSON to the file
+    outfile << output_json.dump(4);
+    outfile.close();
+}
+
 
 void MainWindow::on_testButton_clicked()
 {
@@ -573,13 +638,9 @@ void MainWindow::on_testButton_clicked()
     serializer::deserialize_velocity(result);
     std::cout << "----------serialization-test completed-------------\n";
 
-    navigator.setRoot(tree.getRoot());
-    traversePageTree(navigator);
-    navigator.setRoot(tree.getRoot());
-    navigator.onEnter(); // Main Menu
-    ui->navi_page->setText(navigator.onEnter().c_str()); // Bend & Rotate
-    std::cout << "----------navigator-test completed-------------\n" << std::flush;
-
+    tree.printTree();
+    traversePageTree();
+    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
 }
 
 void MainWindow::SaveConfig() {
@@ -622,7 +683,7 @@ void MainWindow::RestoreConfig() {
 }
 void MainWindow::parseAndLoadCsvPageTree() {
     if (tree.parseCSV("tabview-tree.csv")) {
-//        tree.printTree(); // Display the tree structure
+//        tree.printTree();
 
         navigator.setRoot(tree.getRoot());
 //        navigator::test_navigator(navigator);

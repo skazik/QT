@@ -1,5 +1,5 @@
-#ifndef CSV_READER_H
-#define CSV_READER_H
+#ifndef PAGE_TREE_H
+#define PAGE_TREE_H
 #ifndef PAGETREE_HPP
 #define PAGETREE_HPP
 
@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 
-namespace csv_reader {
+namespace page_tree {
 
 // PageNode class declaration
 class PageNode {
@@ -50,7 +50,7 @@ private:
 
 #endif // PAGETREE_HPP
 
-} // namespace csv_reader
+} // namespace page_tree
 
 
-#endif // CSV_READER_H
+#endif // PAGE_TREE_H

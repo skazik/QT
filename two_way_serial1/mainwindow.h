@@ -10,8 +10,11 @@
 #include <QIODevice>    // for handling input/output modes
 #include <QTimer>
 
-#include "csv_reader.h"
+#include "page_tree.h"
 #include "navigator.hpp"
+#include <nlohmann/json.hpp> // For JSON handling
+
+using json = nlohmann::json;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -79,6 +82,8 @@ private:
     void SaveConfig();
     void RestoreConfig();
     void parseAndLoadCsvPageTree();
+    bool traversePageTreeRecursive(page_tree::PageNode* currentNode, json& output_json, bool skip_print_on_enter = false);
+    void traversePageTree();
 
 private:
     Ui::MainWindow *ui;
@@ -94,7 +99,7 @@ private:
     bool playbackInProgress{false};
     bool cameraFlipped{false};
     bool navigator_sync{false};
-    csv_reader::PageTree tree;
+    page_tree::PageTree tree;
     navigator::Navigator navigator;
 
     static inline const QVector<QString> page_names = {
