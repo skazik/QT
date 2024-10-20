@@ -82,7 +82,6 @@ private:
     void SaveConfig();
     void RestoreConfig();
     void parseAndLoadCsvPageTree();
-    bool traversePageTreeRecursive(page_tree::PageNode* currentNode, json& output_json, bool skip_print_on_enter = false);
     void traversePageTree();
 
 private:
@@ -110,6 +109,8 @@ private:
         "Setup",
         "Information"
     };
+    void traversePageTreeRecursive(page_tree::PageNode* currentNode, json& output_json, bool enter_on_right = false);
+
 };
 
 #endif // MAINWINDOW_H

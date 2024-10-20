@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1233</width>
-    <height>632</height>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,8 @@
     </property>
     <property name="icon">
      <iconset theme="up">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -60,7 +61,8 @@
     </property>
     <property name="icon">
      <iconset theme="down">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
    </widget>
    <widget class="QLabel" name="remote_pic">
@@ -114,7 +116,8 @@
     </property>
     <property name="icon">
      <iconset theme="previous">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -140,7 +143,8 @@
     </property>
     <property name="icon">
      <iconset theme="next">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -335,7 +339,8 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="start">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="zoomButton">
@@ -352,7 +357,8 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="video">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
    </widget>
    <widget class="QFrame" name="frame">
@@ -623,7 +629,8 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="rotate">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="testButton">
@@ -640,7 +647,8 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="text">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="captureButton">
@@ -657,7 +665,8 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="camera-photo">
-      <normaloff>.</normaloff>.</iconset>
+      <normaloff/>
+     </iconset>
     </property>
    </widget>
    <widget class="QTabWidget" name="tabWidget">
@@ -816,7 +825,7 @@ color: rgb(233, 185, 110);</string>
      <x>0</x>
      <y>0</y>
      <width>1233</width>
-     <height>22</height>
+     <height>31</height>
     </rect>
    </property>
   </widget>

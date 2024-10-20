@@ -4,19 +4,14 @@
 #include "web_camera.h"
 #include "serializer.h"
 
+#include <fstream>
+
 #include <QLayout>
 #include <QLayoutItem>
 #include <QCameraImageCapture>
 #include <QTimer>
 #include <QFileDialog>
 #include <QMessageBox>
-
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <memory>
-#include <string>
-#include <stack>
 
 MainWindow * MainWindow::pMainWindow = nullptr;
 MainWindow * MainWindow:: getMainWinPtr() {return pMainWindow;}
@@ -38,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
                                "padding: 2px; "
                                "font-size: 14px; }");
 
-    this->resize(width(), ui->quitButton->y()+ui->quitButton->height()+statusBar()->height()-6);
+    this->resize(width(), ui->quitButton->y()+ui->quitButton->height()+statusBar()->height()+6);
 
     // Create the WebCamera object
     webCamera = new WebCamera();
@@ -530,15 +525,15 @@ void MainWindow::on_loadButton_clicked()
 }
 using namespace page_tree;
 constexpr const char* kRootNodeSkipName = "Main Menu";
-bool MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_json, bool skip_print_on_enter) {
+void MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_json, bool enter_on_right) {
     assert(currentNode);
 
     // Process the current node as "OK" when visiting it initially except "Main Menu"
-    if (!skip_print_on_enter && currentNode->name.compare((kRootNodeSkipName))) {
+    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
         json entry = {
-            {"command", "OK"},
+            {"command", enter_on_right ? "Right" : "OK"},
             {"timeout", "1"},
-            {"expected", currentNode->name}
+            {"current", currentNode->name}
         };
         output_json.push_back(entry);
         std::cout << entry.dump() << std::endl << std::flush;
@@ -546,76 +541,66 @@ bool MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_j
 
     if (currentNode->children.size() <= 0) {
         // no children - return back
-        return true;
+        return;
     }
 
     // Recursively traverse through each child node
-    bool _skip_print_enter = false;
-    for (int index = 0; index < (int) currentNode->children.size(); index++) {
+    bool _print_on_right = false;
+    for (int index = 0; index < (int) currentNode->children.size(); _print_on_right = true, index++) {
         auto child = currentNode->children[index].get();
 
         // Recursive call for the child node
-        bool _print_return = traversePageTreeRecursive(child, output_json, _skip_print_enter);
-//        // After returning from recursion, process the move back as "Rear" except Main Menu
-//        if (_skip_print_return || (currentNode->children.size() == 1)) { //  && currentNode->name.compare((kRootNodeSkipName))) {
-//        if (!(index < (int) currentNode->children.size()-1)) {
-//            json rearEntry = {
-//                {"command", "Rear"},
-//                {"timeout", "1"},
-//                {"expected", currentNode->name}
-//            };
-//            output_json.push_back(rearEntry);
-//            std::cout << rearEntry.dump() << std::endl << std::flush;
-//            std::cout << "-----------------------\n" << std::flush;
-
-//        }
-        // After returning from recursion, go to the next child if exist,
-        if (index < (int) currentNode->children.size()-1) {
-            // Process the move to the child as "Right"
-            json rightEntry = {
-                {"command", "Right"},
-                {"timeout", "1"},
-                {"expected", currentNode->children[index+1].get()->name}
-            };
-            output_json.push_back(rightEntry);
-            std::cout << rightEntry.dump() << std::endl << std::flush;
-            _skip_print_enter = true;
-        }
-        else if (_print_return) {
-            json rearEntry = {
-                {"command", "Rear"},
-                {"timeout", "1"},
-                {"expected", currentNode->name}
-            };
-            output_json.push_back(rearEntry);
-            std::cout << rearEntry.dump() << std::endl << std::flush;
-            std::cout << "-----------------------\n" << std::flush;
-        }
+        traversePageTreeRecursive(child, output_json, _print_on_right);
     }
 
-    // here we are at the last child - then go back to the first child
-    // one by one and return to previous level
-    int index = currentNode->children.size()-2;
-    if (index >= 0) {
-        for (; index >= 0; index--) {
-            auto prechild = currentNode->children[index].get();
-
-            // Process the move to the child as "Left"
-            json leftEntry = {
-                {"command", "Left"},
-                {"timeout", "1"},
-                {"expected", prechild->name}
-            };
-            output_json.push_back(leftEntry);
-            std::cout << leftEntry.dump() << std::endl << std::flush;
-        }
-        return true;
+    // here we are at the last child - then go left to the first child
+    for (int index = currentNode->children.size()-2; index >= 0; index--) {
+        json leftEntry = {
+            {"command", "Left"},
+            {"timeout", "1"},
+            {"current", currentNode->children[index].get()->name}
+        };
+        output_json.push_back(leftEntry);
+        std::cout << leftEntry.dump() << std::endl << std::flush;
     }
-    return false;
+
+    // now print return to self
+    if (0 != currentNode->name.compare(kRootNodeSkipName)){
+        json rearEntry = {
+            {"command", "Rear"},
+            {"timeout", "1"},
+            {"current", currentNode->name}
+        };
+        output_json.push_back(rearEntry);
+        std::cout << rearEntry.dump() << std::endl << std::flush;
+    }
+}
+
+// Function to trim whitespace from the start and end of a string
+std::string trim(const std::string& str) {
+    auto start = std::find_if_not(str.begin(), str.end(), [](unsigned char ch) {
+        return std::isspace(ch);
+    });
+    auto end = std::find_if_not(str.rbegin(), str.rend(), [](unsigned char ch) {
+        return std::isspace(ch);
+    }).base();
+    return (start < end ? std::string(start, end) : "");
+}
+
+// Function to trim leading whitespace from each line
+std::string trimLeadingWhitespaceFromEachLine(const std::string& str) {
+    std::istringstream stream(str);
+    std::string line;
+    std::string result;
+
+    while (std::getline(stream, line)) {
+        result += trim(line) + "\n";
+    }
+
+    return result;
 }
 
 void MainWindow::traversePageTree() {
-    std::ofstream outfile("tmp_traverse_test.json");
     json output_json = json::array();  // Store all JSON commands here
 
     PageNode* root = tree.getRoot();
@@ -625,11 +610,27 @@ void MainWindow::traversePageTree() {
     // Start the recursive traversal from the root node
     traversePageTreeRecursive(root, output_json);
 
-    // Write the output JSON to the file
-    outfile << output_json.dump(4);
-    outfile.close();
-}
+    // don't write the output JSON to the file
+    // outfile << output_json.dump(4);
+    // Convert the JSON array to a string
+    std::string json_str = output_json.dump(4); // Pretty-print with 4 spaces
 
+    // Remove the first '[' and the last ']' and their newlines
+    if (!json_str.empty() && json_str.front() == '[' && json_str.back() == ']') {
+        json_str = json_str.substr(1, json_str.size() - 2);
+    }
+
+    // Trim leading or trailing whitespace
+    json_str = trimLeadingWhitespaceFromEachLine(json_str);
+
+    std::ofstream outfile("tmp_traverse_test.json");
+    if (outfile.is_open()) {
+        outfile<< json_str;
+        outfile.close();
+    } else {
+        std::cerr << "Failed to open json file for writing" << std::endl;
+    }
+}
 
 void MainWindow::on_testButton_clicked()
 {
@@ -638,7 +639,7 @@ void MainWindow::on_testButton_clicked()
     serializer::deserialize_velocity(result);
     std::cout << "----------serialization-test completed-------------\n";
 
-    tree.printTree();
+//    tree.printTree();
     traversePageTree();
     std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
 }

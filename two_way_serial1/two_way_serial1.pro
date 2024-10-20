@@ -19,11 +19,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-copy_files.commands = cp $$PWD/tabview-tree.csv $$OUT_PWD/
+copy_files.commands = mkdir -p $$OUT_PWD/ ; cp $$PWD/tabview-tree.csv $$OUT_PWD/
 copy_files.depends = $$SOURCES
 
 QMAKE_EXTRA_TARGETS += copy_files
 PRE_TARGETDEPS += copy_files
+QMAKE_CXXFLAGS += -Wno-expansion-to-defined -Wno-deprecated-copy
+QMAKE_CXXFLAGS += -std=c++17
+INCLUDEPATH += /usr/include/opencv4
+LIBS += -L/usr/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv4
 
 # Add OpenCV to INCLUDEPATH
 INCLUDEPATH += /usr/include/opencv4
@@ -63,3 +69,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     app_resource.qrc
+
+DISTFILES += \
+    tabview-tree.csv \
+    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json

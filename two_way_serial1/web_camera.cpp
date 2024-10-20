@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QDir>         // For handling file paths
 #include <QDateTime>
+#include <QList>
 
 #include "mainwindow.h"
 
@@ -54,6 +55,11 @@ void WebCamera::stopCamera() {
 
 QCameraInfo WebCamera::getPreferredCamera() {
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
+
+    if (!cameras.size()) {
+        qDebug() << "no cameras!!!!!";
+        return QCameraInfo();
+    }
 
     // If only one camera, return it (usually the built-in one)
     if (cameras.size() == 1) {
