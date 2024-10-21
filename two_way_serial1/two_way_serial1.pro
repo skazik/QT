@@ -33,7 +33,7 @@ PKGCONFIG += opencv4
 
 # Add OpenCV to INCLUDEPATH
 INCLUDEPATH += /usr/include/opencv4
-INCLUDEPATH += $$PWD/../common/json/include
+INCLUDEPATH += $$PWD/../common
 
 # Link OpenCV libraries (use pkg-config to get the correct flags)
 LIBS += `pkg-config --cflags --libs opencv4`
@@ -72,4 +72,6 @@ RESOURCES += \
 
 DISTFILES += \
     tabview-tree.csv \
-    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json
+    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
+    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
+    command_script_expamle.json

@@ -1,0 +1,53 @@
+{
+    "_comment": "This is example of Joystick Button press",
+    "command": "OK",
+    "expected": "Bend & Rotate",
+    "timeout": "2"
+},
+{
+    "_comment": "This is example of Rear Button press",
+    "command": "Rear",
+    "expected": "Bend & Rotate Segment",
+    "timeout": "3"
+},
+{
+    "_comment": "This is example of Joystick Right move",
+    "command": "Right",
+    "expected": "LED Lights",
+    "timeout": "2"
+},
+{
+    "_comment": "This is example of Joystick Left move",
+    "command": "Left",
+    "expected": "Bend & Rotate",
+    "timeout": "1"
+},
+{
+    "_comment": "This is example of Joystick Bend & Rotate motion",
+    "command": "Bend",
+    "timeout": "1",
+    "payload": {
+        "bend": {
+        "velocity": "1.0",
+        "acceleration": "0.0",
+        "max_velocity": "1.0",
+        "max_acceleration": "1.0"
+        },
+        "rotate": {
+        "velocity": "0.5",
+        "acceleration": "0.0",
+        "max_velocity": "1.0",
+        "max_acceleration": "1.0"
+        }
+    }
+},
+{
+    "_comment": "This is example of missing parameter: no feedback expected",
+    "command": "Up",
+    "timeout": "2"
+},
+{
+    "_comment": "This is example of missing parameter: deault timeout 1",
+    "command": "Down",
+    "expected": "LED Lights",
+}

@@ -533,7 +533,7 @@ void MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_j
         json entry = {
             {"command", enter_on_right ? "Right" : "OK"},
             {"timeout", "1"},
-            {"current", currentNode->name}
+            {"expected", currentNode->name}
         };
         output_json.push_back(entry);
         std::cout << entry.dump() << std::endl << std::flush;
@@ -558,7 +558,7 @@ void MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_j
         json leftEntry = {
             {"command", "Left"},
             {"timeout", "1"},
-            {"current", currentNode->children[index].get()->name}
+            {"expected", currentNode->children[index].get()->name}
         };
         output_json.push_back(leftEntry);
         std::cout << leftEntry.dump() << std::endl << std::flush;
@@ -569,7 +569,7 @@ void MainWindow::traversePageTreeRecursive(PageNode* currentNode, json& output_j
         json rearEntry = {
             {"command", "Rear"},
             {"timeout", "1"},
-            {"current", currentNode->name}
+            {"expected", currentNode->name}
         };
         output_json.push_back(rearEntry);
         std::cout << rearEntry.dump() << std::endl << std::flush;
