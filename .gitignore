@@ -19,3 +19,4 @@ eez_parser/eez.extract*
 eez_parser/excel/*
 QT.handle_controller_serial_commander/__pycache__/*
 build-*
+Docs_and_Installs/*.pdf

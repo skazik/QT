@@ -31,6 +31,12 @@ LIBS += -L/usr/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_im
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv4
 
+# Add YAML-cpp library
+LIBS += -lyaml-cpp
+
+# Include the path to yaml-cpp headers if needed (adjust the path if necessary)
+INCLUDEPATH += /usr/include/yaml-cpp
+
 # Add OpenCV to INCLUDEPATH
 INCLUDEPATH += /usr/include/opencv4
 INCLUDEPATH += $$PWD/../common
@@ -74,4 +80,6 @@ DISTFILES += \
     tabview-tree.csv \
     ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
     ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
-    command_script_expamle.json
+    command_script_expamle.json \
+    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.yaml \
+    command_script_expamle.yaml

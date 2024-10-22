@@ -13,6 +13,7 @@
 #include "page_tree.h"
 #include "navigator.hpp"
 #include <nlohmann/json.hpp> // For JSON handling
+#include <yaml-cpp/yaml.h>
 
 using json = nlohmann::json;
 
@@ -82,7 +83,10 @@ private:
     void SaveConfig();
     void RestoreConfig();
     void parseAndLoadCsvPageTree();
+    void traversePageTree_json();
+    void traversePageTreeRecursive_json(page_tree::PageNode* currentNode, json& output_json, bool enter_on_right = false);
     void traversePageTree();
+    void traversePageTreeRecursive(page_tree::PageNode* currentNode, YAML::Node& output_yaml, bool enter_on_right = false);
 
 private:
     Ui::MainWindow *ui;
@@ -109,8 +113,6 @@ private:
         "Setup",
         "Information"
     };
-    void traversePageTreeRecursive(page_tree::PageNode* currentNode, json& output_json, bool enter_on_right = false);
-
 };
 
 #endif // MAINWINDOW_H
