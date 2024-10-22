@@ -1,20 +1,17 @@
 #include "navigator.hpp"
-#include "page_tree.h"
-#include "string.h"
+#include "utils.h"
 
-namespace navigator {
-
-Navigator::Navigator(page_tree::PageNode* root)
+Navigator::Navigator(PageNode* root)
     : currentNode(root) {}
 
-void Navigator::setRoot(page_tree::PageNode* root) {
+void Navigator::setRoot(PageNode* root) {
     currentNode = root;
 }
 
 std::string Navigator::onRight() {
     if (!currentNode || history.empty())
         return "";
-    page_tree::PageNode *parent = history.back();
+    PageNode *parent = history.back();
     if (parent && parent->currentIndex < parent->children.size() - 1 ) {
         currentNode = parent->children[++parent->currentIndex].get();
         if (qdebug_on) printCurrentPage("onRight");
@@ -26,7 +23,7 @@ std::string Navigator::onRight() {
 std::string Navigator::onLeft() {
     if (!currentNode || history.empty())
         return "";
-    page_tree::PageNode *parent = history.back();
+    PageNode *parent = history.back();
     if (parent && parent->currentIndex > 0) {
         currentNode = parent->children[--parent->currentIndex].get();
         if (qdebug_on) printCurrentPage("onLeft");
@@ -40,7 +37,7 @@ std::string Navigator::onEnter() {
         return "";
     if (currentNode && !currentNode->children.empty()) {
         history.push_back(currentNode); // Save current node to history
-        page_tree::PageNode * child = currentNode->children[currentNode->currentIndex].get();
+        PageNode * child = currentNode->children[currentNode->currentIndex].get();
         if (child) {
             currentNode = child;
             current_level++;
@@ -53,7 +50,7 @@ std::string Navigator::onEnter() {
 std::string Navigator::onBack() {
     if (!currentNode || history.empty())
         return "";
-    page_tree::PageNode* previous = history.back(); // Go back to the previous node
+    PageNode* previous = history.back(); // Go back to the previous node
     if (!strstr(previous->name.c_str(), "Menu")) {
         currentNode = previous;
         history.pop_back(); // Remove it from history
@@ -110,5 +107,3 @@ void test_navigator(Navigator& navigator) {
         navigator.onRight(); // Calibrate Joystick
         navigator.onRight(); // Robot Calibra
 }
-
-} // namespace navigator

@@ -10,12 +10,7 @@
 #include <QIODevice>    // for handling input/output modes
 #include <QTimer>
 
-#include "page_tree.h"
-#include "navigator.hpp"
-#include <nlohmann/json.hpp> // For JSON handling
-#include <yaml-cpp/yaml.h>
-
-using json = nlohmann::json;
+#include "utils.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -70,8 +65,8 @@ private slots: // for Camera
     void on_flipButton_clicked();
     void on_portName_returnPressed();
     void load_rec_edit_from_tmp();
-    void copy_to_file(QString dest);
-    void copy_from_file(QString src);
+//    void copy_to_file(QString dest);
+//    void copy_from_file(QString src);
 
     void on_loadButton_clicked();
     void on_testButton_clicked();
@@ -83,10 +78,10 @@ private:
     void SaveConfig();
     void RestoreConfig();
     void parseAndLoadCsvPageTree();
-    void traversePageTree_json();
-    void traversePageTreeRecursive_json(page_tree::PageNode* currentNode, json& output_json, bool enter_on_right = false);
-    void traversePageTree();
-    void traversePageTreeRecursive(page_tree::PageNode* currentNode, YAML::Node& output_yaml, bool enter_on_right = false);
+//    void traversePageTree_json();
+//    void traversePageTreeRecursive_json(PageNode* currentNode, json& output_json, bool enter_on_right = false);
+//    void traversePageTree();
+//    void traversePageTreeRecursive(PageNode* currentNode, YAML::Node& output_yaml, bool enter_on_right = false);
 
 private:
     Ui::MainWindow *ui;
@@ -102,8 +97,8 @@ private:
     bool playbackInProgress{false};
     bool cameraFlipped{false};
     bool navigator_sync{false};
-    page_tree::PageTree tree;
-    navigator::Navigator navigator;
+    PageTree tree;
+    Navigator navigator;
 
     static inline const QVector<QString> page_names = {
         "Bend & Rotate",

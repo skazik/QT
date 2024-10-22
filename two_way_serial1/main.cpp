@@ -3,8 +3,6 @@
 #include "mainwindow.h"
 #include "communication.h"
 #include "key_filter.h"
-#include "page_tree.h"
-#include "navigator.hpp"
 
 int main(int argc, char *argv[])
 {

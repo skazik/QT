@@ -1,14 +1,10 @@
 #ifndef PAGE_TREE_H
 #define PAGE_TREE_H
-#ifndef PAGETREE_HPP
-#define PAGETREE_HPP
 
 #include <iostream>
 #include <vector>
 #include <memory>
 #include <string>
-
-namespace page_tree {
 
 // PageNode class declaration
 class PageNode {
@@ -47,10 +43,5 @@ private:
     // Helper function to count leading commas to determine page level
     int countLeadingCommas(const std::string& line) const;
 };
-
-#endif // PAGETREE_HPP
-
-} // namespace page_tree
-
 
 #endif // PAGE_TREE_H

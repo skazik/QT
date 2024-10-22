@@ -53,7 +53,8 @@ SOURCES += \
     mainwindow.cpp \
     page_tree.cpp \
     serializer.cpp \
-    web_camera.cpp
+    web_camera.cpp \
+    utils.cpp
 
 HEADERS += \
     communication.h \
@@ -63,7 +64,8 @@ HEADERS += \
     navigator.hpp \
     page_tree.h \
     serializer.h \
-    web_camera.h
+    web_camera.h \
+    utils.h
 
 FORMS += \
     mainwindow.ui

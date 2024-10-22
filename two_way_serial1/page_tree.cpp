@@ -1,4 +1,4 @@
-#include "page_tree.h"
+#include "utils.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -6,8 +6,6 @@
 #include <vector>
 #include <memory>
 #include <QDebug>
-
-namespace page_tree {
 
 PageNode::PageNode(std::string name) : name(std::move(name)) {}
 
@@ -101,5 +99,3 @@ int PageTree::countLeadingCommas(const std::string& line) const {
     }
     return count;
 }
-
-} //page_tree

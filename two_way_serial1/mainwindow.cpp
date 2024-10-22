@@ -3,12 +3,7 @@
 #include "communication.h"
 #include "web_camera.h"
 #include "serializer.h"
-
-#include <fstream>
-//#include <fstream>
-//#include <iostream>
-//#include <cassert>
-//#include <sstream>
+#include "utils.h"
 
 #include <QLayout>
 #include <QLayoutItem>
@@ -411,43 +406,43 @@ void MainWindow::onTimerTimeout(){
      }
 }
 
-void MainWindow::copy_to_file(QString dest) {
-    // Check if the destination file exists
-    if (QFile::exists(dest)) {
-        // Attempt to remove the existing file
-        if (!QFile::remove(dest)) {
-            QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + dest);
-            return;
-        }
-    }
+//void MainWindow::copy_to_file(QString dest) {
+//    // Check if the destination file exists
+//    if (QFile::exists(dest)) {
+//        // Attempt to remove the existing file
+//        if (!QFile::remove(dest)) {
+//            QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + dest);
+//            return;
+//        }
+//    }
 
-    // Copy the file to the destination
-    if (inOutFileTmp.copy(dest)) {
-        QMessageBox::information(nullptr, "Success", "File copied successfully!");
-    } else {
-        QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + inOutFileTmp.errorString());
-    }
-}
-
-void MainWindow::copy_from_file(QString src) {
-    inOutFileTmp.close();
-    // Check if the destination file exists
-    if (QFile::exists(inOutFileTmp.fileName())) {
-        // Attempt to remove the existing file
-        if (!QFile::remove(inOutFileTmp.fileName())) {
-            QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + inOutFileTmp.fileName());
-            return;
-        }
-    }
-
-    QFile input(src);
-    // Copy the file to the destination
-    if (input.copy(inOutFileTmp.fileName())) {
+//    // Copy the file to the destination
+//    if (inOutFileTmp.copy(dest)) {
 //        QMessageBox::information(nullptr, "Success", "File copied successfully!");
-    } else {
-        QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + src);
-    }
-}
+//    } else {
+//        QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + inOutFileTmp.errorString());
+//    }
+//}
+
+//void MainWindow::copy_from_file(QString src) {
+//    inOutFileTmp.close();
+//    // Check if the destination file exists
+//    if (QFile::exists(inOutFileTmp.fileName())) {
+//        // Attempt to remove the existing file
+//        if (!QFile::remove(inOutFileTmp.fileName())) {
+//            QMessageBox::warning(nullptr, "Error", "Failed to remove existing file: " + inOutFileTmp.fileName());
+//            return;
+//        }
+//    }
+
+//    QFile input(src);
+//    // Copy the file to the destination
+//    if (input.copy(inOutFileTmp.fileName())) {
+////        QMessageBox::information(nullptr, "Success", "File copied successfully!");
+//    } else {
+//        QMessageBox::warning(nullptr, "Error", "Failed to copy file: " + src);
+//    }
+//}
 
 
 void MainWindow::on_saveButton_clicked()
@@ -467,7 +462,7 @@ void MainWindow::on_saveButton_clicked()
 
     // Check if the user selected a file
     if (!fileName.isEmpty()) {
-        copy_to_file(fileName);
+        copy_to_file(fileName.toStdString());
     } else {
         QMessageBox::warning(nullptr, "Error", "No destination file selected.");
     }
@@ -521,233 +516,187 @@ void MainWindow::on_loadButton_clicked()
 
     // Check if the user selected a file
     if (!fileName.isEmpty()) {
-        copy_from_file(fileName);
+        copy_from_file(fileName.toStdString());
         load_rec_edit_from_tmp();
     } else {
         QMessageBox::warning(nullptr, "Error", "No file selected.");
     }
 }
-using namespace page_tree;
-constexpr const char* kRootNodeSkipName = "Main Menu";
-void MainWindow::traversePageTreeRecursive_json(PageNode* currentNode, json& output_json, bool enter_on_right) {
-    assert(currentNode);
 
-    // Process the current node as "OK" when visiting it initially except "Main Menu"
-    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
-        json entry = {
-            {"command", enter_on_right ? "Right" : "OK"},
-            {"timeout", "1"},
-            {"expected", currentNode->name}
-        };
-        output_json.push_back(entry);
-        std::cout << entry.dump() << std::endl << std::flush;
-    }
+//void MainWindow::traversePageTreeRecursive_json(PageNode* currentNode, json& output_json, bool enter_on_right) {
+//    assert(currentNode);
 
-    if (currentNode->children.size() <= 0) {
-        // no children - return back
-        return;
-    }
-
-    // Recursively traverse through each child node
-    bool _print_on_right = false;
-    for (int index = 0; index < (int) currentNode->children.size(); _print_on_right = true, index++) {
-        auto child = currentNode->children[index].get();
-
-        // Recursive call for the child node
-        traversePageTreeRecursive_json(child, output_json, _print_on_right);
-    }
-
-    // here we are at the last child - then go left to the first child
-    for (int index = currentNode->children.size()-2; index >= 0; index--) {
-        json leftEntry = {
-            {"command", "Left"},
-            {"timeout", "1"},
-            {"expected", currentNode->children[index].get()->name}
-        };
-        output_json.push_back(leftEntry);
-        std::cout << leftEntry.dump() << std::endl << std::flush;
-    }
-
-    // now print return to self
-    if (0 != currentNode->name.compare(kRootNodeSkipName)){
-        json rearEntry = {
-            {"command", "Rear"},
-            {"timeout", "1"},
-            {"expected", currentNode->name}
-        };
-        output_json.push_back(rearEntry);
-        std::cout << rearEntry.dump() << std::endl << std::flush;
-    }
-}
-
-// Function to trim whitespace from the start and end of a string
-std::string trim(const std::string& str) {
-    auto start = std::find_if_not(str.begin(), str.end(), [](unsigned char ch) {
-        return std::isspace(ch);
-    });
-    auto end = std::find_if_not(str.rbegin(), str.rend(), [](unsigned char ch) {
-        return std::isspace(ch);
-    }).base();
-    return (start < end ? std::string(start, end) : "");
-}
-
-// Function to trim leading whitespace from each line
-std::string trimLeadingWhitespaceFromEachLine(const std::string& str) {
-    std::istringstream stream(str);
-    std::string line;
-    std::string result;
-
-    while (std::getline(stream, line)) {
-        result += trim(line) + "\n";
-    }
-
-    return result;
-}
-
-// Function to trim whitespace from the start and end of a string
-//std::string trim_json(const std::string& str) {
-//    auto start = std::find_if_not(str.begin(), str.end(), [](unsigned char ch) {
-//        return std::isspace(ch);
-//    });
-//    auto end = std::find_if_not(str.rbegin(), str.rend(), [](unsigned char ch) {
-//        return std::isspace(ch);
-//    }).base();
-//    return (start < end ? std::string(start, end) : "");
-//}
-
-// Function to trim leading whitespace from each line
-//std::string trimLeadingWhitespaceFromEachLine_json(const std::string& str) {
-//    std::istringstream stream(str);
-//    std::string line;
-//    std::string result;
-
-//    while (std::getline(stream, line)) {
-//        result += trim(line) + "\n";
+//    // Process the current node as "OK" when visiting it initially except "Main Menu"
+//    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
+//        json entry = {
+//            {"command", enter_on_right ? "Right" : "OK"},
+//            {"timeout", "1"},
+//            {"expected", currentNode->name}
+//        };
+//        output_json.push_back(entry);
+//        std::cout << entry.dump() << std::endl << std::flush;
 //    }
 
-//    return result;
+//    if (currentNode->children.size() <= 0) {
+//        // no children - return back
+//        return;
+//    }
+
+//    // Recursively traverse through each child node
+//    bool _print_on_right = false;
+//    for (int index = 0; index < (int) currentNode->children.size(); _print_on_right = true, index++) {
+//        auto child = currentNode->children[index].get();
+
+//        // Recursive call for the child node
+//        traversePageTreeRecursive_json(child, output_json, _print_on_right);
+//    }
+
+//    // here we are at the last child - then go left to the first child
+//    for (int index = currentNode->children.size()-2; index >= 0; index--) {
+//        json leftEntry = {
+//            {"command", "Left"},
+//            {"timeout", "1"},
+//            {"expected", currentNode->children[index].get()->name}
+//        };
+//        output_json.push_back(leftEntry);
+//        std::cout << leftEntry.dump() << std::endl << std::flush;
+//    }
+
+//    // now print return to self
+//    if (0 != currentNode->name.compare(kRootNodeSkipName)){
+//        json rearEntry = {
+//            {"command", "Rear"},
+//            {"timeout", "1"},
+//            {"expected", currentNode->name}
+//        };
+//        output_json.push_back(rearEntry);
+//        std::cout << rearEntry.dump() << std::endl << std::flush;
+//    }
 //}
 
-void MainWindow::traversePageTree_json() {
-    json output_json = json::array();  // Store all JSON commands here
+//void MainWindow::traversePageTree_json() {
+//    json output_json = json::array();  // Store all JSON commands here
 
-    PageNode* root = tree.getRoot();
-    if (!root) return;
-    root = root->children[0].get();
+//    PageNode* root = tree.getRoot();
+//    if (!root) return;
+//    root = root->children[0].get();
 
-    // Start the recursive traversal from the root node
-    traversePageTreeRecursive_json(root, output_json);
+//    // Start the recursive traversal from the root node
+//    traversePageTreeRecursive_json(root, output_json);
 
-    // don't write the output JSON to the file
-    // outfile << output_json.dump(4);
-    // Convert the JSON array to a string
-    std::string json_str = output_json.dump(4); // Pretty-print with 4 spaces
+//    // don't write the output JSON to the file
+//    // outfile << output_json.dump(4);
+//    // Convert the JSON array to a string
+//    std::string json_str = output_json.dump(4); // Pretty-print with 4 spaces
 
-    // Remove the first '[' and the last ']' and their newlines
-    if (!json_str.empty() && json_str.front() == '[' && json_str.back() == ']') {
-        json_str = json_str.substr(1, json_str.size() - 2);
-    }
+//    // Remove the first '[' and the last ']' and their newlines
+//    if (!json_str.empty() && json_str.front() == '[' && json_str.back() == ']') {
+//        json_str = json_str.substr(1, json_str.size() - 2);
+//    }
 
-    // Trim leading or trailing whitespace
-    json_str = trimLeadingWhitespaceFromEachLine(json_str);
+//    // Trim leading or trailing whitespace
+//    json_str = trimLeadingWhitespaceFromEachLine(json_str);
 
-    std::ofstream outfile("tmp_traverse_test.json");
-    if (outfile.is_open()) {
-        outfile<< json_str;
-        outfile.close();
-    } else {
-        std::cerr << "Failed to open json file for writing" << std::endl;
-    }
-}
+//    std::ofstream outfile("tmp_traverse_test.json");
+//    if (outfile.is_open()) {
+//        outfile<< json_str;
+//        outfile.close();
+//    } else {
+//        std::cerr << "Failed to open json file for writing" << std::endl;
+//    }
+//}
 
-void MainWindow::traversePageTreeRecursive(PageNode* currentNode, YAML::Node& output_yaml, bool enter_on_right) {
-    assert(currentNode);
+//void MainWindow::traversePageTreeRecursive(PageNode* currentNode, YAML::Node& output_yaml, bool enter_on_right) {
+//    assert(currentNode);
 
-    // Process the current node as "OK" when visiting it initially except "Main Menu"
-    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
-        YAML::Node entry;
-        entry["command"] = enter_on_right ? "Right" : "OK";
-        entry["timeout"] = "1";
-        entry["expected"] = currentNode->name;
+//    // Process the current node as "OK" when visiting it initially except "Main Menu"
+//    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
+//        YAML::Node entry;
+//        entry["command"] = enter_on_right ? "Right" : "OK";
+//        entry["timeout"] = "1";
+//        entry["expected"] = currentNode->name;
 
-        output_yaml.push_back(entry);
-        std::cout << "-" << entry << std::endl;  // Output the YAML entry to stdout
-    }
+//        output_yaml.push_back(entry);
+//        std::cout << "-" << entry << std::endl;  // Output the YAML entry to stdout
+//    }
 
-    if (currentNode->children.empty()) {
-        // No children - return back
-        return;
-    }
+//    if (currentNode->children.empty()) {
+//        // No children - return back
+//        return;
+//    }
 
-    // Recursively traverse through each child node
-    bool _print_on_right = false;
-    for (int index = 0; index < (int)currentNode->children.size(); _print_on_right = true, index++) {
-        auto child = currentNode->children[index].get();
+//    // Recursively traverse through each child node
+//    bool _print_on_right = false;
+//    for (int index = 0; index < (int)currentNode->children.size(); _print_on_right = true, index++) {
+//        auto child = currentNode->children[index].get();
 
-        // Recursive call for the child node
-        traversePageTreeRecursive(child, output_yaml, _print_on_right);
-    }
+//        // Recursive call for the child node
+//        traversePageTreeRecursive(child, output_yaml, _print_on_right);
+//    }
 
-    // Traverse left back to the first child
-    for (int index = currentNode->children.size() - 2; index >= 0; index--) {
-        YAML::Node leftEntry;
-        leftEntry["command"] = "Left";
-        leftEntry["timeout"] = "1";
-        leftEntry["expected"] = currentNode->children[index].get()->name;
+//    // Traverse left back to the first child
+//    for (int index = currentNode->children.size() - 2; index >= 0; index--) {
+//        YAML::Node leftEntry;
+//        leftEntry["command"] = "Left";
+//        leftEntry["timeout"] = "1";
+//        leftEntry["expected"] = currentNode->children[index].get()->name;
 
-        output_yaml.push_back(leftEntry);
-        std::cout << "-" << leftEntry << std::endl;  // Output the YAML entry to stdout
-    }
+//        output_yaml.push_back(leftEntry);
+//        std::cout << "-" << leftEntry << std::endl;  // Output the YAML entry to stdout
+//    }
 
-    // Now print return to self
-    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
-        YAML::Node rearEntry;
-        rearEntry["command"] = "Rear";
-        rearEntry["timeout"] = "1";
-        rearEntry["expected"] = currentNode->name;
+//    // Now print return to self
+//    if (0 != currentNode->name.compare(kRootNodeSkipName)) {
+//        YAML::Node rearEntry;
+//        rearEntry["command"] = "Rear";
+//        rearEntry["timeout"] = "1";
+//        rearEntry["expected"] = currentNode->name;
 
-        output_yaml.push_back(rearEntry);
-        std::cout << "-" << rearEntry << std::endl;  // Output the YAML entry to stdout
-    }
-}
+//        output_yaml.push_back(rearEntry);
+//        std::cout << "-" << rearEntry << std::endl;  // Output the YAML entry to stdout
+//    }
+//}
 
-void MainWindow::traversePageTree() {
-    YAML::Node output_yaml;  // Store all YAML commands here
+//void MainWindow::traversePageTree() {
+//    YAML::Node output_yaml;  // Store all YAML commands here
 
-    PageNode* root = tree.getRoot();
-    if (!root) return;
-    root = root->children[0].get();
+//    PageNode* root = tree.getRoot();
+//    if (!root) return;
+//    root = root->children[0].get();
 
-    // Start the recursive traversal from the root node
-    traversePageTreeRecursive(root, output_yaml);
+//    // Start the recursive traversal from the root node
+//    traversePageTreeRecursive(root, output_yaml);
 
-    // Convert the YAML node to a string
-    std::stringstream yaml_stream;
-    yaml_stream << output_yaml;
+//    // Convert the YAML node to a string
+//    std::stringstream yaml_stream;
+//    yaml_stream << output_yaml;
 
-    std::string yaml_str = yaml_stream.str();
+//    std::string yaml_str = yaml_stream.str();
 
-    // Trim leading or trailing whitespace
-    yaml_str = trimLeadingWhitespaceFromEachLine(yaml_str);
+//    // Trim leading or trailing whitespace
+//    yaml_str = trimLeadingWhitespaceFromEachLine(yaml_str);
 
-    std::ofstream outfile("tmp_traverse_test.yaml");
-    if (outfile.is_open()) {
-        outfile << yaml_str;
-        outfile.close();
-    } else {
-        std::cerr << "Failed to open YAML file for writing" << std::endl;
-    }
-}
+//    std::ofstream outfile("tmp_traverse_test.yaml");
+//    if (outfile.is_open()) {
+//        outfile << yaml_str;
+//        outfile.close();
+//    } else {
+//        std::cerr << "Failed to open YAML file for writing" << std::endl;
+//    }
+//}
 
 void MainWindow::on_testButton_clicked()
 {
+    constexpr const char* kRootNodeSkipName = "Main Menu";
+
     uint8_t result[serializer::kVelocityByteArraySize];
     serializer::serialize_velocity(result);
     serializer::deserialize_velocity(result);
     std::cout << "----------serialization-test completed-------------\n";
 
-//    tree.printTree();
-    traversePageTree();
+    tree.printTree();
+    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
+    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
     std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
 }
 
