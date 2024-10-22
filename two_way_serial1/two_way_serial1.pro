@@ -79,9 +79,10 @@ RESOURCES += \
     app_resource.qrc
 
 DISTFILES += \
-    tabview-tree.csv \
     ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
     ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
     command_script_expamle.json \
     ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.yaml \
-    command_script_expamle.yaml
+    command_script_expamle.yaml \
+    PageTree.csv \
+    PageTree.yaml

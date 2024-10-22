@@ -84,6 +84,38 @@ bool PageTree::parseCSV(const std::string& filepath) {
     return true;
 }
 
+bool PageTree::parseYAML(const std::string& filepath) {
+    std::ifstream file(filepath);
+    if (!file.is_open()) {
+        qDebug() << "Error: Unable to open file " << filepath.c_str();
+        return false;
+    }
+
+    YAML::Node yamlData = YAML::LoadFile(filepath);
+
+    // Function to recursively create PageNodes from YAML
+    std::function<void(const YAML::Node&, PageNode*)> YaparseNode = [&](const YAML::Node& node, PageNode* parentNode) {
+        std::string pageName = node["page_display_name"].as<std::string>();
+        auto newNode = std::make_unique<PageNode>(pageName);
+
+        // Add the new node to its parent
+        parentNode->addChild(std::move(newNode));
+        PageNode* currentNode = parentNode->children.back().get();
+
+        // If the current node has sub-pages, recursively parse them
+        if (node["sub_pages"]) {
+            for (const auto& subPage : node["sub_pages"]) {
+                parseNode(subPage, currentNode);
+            }
+        }
+    };
+
+    // Start parsing from the root node of the YAML structure
+    parseNode(yamlData, root.get());
+
+    return true;
+}
+
 void PageTree::printTree() const {
     root->printTree();
 }

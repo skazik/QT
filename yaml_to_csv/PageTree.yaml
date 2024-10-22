@@ -1,0 +1,63 @@
+pages:
+- page_display_name: Main Menu
+  sub_pages:
+    - page_display_name: Bend & Rotate
+      sub_pages:
+        - page_display_name: Bend & Rotate Segment
+          sub_pages:
+            - page_display_name: Link 1 Bend & Rotate
+    - page_display_name: LED Lights
+      sub_pages:
+        - page_display_name: Brightness
+    - page_display_name: Shape Selection
+      sub_pages:
+        - page_display_name: Straight
+          sub_pages:
+            - page_display_name: Straight Selected
+        - page_display_name: Elbow 1
+          sub_pages:
+            - page_display_name: Elbow 1 Selected
+        - page_display_name: Elbow 2
+          sub_pages:
+            - page_display_name: Elbow 2 Selected
+        - page_display_name: Elbow 3
+          sub_pages:
+            - page_display_name: Elbow 3 Selected
+        - page_display_name: Stairstep
+          sub_pages:
+            - page_display_name: Stairstep Selected
+    - page_display_name: Joint Control
+      sub_pages:
+        - page_display_name: Joint Control Segment
+          sub_pages:
+            - page_display_name: Link 1 Joint Control
+    - page_display_name: Setup
+      sub_pages:
+        - page_display_name: Pack Robot
+          sub_pages:
+            - page_display_name: Pack Robot Selected
+        - page_display_name: Unpack Robot
+          sub_pages:
+            - page_display_name: Unpack Robot Selected
+        - page_display_name: System Connection
+          sub_pages:
+            - page_display_name: System Connection Selected
+        - page_display_name: Calibrate Joystick
+          sub_pages:
+            - page_display_name: Calibrate Joystick Selected
+        - page_display_name: Robot Calibration
+          sub_pages:
+            - page_display_name: Home Segments
+              sub_pages:
+                - page_display_name: Home Segments Select
+            - page_display_name: Move to Straight
+              sub_pages:
+                - page_display_name: Move to Straight Segment
+                  sub_pages:
+                    - page_display_name: Link 1 Move to Straight
+            - page_display_name: Set Position
+              sub_pages:
+                - page_display_name: Reset Position
+    - page_display_name: Information
+      sub_pages:
+        - page_display_name: System Information

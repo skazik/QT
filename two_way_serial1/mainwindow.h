@@ -65,8 +65,6 @@ private slots: // for Camera
     void on_flipButton_clicked();
     void on_portName_returnPressed();
     void load_rec_edit_from_tmp();
-//    void copy_to_file(QString dest);
-//    void copy_from_file(QString src);
 
     void on_loadButton_clicked();
     void on_testButton_clicked();
@@ -75,13 +73,14 @@ private slots: // for Camera
     void on_navigator_ckeck_toggled(bool checked) { navigator_sync = checked; }
 
 private:
+    enum eLoadsource_t {
+        LOAD_CSV,
+        LOAD_YAML
+    };
+
     void SaveConfig();
     void RestoreConfig();
-    void parseAndLoadCsvPageTree();
-//    void traversePageTree_json();
-//    void traversePageTreeRecursive_json(PageNode* currentNode, json& output_json, bool enter_on_right = false);
-//    void traversePageTree();
-//    void traversePageTreeRecursive(PageNode* currentNode, YAML::Node& output_yaml, bool enter_on_right = false);
+    void parseAndLoadPageTree(eLoadsource_t from);
 
 private:
     Ui::MainWindow *ui;
