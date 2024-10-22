@@ -158,10 +158,10 @@ void MainWindow::on_serial_input(QString line)
 {
     static const char* kBaseStationPefix = "Base station - rssi:";
     static const char* kHandleControllerPrefix = "handle controller loop:";
-    static const char* kSerialCommandEcho = "[*" ;// "[Bgn";
+    static const char* kSerialCommandEcho = "[*"; // "[Bgn";
     static const char* kScrActNotification = "feature_idx:";
 
-    qDebug() << line;
+    if (serial_debug) qDebug() << line;
     const char* tmp = nullptr;
 
     if (line.contains(kScrActNotification)) {
@@ -178,10 +178,10 @@ void MainWindow::on_serial_input(QString line)
         if (nullptr != (tmp = strstr(line.toStdString().c_str(), kSerialCommandEcho))) {
             QString qtmp(tmp);
             ui->textEdit->append(qtmp);
-            qDebug() << qtmp;
+            if (serial_debug) qDebug() << qtmp;
             return;
         }
-        qDebug() << "problem with parse: check formatting:\n" << line;
+        if (serial_debug) qDebug() << "problem with parse: check formatting:\n" << line;
     }
     else if (line.contains(kBaseStationPefix)) {
         if (nullptr != (tmp = strstr(line.toStdString().c_str(), kBaseStationPefix))) {
@@ -198,7 +198,7 @@ void MainWindow::on_serial_input(QString line)
                 return;
             }
         }
-        qDebug() << "problem with parse: check formatting:\n" << line;
+        if (serial_debug) qDebug() << "problem with parse: check formatting:\n" << line;
     }
     else if (line.contains(kHandleControllerPrefix)) {
         if (nullptr != (tmp = strstr(line.toStdString().c_str(), kHandleControllerPrefix))) {
@@ -212,7 +212,7 @@ void MainWindow::on_serial_input(QString line)
                 return;
             }
         }
-        qDebug() << "problem with parse: check formatting:\n" << line;
+        if (serial_debug) qDebug() << "problem with parse: check formatting:\n" << line;
     }
 
     ui->textEdit->append(line);

@@ -22,7 +22,7 @@ public slots:
     void startCamera();    // Slot to start the camera
     void stopCamera();     // Slot to stop the camera
     void setCameraZoom(bool reset = false, int digital_zoom = 0);
-    int  getCameraZoom() { return camera->focus()->digitalZoom();}
+    int  getCameraZoom();
     void saveLastFrame();
 
 private slots:
@@ -42,6 +42,8 @@ private:
 
     cv::VideoCapture cap;
     QTimer *cap_timer;
+    double zoom_factor{1.0};
+    cv::Mat getZoomedFrame(const cv::Mat &frame);
 };
 
 #endif // WEBCAMERA_H

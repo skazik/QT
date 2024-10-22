@@ -95,19 +95,49 @@ QCameraInfo WebCamera::getPreferredCamera() {
     return cameras.first();
 }
 
+cv::Mat WebCamera::getZoomedFrame(const cv::Mat &frame) {
+    if (zoom_factor <= 1.0) {
+        return frame.clone(); // No zoom, return the original frame
+    }
+
+    int width = frame.cols;
+    int height = frame.rows;
+    int new_width = static_cast<int>(width / zoom_factor);
+    int new_height = static_cast<int>(height / zoom_factor);
+
+    int x_start = (width - new_width) / 2;
+    int y_start = (height - new_height) / 2;
+
+    // Define the region of interest (ROI) and crop it
+    cv::Rect roi(x_start, y_start, new_width, new_height);
+    cv::Mat cropped_frame = frame(roi);
+
+    // Resize the cropped frame back to the original size for the zoom effect
+    cv::Mat zoomed_frame;
+    cv::resize(cropped_frame, zoomed_frame, frame.size());
+
+    return zoomed_frame;
+}
+
 void WebCamera::updateFrame() {
     cv::Mat frame;
     cap >> frame; // Capture a new frame from the camera
     if (!frame.empty()) {
+
+        frame = getZoomedFrame(frame);
+
         // Convert the frame from BGR (OpenCV default) to RGB
         cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
 
         // Convert the cv::Mat to QImage
-        QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+        QImage image(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
 
-        // Display the QImage in the QLabel
-        //imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(imageLabel->size(), Qt::KeepAspectRatio));
-        MainWindow::getMainWinPtr()->on_camera_image_update(qimg);
+        // Make a deep copy of the image and unmap the frame
+        bool flipped = MainWindow::getMainWinPtr()->is_camera_flipped();
+        flippedImage = image.mirrored(flipped, flipped).copy();
+
+        // Display the flipped image in the UI label
+        MainWindow::getMainWinPtr()->on_camera_image_update(flippedImage);
     }
 }
 
@@ -153,6 +183,10 @@ void WebCamera::processVideoFrame(const QVideoFrame &frame) {
     }
 }
 
+int  WebCamera::getCameraZoom(){
+    return camera ? camera->focus()->digitalZoom() : static_cast<uint8_t>(zoom_factor*10);
+}
+
 void WebCamera::setCameraZoom(bool reset, int digital_zoom) {
     if (camera) {
         QCameraFocus *cameraFocus = camera->focus();
@@ -162,6 +196,13 @@ void WebCamera::setCameraZoom(bool reset, int digital_zoom) {
             cameraFocus->zoomTo(1, digital_zoom ? digital_zoom : cameraFocus->digitalZoom()+1);
         }
         // qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
+    }
+    else if (reset) {
+        zoom_factor = 1.0;
+    } else if (digital_zoom > 0) {
+        zoom_factor = (double)digital_zoom/10;
+    } else {
+        zoom_factor += 0.2;
     }
 }
 

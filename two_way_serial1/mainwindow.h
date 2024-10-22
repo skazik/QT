@@ -69,6 +69,7 @@ private slots: // for Camera
 
     void on_captureButton_clicked() { webCamera->saveLastFrame(); }
     void on_navigator_ckeck_toggled(bool checked) { navigator_sync = checked; }
+    void on_radioButton_toggled(bool checked) { serial_debug = checked; }
 
 private:
     enum eLoadsource_t {
@@ -96,6 +97,7 @@ private:
     bool navigator_sync{false};
     PageTree tree;
     Navigator navigator;
+    bool serial_debug{false};
 
     static inline const QVector<QString> page_names = {
         "Bend & Rotate",
