@@ -94,7 +94,7 @@ bool PageTree::parseYAML(const std::string& filepath) {
     YAML::Node yamlData = YAML::LoadFile(filepath);
 
     // Function to recursively create PageNodes from YAML
-    std::function<void(const YAML::Node&, PageNode*)> YaparseNode = [&](const YAML::Node& node, PageNode* parentNode) {
+    std::function<void(const YAML::Node&, PageNode*)> parseNode = [&](const YAML::Node& node, PageNode* parentNode) {
         std::string pageName = node["page_display_name"].as<std::string>();
         auto newNode = std::make_unique<PageNode>(pageName);
 

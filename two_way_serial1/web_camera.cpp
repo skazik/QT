@@ -12,23 +12,42 @@
 
 WebCamera::WebCamera(QObject *parent) : QObject(parent) {
     viewfinder = new QCameraViewfinder();
-    camera = new QCamera(getPreferredCamera(), this);
-    camera->setViewfinder(viewfinder);
 
-    // Set up video probe to intercept video frames
-    videoProbe = new QVideoProbe(this);
+    auto cameraInfo = getPreferredCamera();
+    if (cameraInfo.isNull()) {
+        cap.open(2, cv::CAP_V4L2);
+        assert(cap.isOpened());
 
-    if (videoProbe->setSource(camera)) {
-        // Connect video frame captured by the probe to a processing function
-        connect(videoProbe, &QVideoProbe::videoFrameProbed, this, &WebCamera::processVideoFrame);
+        // Set up the QTimer to grab frames and update the QLabel
+        cap_timer = new QTimer(this);
+        connect(cap_timer, &QTimer::timeout, this, &WebCamera::updateFrame);
+        cap_timer->start(100); // Refresh every xxx milliseconds
+    }
+    else {
+        camera = new QCamera(cameraInfo, this);
+        camera->setViewfinder(viewfinder);
+
+        // Set up video probe to intercept video frames
+        videoProbe = new QVideoProbe(this);
+
+        if (videoProbe->setSource(camera)) {
+            // Connect video frame captured by the probe to a processing function
+            connect(videoProbe, &QVideoProbe::videoFrameProbed, this, &WebCamera::processVideoFrame);
+        }
     }
 }
 
 WebCamera::~WebCamera() {
     qDebug() << "Cleaning up WebCamera...";
-    stopCamera();  // Ensure the camera stops when the object is deleted
-    delete viewfinder; // Clean up viewfinder
-    delete camera; // Clean up camera
+    if (camera) {
+        stopCamera();  // Ensure the camera stops when the object is deleted
+        delete viewfinder; // Clean up viewfinder
+        delete camera; // Clean up camera
+    }
+    else if (cap.isOpened()) {
+        cap.release();
+    }
+
 }
 
 QCameraViewfinder* WebCamera::getViewfinder() {
@@ -39,8 +58,6 @@ void WebCamera::startCamera() {
     if (camera) {
         camera->start();
         emit cameraStarted();
-    } else {
-        qDebug() << "Camera is not initialized!";
     }
 }
 
@@ -48,8 +65,6 @@ void WebCamera::stopCamera() {
     if (camera) {
         camera->stop();
         emit cameraStopped();
-    } else {
-        qDebug() << "Camera is not initialized!";
     }
 }
 
@@ -78,6 +93,22 @@ QCameraInfo WebCamera::getPreferredCamera() {
 
     // Fall back to the first available camera (likely built-in)
     return cameras.first();
+}
+
+void WebCamera::updateFrame() {
+    cv::Mat frame;
+    cap >> frame; // Capture a new frame from the camera
+    if (!frame.empty()) {
+        // Convert the frame from BGR (OpenCV default) to RGB
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+
+        // Convert the cv::Mat to QImage
+        QImage qimg(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+
+        // Display the QImage in the QLabel
+        //imageLabel->setPixmap(QPixmap::fromImage(qimg).scaled(imageLabel->size(), Qt::KeepAspectRatio));
+        MainWindow::getMainWinPtr()->on_camera_image_update(qimg);
+    }
 }
 
 void WebCamera::processVideoFrame(const QVideoFrame &frame) {
@@ -123,13 +154,15 @@ void WebCamera::processVideoFrame(const QVideoFrame &frame) {
 }
 
 void WebCamera::setCameraZoom(bool reset, int digital_zoom) {
-    QCameraFocus *cameraFocus = camera->focus();
-    if (reset) {
-        cameraFocus->zoomTo(1,1);
-    } else {
-        cameraFocus->zoomTo(1, digital_zoom ? digital_zoom : cameraFocus->digitalZoom()+1);
+    if (camera) {
+        QCameraFocus *cameraFocus = camera->focus();
+        if (reset) {
+            cameraFocus->zoomTo(1,1);
+        } else {
+            cameraFocus->zoomTo(1, digital_zoom ? digital_zoom : cameraFocus->digitalZoom()+1);
+        }
+        // qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
     }
-    // qDebug() << "Zoom digital" << cameraFocus->digitalZoom();
 }
 
 void WebCamera::saveLastFrame() {

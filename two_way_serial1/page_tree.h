@@ -31,6 +31,7 @@ public:
 
     // Method to parse CSV file and construct the tree
     bool parseCSV(const std::string& filepath);
+    bool parseYAML(const std::string& filepath);
 
     // Method to print the tree structure
     void printTree() const;

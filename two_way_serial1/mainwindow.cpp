@@ -40,9 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
     // Move the WebCamera object to the camera thread
     webCamera->moveToThread(cameraThread);
 
-    connect(webCamera, &WebCamera::cameraStarted, this, &MainWindow::onCameraStarted);
-    connect(webCamera, &WebCamera::cameraStopped, this, &MainWindow::onCameraStopped);
-
     // Ensure the WebCamera object is deleted when the thread finishes
     connect(cameraThread, &QThread::finished, webCamera, &QObject::deleteLater);
 
@@ -56,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->portName->setText(SerialCommunication::get_port_name());
     send_message("Hello");
 
-    this->parseAndLoadPageTree(LOAD_CSV);
+    this->parseAndLoadPageTree(LOAD_CSV); //LOAD_YAML); //
 }
 
 MainWindow::~MainWindow() {
@@ -114,16 +111,6 @@ void MainWindow::onStartCamera() {
 
 void MainWindow::onStopCamera() {
     QMetaObject::invokeMethod(webCamera, "stopCamera", Qt::QueuedConnection);
-}
-
-void MainWindow::onCameraStarted() {
-    // Handle any UI updates needed when the camera starts
-    qDebug() << "Camera started!";
-}
-
-void MainWindow::onCameraStopped() {
-    // Handle any UI updates needed when the camera stops
-    qDebug() << "Camera stopped!";
 }
 
 void MainWindow::send_message(QString txt)
@@ -545,7 +532,7 @@ void MainWindow::parseAndLoadPageTree(eLoadsource_t from) {
 
     // NOTE: PageTree.csv is copy from /Qt/eez_parser/PageTree.csv
     // NOTE: PageTree.yaml is copy from /Qt/eez_parser/PageTree.yaml
-    bool ret = from == LOAD_CSV ? tree.parseCSV("PageTree.csv") : false;
+    bool ret = from == LOAD_CSV ? tree.parseCSV("PageTree.csv") : tree.parseYAML("PageTree.yaml");
     assert(ret);
 
     navigator.setRoot(tree.getRoot());

@@ -19,13 +19,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-copy_files.commands = mkdir -p $$OUT_PWD/ ; cp $$PWD/tabview-tree.csv $$OUT_PWD/
+copy_files.commands = mkdir -p $$OUT_PWD/ ; cp $$PWD/PageTree.* $$OUT_PWD/
 copy_files.depends = $$SOURCES
 
 QMAKE_EXTRA_TARGETS += copy_files
 PRE_TARGETDEPS += copy_files
 QMAKE_CXXFLAGS += -Wno-expansion-to-defined -Wno-deprecated-copy
 QMAKE_CXXFLAGS += -std=c++17
+
+# for VideoCap
 INCLUDEPATH += /usr/include/opencv4
 LIBS += -L/usr/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio
 CONFIG += link_pkgconfig

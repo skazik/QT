@@ -48,8 +48,6 @@ private slots: // for serial
 private slots: // for Camera
     void onStartCamera();  // Slot for starting the camera
     void onStopCamera();   // Slot for stopping the camera
-    void onCameraStarted();  // Slot when camera has started
-    void onCameraStopped();  // Slot when camera has stopped
 
     void on_quitButton_clicked();
     void on_startRecord_clicked();

@@ -7,6 +7,7 @@
 #include <QVideoProbe>
 #include <QVideoFrame>
 #include <QImage>
+#include <opencv2/opencv.hpp>
 
 class WebCamera : public QObject {
     Q_OBJECT
@@ -26,17 +27,21 @@ public slots:
 
 private slots:
     void processVideoFrame(const QVideoFrame &frame); // Process frames directly
+    void updateFrame();
 
 signals:
     void cameraStarted();  // Signal to indicate camera started
     void cameraStopped();  // Signal to indicate camera stopped
 
 private:
-    QCamera *camera;          // Camera object
+    QCamera *camera{nullptr};       // Camera object
     QCameraViewfinder *viewfinder;  // Camera viewfinder
     QCameraInfo getPreferredCamera();  // Method to get preferred camera
     QVideoProbe *videoProbe; // Probe to capture video frames
     QImage flippedImage;
+
+    cv::VideoCapture cap;
+    QTimer *cap_timer;
 };
 
 #endif // WEBCAMERA_H
