@@ -16,7 +16,10 @@ WebCamera::WebCamera(QObject *parent) : QObject(parent) {
     auto cameraInfo = getPreferredCamera();
     if (cameraInfo.isNull()) {
         cap.open(2, cv::CAP_V4L2);
-        assert(cap.isOpened());
+        if (!cap.isOpened()) {
+            std::cout << "camera is busy\n" << std::flush;
+            return;
+        }
 
         // Set up the QTimer to grab frames and update the QLabel
         cap_timer = new QTimer(this);

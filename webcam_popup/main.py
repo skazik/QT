@@ -78,7 +78,7 @@ class WebcamWindow(QWidget):
         # Set window properties: resizable and always on top
         self.setWindowFlags(Qt.WindowStaysOnTopHint)  # This flag ensures the window stays on top
         self.setWindowTitle("Webcam Feed")
-        self.resize(240, 240)  # Set initial window size
+        self.resize(320, 240)  # Set initial window size
 
         # Create a label to display the webcam video
         self.label = QLabel(self)
@@ -97,7 +97,7 @@ class WebcamWindow(QWidget):
         self.cap = self.select_camera()
 
         # Start capturing video from the selected webcam
-        self.timer.start(30)
+        self.timer.start(50)
 
     def select_camera(self):
         # Get available camera indexes

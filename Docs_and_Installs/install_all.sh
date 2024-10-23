@@ -71,3 +71,7 @@ sudo apt-get install openssl
 #sudo /tmp/drake-1.17.0/setup/ubuntu/install_prereqs.sh
 
 
+pip install pandas
+pip install pyserial
+sudo snap install ruff
+
