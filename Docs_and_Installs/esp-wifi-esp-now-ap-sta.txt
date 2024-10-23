@@ -1,0 +1,54 @@
+Yes, an ESP32 can be set to operate as both a Wi-Fi station and an access point simultaneously by setting its mode to WIFI_AP_STA. This is known as combined AP-STA mode. 
+Here are some other ways an ESP32 can be used: 
+Access point (AP)
+The ESP32 creates its own Wi-Fi network, allowing nearby devices to connect to it without needing to connect to a router. This is also known as soft-AP mode. 
+Station
+The ESP32 connects to a wireless router, which acts as an access point. The ESP32 can then be accessed through the local network. 
+Server and client
+One ESP32 board can act as a server, and another can act as a client. The server creates its own wireless network. 
+The typical Wi-Fi range of an ESP32 is around 50–200 meters, depending on the antennas. 
+Wi-Fi - — ESP-IDF Programming Guide v5.3.1 documentation
+Start WiFi according to current configuration If mode is WIFI_MODE_STA, it creates station control block and starts station If mod...
+
+Espressif
+How to Set an ESP32 Access Point (AP) for Web Server
+The ESP32 can act as a Wi-Fi station, as an access point, or both. In this tutorial we'll show you how to set the ESP32 as an acce...
+Random Nerd Tutorials
+Wi-Fi - ESP32-C3 - — ESP-IDF Programming Guide v5.3.1 ...
+Connect WiFi station to the AP. ... 2. If station interface is connected to an AP, call esp_wifi_disconnect to disconnect. ... 3.
+
+Espressif
+Show all
+Show more
+ESP32 connects to an access point. AP mode (aka Soft-AP mode or Access Point mode). Stations connect to the ESP32. Station/AP-coexistence mode (ESP32 is concurrently an access point and a station connected to another access point).
+
+Wi-Fi - — ESP-IDF Programming Guide v5.3.1 documentation
+
+Espressif
+https://docs.espressif.com › api-reference › network › es...
+About featured snippets
+•
+Feedback
+People also ask
+How many devices can connect to ESP32 access point?
+Currently, ESP32 Wi-Fi supports up to 10 Wi-Fi connections. If max_connection > 10, soft-AP defaults the value to 10. If you use softAP, you can set the max number of connections to 16 I believe.Aug 29, 2018
+
+How many clients can connect to an ESP32? [duplicate]
+
+Arduino Stack Exchange
+https://arduino.stackexchange.com › questions › how-m...
+Search for: How many devices can connect to ESP32 access point?
+Can ESP32 be both server and client?
+ESP32 Client-Server Wi-Fi Communication Between Two Boards ...
+One ESP32 board will act as a server and the other ESP32 board will act as a client. The following diagram shows an overview of how everything works. What is this? The ESP32 server creates its own wireless network (ESP32 Soft-Access Point).
+
+ESP32 Client-Server Wi-Fi Communication Between Two Boards
+
+Random Nerd Tutorials
+https://randomnerdtutorials.com › esp32-client-server-wi-fi
+Search for: Can ESP32 be both server and client?
+Can I use espnow and Wi-Fi at the same time?
+Can ESP32 do Wi-Fi and Bluetooth at the same time?
+You can use CONFIG_BTDM_CTRL_PINNED_TO_CORE_CHOICE and CONFIG_BT_BLUEDROID_PINNED_TO_CORE_CHOICE (or CONFIG_BT_NIMBLE_PINNED_TO_CORE_CHOICE) to put the tasks of the Bluetooth controller and the host protocol stack on the same CPU, and then use CONFIG_ESP_WIFI_TASK_CORE_ID to place the task of the Wi-Fi protocol stack ...
+
+RF Coexistence - ESP32 - — ESP-IDF Programming Guide v5 ...
