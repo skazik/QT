@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <unordered_set>
 
 // Function to trim whitespace from the start and end of a string
 std::string trim(const std::string& str) {
@@ -225,6 +226,254 @@ void traverse_pagetree_yaml(PageNode* root, const char *root_name) {
         outfile.close();
     } else {
         std::cerr << "Failed to open YAML file for writing" << std::endl;
+    }
+}
+
+static bool start_found = false, end_found = false, direct_order = true;
+bool to_store() {
+    return (start_found ^ end_found);
+}
+void check_start_end(std::string node_name, const char* start_name, const char* end_name,YAML::Node& output_yaml, YAML::Node& entry) {
+    bool done = false;
+    if (start_found && end_found)
+        return;
+    if (0 == node_name.compare(start_name)) {
+        if (to_store()) {
+            if (start_found) // if previously found - reset output_yaml
+                output_yaml = YAML::Node();  // Reassign to an empty node
+            output_yaml.push_back(entry);
+            done = true;
+        }
+        start_found = true;
+        if (done) return;
+    }
+    if (0 == node_name.compare(end_name)) {
+        if (to_store()) {
+            if (end_found) // if previously found - reset output_yaml
+                output_yaml = YAML::Node();  // Reassign to an empty node
+            output_yaml.push_back(entry);
+            done = true;
+        }  else {
+            direct_order = false;
+        }
+        end_found = true;
+        if (done) return;
+    }
+    if (to_store()) output_yaml.push_back(entry);
+}
+
+void traverse_pagetree_recursive_path(PageNode* currentNode, YAML::Node& output_yaml, const char *root_name, bool enter_on_right, const char* start_name, const char* end_name) {
+    assert(currentNode);
+
+    // Process the current node as "OK" when visiting it initially except "Main Menu"
+    if (0 != currentNode->name.compare(root_name)) {
+        YAML::Node entry;
+        entry["command"] = enter_on_right ? "Right" : "OK";
+        entry["node_name"] = currentNode->name;
+
+        check_start_end(currentNode->name, start_name, end_name, output_yaml, entry);
+    }
+
+    if (currentNode->children.empty()) {
+        // No children - return back
+        return;
+    }
+
+    // Recursively traverse through each child node
+    bool _print_on_right = false;
+    for (int index = 0; index < (int)currentNode->children.size(); _print_on_right = true, index++) {
+        auto child = currentNode->children[index].get();
+
+        // Recursive call for the child node
+        traverse_pagetree_recursive_path(child, output_yaml, root_name, _print_on_right, start_name, end_name);
+    }
+
+    // Now return to itself
+    if (0 != currentNode->name.compare(root_name)) {
+        YAML::Node entry;
+        entry["command"] = "Rear";
+        entry["node_name"] = currentNode->name;
+
+        check_start_end(currentNode->name, start_name, end_name, output_yaml, entry);
+    }
+}
+
+void print_yaml_in_reverse(YAML::Node output_yaml) {
+    std::vector<YAML::Node> entries;
+    std::vector<YAML::Node> processed_entries;
+
+    // Iterate through the original YAML::Node
+    for (auto entry : output_yaml) {
+        // rename command to oposite
+        if (entry["command"]) {
+            std::string command = entry["command"].as<std::string>();
+            if (command == "Rear") {
+                entry["command"] = "OK";
+            } else if (command == "OK") {
+                entry["command"] = "Rear";
+            } else if (command == "Right") {
+                entry["command"] = "Left";
+            }
+        }
+        // Store the modified entry in the vector for later reversal
+        entries.push_back(entry);
+    }
+
+    // Reverse the vector of YAML nodes
+    std::reverse(entries.begin(), entries.end());
+
+    // Print each entry's fields separately in the reversed order
+    // Track the index and the total size for identifying the first and last entries
+    std::size_t total_entries = entries.size();
+    std::size_t index = 0;
+    YAML::Node tmp_entry;
+    for (const auto& entry : entries) {
+        YAML::Node processed_entry;
+
+        // Check if it's the first entry
+        bool is_first = (index == 0);
+        // Check if it's the last entry
+        bool is_last = (index == total_entries - 1);
+
+        if (is_first) {
+            processed_entry["command"] = "start";
+            if (entry["node_name"]) {
+                processed_entry["node_name"] = entry["node_name"].as<std::string>();
+            } else {
+                processed_entry["node_name"] = "-error-";
+            }
+            if (entry["command"]) {
+                tmp_entry["command"] = entry["command"].as<std::string>();
+            } else {
+                tmp_entry["command"] = "-error-";
+            }
+        }
+        else if (is_last) {
+            processed_entry["command"] = "end";
+            if (entry["node_name"]) {
+                processed_entry["node_name"] = entry["node_name"].as<std::string>();
+            } else {
+                processed_entry["node_name"] = "-error-";
+            }
+        }
+        else {
+            processed_entry["command"] = tmp_entry["command"].as<std::string>();
+            if (entry["node_name"]) {
+                processed_entry["node_name"] = entry["node_name"].as<std::string>();
+            } else {
+                processed_entry["node_name"] = "-error-";
+            }
+            if (entry["command"]) {
+                tmp_entry["command"] = entry["command"].as<std::string>();
+            } else {
+                tmp_entry["command"] = "-error-";
+            }
+        }
+
+        // Store the processed entry in the vector
+        processed_entries.push_back(processed_entry);
+        // Increment the index counter
+        ++index;
+    }
+    // Now output the processed entries in the desired format
+    for (const auto& entry : processed_entries) {
+        if (entry["command"]) {
+            std::cout << "- command: " << entry["command"].as<std::string>() << std::endl;
+        }
+        if (entry["node_name"]) {
+            std::cout << "  node_name: " << entry["node_name"].as<std::string>() << std::endl;
+        }
+    }
+}
+
+void giigle_print_yaml_in_reverse(YAML::Node output_yaml) {
+    std::vector<YAML::Node> entries;
+    std::vector<YAML::Node> processed_entries;
+
+    // Iterate through the original YAML::Node and modify commands
+    for (auto entry : output_yaml) {
+        if (entry["command"]) {
+            std::string command = entry["command"].as<std::string>();
+            if (command == "Rear") {
+                entry["command"] = "OK";
+            } else if (command == "OK") {
+                entry["command"] = "Rear";
+            } else if (command == "Right") {
+                entry["command"] = "Left";
+            }
+        }
+        entries.push_back(entry);
+    }
+
+    // Reverse the vector of YAML nodes
+    std::reverse(entries.begin(), entries.end());
+
+    // Track the index and total size for identifying first and last entries
+    std::size_t total_entries = entries.size();
+    std::size_t index = 0;
+
+    // Iterate over the reversed entries
+    for (const auto& entry : entries) {
+        YAML::Node processed_entry;
+
+        // Check if it's the first entry
+        bool is_first = (index == 0);
+        // Check if it's the last entry
+        bool is_last = (index == total_entries - 1);
+
+        if (is_first) {
+            processed_entry["command"] = "start";
+        } else if (is_last) {
+            processed_entry["command"] = "end";
+        }
+
+        // Add node_name if it exists
+        if (entry["node_name"]) {
+            processed_entry["node_name"] = entry["node_name"].as<std::string>();
+        }
+
+        // Add the command unless it's the last entry
+        if (!is_last && entry["command"]) {
+            processed_entry["command"] = entry["command"].as<std::string>();
+        }
+
+        // Store the processed entry in the vector
+        processed_entries.push_back(processed_entry);
+
+        // Increment the index counter
+        ++index;
+    }
+
+    // Now output the processed entries in the desired format
+    for (const auto& entry : processed_entries) {
+        if (entry["command"]) {
+            std::cout << "- command: " << entry["command"].as<std::string>() << std::endl;
+        }
+        if (entry["node_name"]) {
+            std::cout << "  node_name: " << entry["node_name"].as<std::string>() << std::endl;
+        }
+    }
+}
+
+
+void traverse_pagetree_path(PageNode* root, const char *root_name, const char* start_name, const char* end_name) {
+    YAML::Node output_yaml;  // Store all YAML commands here
+
+    if (!root) return;
+    root = root->children[0].get();
+
+    // Start the recursive traversal from the root node
+    start_found = false, end_found = false, direct_order = true;
+    traverse_pagetree_recursive_path(root, output_yaml, root_name, false, start_name, end_name);
+
+    std::cout << "start: " << start_name << "\nend: " << end_name << std::endl;
+    if (direct_order) {
+        std::stringstream yaml_stream;
+        yaml_stream << output_yaml;
+        std::string yaml_str = yaml_stream.str();
+        std::cout << yaml_str << std::endl;
+    } else {
+        print_yaml_in_reverse(output_yaml);
     }
 }
 

@@ -473,7 +473,7 @@ void MainWindow::on_loadButton_clicked()
 
 void MainWindow::on_testButton_clicked()
 {
-    constexpr const char* kRootNodeSkipName = "Main Menu";
+//    constexpr const char* kRootNodeSkipName = "Main Menu";
 
     uint8_t result[serializer::kVelocityByteArraySize];
     serializer::serialize_velocity(result);
@@ -484,9 +484,12 @@ void MainWindow::on_testButton_clicked()
 //    std::cout << "----------test_navigator completed-------------\n";
 
     tree.printTree();
-    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
-    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
-    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
+//    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
+//    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
+      const char* start_name = "Calibrate Joystick Selected";
+      const char* end_name = "Joint Control Segment";
+      traverse_pagetree_path(tree.getRoot(), "Main Menu", start_name, end_name);
+//    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
 }
 
 void MainWindow::SaveConfig() {

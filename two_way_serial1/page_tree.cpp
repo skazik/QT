@@ -5,7 +5,77 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cstdint>
+#include <iomanip>
 #include <QDebug>
+
+#include <string>
+#include <cstdint>
+#include <iostream>
+#include <iomanip>
+
+std::uint16_t simple_hash(const std::string& name) {
+    std::uint32_t hash_value = 5381;  // Same initial value as in Python
+
+    for (char c : name) {
+        // Make sure we match the Python's (hash_value << 5) + hash_value + ord(c)
+        hash_value = ((hash_value << 5) + hash_value) + static_cast<std::uint8_t>(c);
+    }
+
+    return static_cast<std::uint16_t>(hash_value & 0xFFFF);  // Ensure 16-bit result like Python
+}
+
+int test_hash_values() {
+    // Example usage
+    std::string names[] = {
+        "Root",
+        "Main Menu",
+        "Bend & Rotate",
+        "Bend & Rotate Segment",
+        "Link 1 Bend & Rotate",
+        "LED Lights",
+        "Brightness",
+        "Shape Selection",
+        "Straight",
+        "Straight Selected",
+        "Elbow 1",
+        "Elbow 1 Selected",
+        "Elbow 2",
+        "Elbow 2 Selected",
+        "Elbow 3",
+        "Elbow 3 Selected",
+        "Stairstep",
+        "Stairstep Selected",
+        "Joint Control",
+        "Joint Control Segment",
+        "Link 1 Joint Control",
+        "Setup",
+        "Pack Robot",
+        "Pack Robot Selected",
+        "Unpack Robot",
+        "Unpack Robot Selected",
+        "System Connection",
+        "System Connection Selected",
+        "Calibrate Joystick",
+        "Calibrate Joystick Selected",
+        "Robot Calibration",
+        "Home Segments",
+        "Home Segments Select",
+        "Move to Straight",
+        "Move to Straight Segment",
+        "Link 1 Move to Straight",
+        "Set Position",
+        "Reset Position",
+        "Information",
+        "System Information"
+    };
+    for (const auto& name : names) {
+        std::uint16_t hash_value = simple_hash(name);
+        std::cout << std::hex << std::uppercase << std::setw(4) << std::setfill('0')
+                  << hash_value << " " << name << std::endl;
+    }
+    return 0;
+}
 
 PageNode::PageNode(std::string name) : name(std::move(name)) {}
 
@@ -14,10 +84,13 @@ void PageNode::addChild(std::unique_ptr<PageNode> child) {
 }
 
 void PageNode::printTree(int level) const {
+    std::uint16_t hash_value = simple_hash(name);
+    std::cout << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << hash_value;
     for (int i = 0; i < level; ++i) {
         std::cout << "  ";
     }
-    std::cout << name << "\n";
+    std::cout << " " << name << std::endl;
+
     for (const auto& child : children) {
         child->printTree(level + 1);
     }
@@ -118,6 +191,7 @@ bool PageTree::parseYAML(const std::string& filepath) {
 
 void PageTree::printTree() const {
     root->printTree();
+//    test_hash_values();
 }
 
 int PageTree::countLeadingCommas(const std::string& line) const {

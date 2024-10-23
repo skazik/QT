@@ -28,5 +28,6 @@ void traverse_pagetree_recursive_json(PageNode* currentNode, json& output_json, 
 void traverse_pagetree_recursive_yaml(PageNode* currentNode, YAML::Node& output_yaml, const char *root_name, bool enter_on_right = false);
 void traverse_pagetree_json(PageNode *root, const char* root_name);
 void traverse_pagetree_yaml(PageNode *root, const char* root_name);
+void traverse_pagetree_path(PageNode* root, const char *root_name, const char *start_name, const char *end_name);
 
 #endif // UTILS_H

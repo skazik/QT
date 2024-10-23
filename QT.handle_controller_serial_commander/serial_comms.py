@@ -27,9 +27,14 @@ class Timeout:
 class SerialConnection:
     def __init__(self):
         self.ser = None
+        self.test_mode = False
+
+    def set_test_mode(self):
+        self.test_mode = True
 
     def open_serial(self, serial_port, baud_rate):
-        # Open the serial port
+        if self.test_mode:
+            return
         print(
             "Opening comms to " + serial_port + " rate: " + str(baud_rate), flush=True
         )
@@ -43,10 +48,12 @@ class SerialConnection:
                 sys.exit()
         except serial.SerialException as e:
             print(f"Error opening serial port: {e}", flush=True)
+            print("use option --test for testing without serial port", flush=True)
             sys.exit()
 
     def close_serial(self):
-        # Close the serial port
+        if self.test_mode:
+            return
         if self.ser and self.ser.is_open:
             self.ser.close()
             print("Serial port closed", flush=True)
@@ -54,7 +61,8 @@ class SerialConnection:
             print("Serial port is not open", flush=True)
 
     def read_from_device(self):
-        # Read the response from the device
+        if self.test_mode:
+            return
         if self.ser and self.ser.is_open:
             navigator = Navigator()
             while self.ser.in_waiting > 0:
@@ -100,6 +108,8 @@ class SerialConnection:
             print("Serial port is not open", flush=True)
 
     def send_to_device(self, data_to_send, timeout):
+        if self.test_mode:
+            return
         if self.ser and self.ser.is_open:
             self.ser.write(data_to_send)
             tm = Timeout(1)

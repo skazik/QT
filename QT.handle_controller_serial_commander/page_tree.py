@@ -2,19 +2,39 @@ import os
 import sys
 
 import yaml
+from logger import Logger
+
+def simple_hash(name):
+    """
+    Calculate a 16-bit hash from a given string.
+
+    Args:
+        name (str): The input string to hash.
+
+    Returns:
+        int: A 16-bit hash value as an unsigned integer.
+    """
+    hash_value = 5381
+    for char in name:
+        hash_value = ((hash_value << 5) + hash_value) + ord(char)  # hash_value * 33 + ord(char)
+
+    # Return the hash as a 16-bit unsigned integer
+    return hash_value & 0xFFFF  # Use bitwise AND to ensure it fits into 16 bits
 
 
 class PageNode:
     def __init__(self, name):
         self.name = name
+        self.hash = simple_hash(name)
         self.children = []
         self.current_index = 0  # Add this attribute to track the current child index
+        self.log = Logger()
 
     def add_child(self, child):
         self.children.append(child)
 
     def print_tree(self, level=0):
-        print("  " * level + self.name, flush=True)
+        self.log.info(format(self.hash, '04X') + ") " + "  " * level +  self.name)
         for child in self.children:
             child.print_tree(level + 1)
 
@@ -27,6 +47,9 @@ class PageTree:
             cls._instance = super().__new__(cls)
             cls._instance.root = PageNode("Root")
             cls._instance._parse_flx_page_tree()
+            cls.log = Logger()
+
+            cls._instance.print_tree()
         return cls._instance
 
     def __init__(self):
@@ -137,9 +160,49 @@ class PageTree:
         return True
 
     def print_tree(self):
-        print("------------------ using Navigation Tree ------------------------")
+        self.log.info(
+            "------------------ using Navigation Tree ------------------------"
+        )
         self.root.print_tree()
-        print("----------------- end of Navigation Tree ------------------------\n\n")
+        self.log.info(
+            "----------------- end of Navigation Tree ------------------------\n\n"
+        )
+
+    def verify_unique_hashes(self, root):
+        """
+        Verify that all hash values in a PageTree are unique.
+
+        Args:
+            root (PageNode): The root node of the tree.
+
+        Returns:
+            bool: True if all hashes are unique, False if there are duplicates.
+        """
+        hash_set = set()  # Store encountered hash values
+
+        # Traverse the tree using a DFS approach
+        def traverse(node):
+            # Calculate the hash for the current node's name
+            node_hash = simple_hash(node.name)
+
+            # Check if the hash is already in the set
+            if node_hash in hash_set:
+                print(f"Duplicate hash found for node '{node.name}' with hash {node_hash:04X}")
+                return False
+
+            # Add the hash to the set
+            hash_set.add(node_hash)
+
+            # Recursively check the children
+            for child in node.children:
+                if not traverse(child):
+                    return False
+
+            return True
+
+        # Start traversal from the root node
+        return traverse(root)
+
 
     @staticmethod
     def count_leading_commas(line):

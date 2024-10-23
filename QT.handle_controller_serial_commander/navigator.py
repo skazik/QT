@@ -16,8 +16,8 @@ class Navigator:
             page_tree = PageTree()
             cls._instance.current_node = page_tree.root
             # advance to level 3
-            cls._instance.on_enter()
-            cls._instance.on_enter()
+            cls._instance.on_enter(False)
+            cls._instance.on_enter(False)
         return cls._instance
 
     def __init__(self):
@@ -42,6 +42,18 @@ class Navigator:
 
     def set_root(self, root):
         self.current_node = root
+
+    def on_up(self):
+        if self.qdebug_on:
+            self.print_current_page("onUp")
+
+        return self.current_node.name if self.current_node else ""
+
+    def on_down(self):
+        if self.qdebug_on:
+            self.print_current_page("onDown")
+
+        return self.current_node.name if self.current_node else ""
 
     def on_right(self):
         if not self.current_node or not self.history:
@@ -71,7 +83,7 @@ class Navigator:
 
         return self.current_node.name if self.current_node else ""
 
-    def on_enter(self):
+    def on_enter(self, print=True):
         if not self.current_node:
             return ""
 
@@ -86,7 +98,7 @@ class Navigator:
             ]
             self.current_level += 1
 
-        if self.qdebug_on:
+        if self.qdebug_on and print:
             self.print_current_page("onEnter")
 
         return self.current_node.name if self.current_node else ""

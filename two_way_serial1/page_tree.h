@@ -20,7 +20,7 @@ public:
 
     std::string name;                        // Name of the page
     std::vector<std::unique_ptr<PageNode>> children;  // List of child nodes
-    size_t currentIndex{0};                   // Current index of sub-pages
+    size_t currentIndex{0};                 // Current index of sub-pages
 };
 
 // PageTree class declaration
