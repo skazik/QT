@@ -486,8 +486,8 @@ void MainWindow::on_testButton_clicked()
     tree.printTree();
 //    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
 //    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
-      const char* start_name = "Calibrate Joystick Selected";
-      const char* end_name = "Joint Control Segment";
+      const char* start_name = "Reset Position";
+      const char* end_name = "Elbow 1 Selected";
       traverse_pagetree_path(tree.getRoot(), "Main Menu", start_name, end_name);
 //    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
 }
