@@ -10,17 +10,20 @@
 class PageNode {
 public:
     // Constructor
-    PageNode(std::string name);
+    PageNode() : name(std::move("")) {}
+    PageNode(std::string name) : name(std::move(name)) {}
 
     // Method to add a child node
     void addChild(std::unique_ptr<PageNode> child);
 
+    void updateLevels(int level = 0);
     // Method to print the tree structure
     void printTree(int level = 0) const;
 
     std::string name;                        // Name of the page
     std::vector<std::unique_ptr<PageNode>> children;  // List of child nodes
     size_t currentIndex{0};                 // Current index of sub-pages
+    uint8_t node_level{0};
 };
 
 // PageTree class declaration

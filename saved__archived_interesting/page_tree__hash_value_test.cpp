@@ -25,21 +25,69 @@ std::uint16_t simple_hash(const std::string& name) {
     return static_cast<std::uint16_t>(hash_value & 0xFFFF);  // Ensure 16-bit result like Python
 }
 
+int test_hash_values() {
+    // Example usage
+    std::string names[] = {
+        "Root",
+        "Main Menu",
+        "Bend & Rotate",
+        "Bend & Rotate Segment",
+        "Link 1 Bend & Rotate",
+        "LED Lights",
+        "Brightness",
+        "Shape Selection",
+        "Straight",
+        "Straight Selected",
+        "Elbow 1",
+        "Elbow 1 Selected",
+        "Elbow 2",
+        "Elbow 2 Selected",
+        "Elbow 3",
+        "Elbow 3 Selected",
+        "Stairstep",
+        "Stairstep Selected",
+        "Joint Control",
+        "Joint Control Segment",
+        "Link 1 Joint Control",
+        "Setup",
+        "Pack Robot",
+        "Pack Robot Selected",
+        "Unpack Robot",
+        "Unpack Robot Selected",
+        "System Connection",
+        "System Connection Selected",
+        "Calibrate Joystick",
+        "Calibrate Joystick Selected",
+        "Robot Calibration",
+        "Home Segments",
+        "Home Segments Select",
+        "Move to Straight",
+        "Move to Straight Segment",
+        "Link 1 Move to Straight",
+        "Set Position",
+        "Reset Position",
+        "Information",
+        "System Information"
+    };
+    for (const auto& name : names) {
+        std::uint16_t hash_value = simple_hash(name);
+        std::cout << std::hex << std::uppercase << std::setw(4) << std::setfill('0')
+                  << hash_value << " " << name << std::endl;
+    }
+    return 0;
+}
+
+//    test_hash_values();
+
 void PageNode::addChild(std::unique_ptr<PageNode> child) {
     children.push_back(std::move(child));
 }
 
-void PageNode::updateLevels(int level) {
-    this->node_level = level;
-    for (const auto& child : children) {
-        child->updateLevels(level + 1);
-    }
-}
-
 void PageNode::printTree(int level) const {
+    this->node_level = level;
     std::uint16_t hash_value = simple_hash(name);
     std::cout << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << hash_value;
-    std::cout << "| " << std::to_string(static_cast<int>(this->node_level));
+    std::cout << "| " << node_level;
 
     for (int i = 0; i < level; ++i) {
         std::cout << "  ";
@@ -144,7 +192,7 @@ bool PageTree::parseYAML(const std::string& filepath) {
     return true;
 }
 
-void PageTree::printTree() const {
+void PageTree::printTree() {
     root->printTree();
 }
 
