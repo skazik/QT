@@ -94,7 +94,8 @@ def test_and_validate(ptree, translator):
     return
 
     ptree.print_tree()
-    ptree.print_and_save_tree("tmp.ui.eez.def")
+    ptree.print_and_save_tree("tmp._ui.extract.out.yaml")
+
 
 def main():
     # Set up argument parser
@@ -145,15 +146,15 @@ def main():
     translator = Translator()
     serial = translator.get_serial_connection()
 
-    # initiate PageTree Singleton here and call dummy to avoid ruff error
-    ptree = PageTree()
-    test_and_validate(ptree, translator)
-
     if args.test:
         print("Test mode is enabled. ! Serial comms is not used !")
         serial.set_test_mode()
 
     serial.open_serial(args.port, args.baud)
+
+    # initiate PageTree Singleton here and call dummy to avoid ruff error
+    ptree = PageTree()
+    test_and_validate(ptree)
 
     if args.rand > RAND_DEFAULT:
         translator.rand_and_send(args.rand, args.test)
