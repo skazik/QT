@@ -171,10 +171,10 @@ void MainWindow::on_serial_input(QString line)
 
     if (line.contains(kScrNameRsp)) {
         if (nullptr != (tmp = strstr(parse_line.c_str(), kScrNameRsp))) {
+            qDebug() << tmp;
             tmp += strlen(kScrNameRsp);
-            ui->NameRep->setText(++tmp);
+            ui->NameRep->setText(tmp);
         }
-        qDebug() << line;
     }
     else if (line.contains(kScrBaseIP)) {
         if (serial_debug) qDebug() << line;
@@ -182,16 +182,17 @@ void MainWindow::on_serial_input(QString line)
     else if (line.contains(kScrHandleIP)) {
         if (serial_debug) qDebug() << line;
     }
+
     else if (line.contains(kPageViewIndexNotification)) {
-        qDebug() << line;
         if (nullptr != (tmp = strstr(parse_line.c_str(), kPageViewIndexNotification))) {
+            qDebug() << tmp;
             tmp += strlen(kPageViewIndexNotification);
             ui->index_page->setText(tmp);
         }
     }
     else if (line.contains(kScrActNotification)) {
-        qDebug() << line;
         if (nullptr != (tmp = strstr(parse_line.c_str(), kScrActNotification))) {
+            qDebug() << tmp;
             tmp += strlen(kScrActNotification);
             uint8_t page_active = static_cast<uint8_t>(*tmp) - '0';
             if (page_active < page_names.size())
@@ -246,7 +247,7 @@ void MainWindow::on_serial_input(QString line)
     }
 
     ui->textEdit->append(line);
-    ui->textEdit->moveCursor(QTextCursor::End);
+//    ui->textEdit->moveCursor(QTextCursor::End);
 //    ui->textEdit->ensureCursorVisible();
 }
 
