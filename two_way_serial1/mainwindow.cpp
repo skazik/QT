@@ -160,22 +160,49 @@ void MainWindow::on_serial_input(QString line)
     static const char* kHandleControllerPrefix = "handle controller loop:";
     static const char* kSerialCommandEcho = "[*"; // "[Bgn";
     static const char* kScrActNotification = "feature_idx:";
+    static const char* kPageViewIndexNotification = "view_idx:";
+    static const char* kScrBaseIP = "Base IP:";
+    static const char* kScrHandleIP = "Handle IP:";
+    static const char* kScrNameRsp = "VIEW:";
 
-    if (serial_debug) qDebug() << line;
+//    if (serial_debug) qDebug() << line;
     const char* tmp = nullptr;
+    std::string parse_line = line.toStdString();
 
-    if (line.contains(kScrActNotification)) {
-        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kScrActNotification))) {
+    if (line.contains(kScrNameRsp)) {
+        if (nullptr != (tmp = strstr(parse_line.c_str(), kScrNameRsp))) {
+            tmp += strlen(kScrNameRsp);
+            ui->NameRep->setText(++tmp);
+        }
+        qDebug() << line;
+    }
+    else if (line.contains(kScrBaseIP)) {
+        if (serial_debug) qDebug() << line;
+    }
+    else if (line.contains(kScrHandleIP)) {
+        if (serial_debug) qDebug() << line;
+    }
+    else if (line.contains(kPageViewIndexNotification)) {
+        qDebug() << line;
+        if (nullptr != (tmp = strstr(parse_line.c_str(), kPageViewIndexNotification))) {
+            tmp += strlen(kPageViewIndexNotification);
+            ui->index_page->setText(tmp);
+        }
+    }
+    else if (line.contains(kScrActNotification)) {
+        qDebug() << line;
+        if (nullptr != (tmp = strstr(parse_line.c_str(), kScrActNotification))) {
             tmp += strlen(kScrActNotification);
             uint8_t page_active = static_cast<uint8_t>(*tmp) - '0';
             if (page_active < page_names.size())
             {
-                ui->ContRep->setText(page_names[page_active]);
+                ui->FeatureRep->setText(page_names[page_active]);
             }
         }
     }
     else if (line.contains(kSerialCommandEcho)) {
-        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kSerialCommandEcho))) {
+        qDebug() << line;
+        if (nullptr != (tmp = strstr(parse_line.c_str(), kSerialCommandEcho))) {
             QString qtmp(tmp);
             ui->textEdit->append(qtmp);
             if (serial_debug) qDebug() << qtmp;
@@ -184,7 +211,7 @@ void MainWindow::on_serial_input(QString line)
         if (serial_debug) qDebug() << "problem with parse: check formatting:\n" << line;
     }
     else if (line.contains(kBaseStationPefix)) {
-        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kBaseStationPefix))) {
+        if (nullptr != (tmp = strstr(parse_line.c_str(), kBaseStationPefix))) {
             QString fmt;
             int rssi = 0;
             float throughput = 0, ms = 0;
@@ -201,7 +228,7 @@ void MainWindow::on_serial_input(QString line)
         if (serial_debug) qDebug() << "problem with parse: check formatting:\n" << line;
     }
     else if (line.contains(kHandleControllerPrefix)) {
-        if (nullptr != (tmp = strstr(line.toStdString().c_str(), kHandleControllerPrefix))) {
+        if (nullptr != (tmp = strstr(parse_line.c_str(), kHandleControllerPrefix))) {
             QString fmt;
             int loop = 0;
 
@@ -214,10 +241,13 @@ void MainWindow::on_serial_input(QString line)
         }
         if (serial_debug) qDebug() << "problem with parse: check formatting:\n" << line;
     }
+    else { // all the rest
+        qDebug() << line;
+    }
 
     ui->textEdit->append(line);
     ui->textEdit->moveCursor(QTextCursor::End);
-    ui->textEdit->ensureCursorVisible();
+//    ui->textEdit->ensureCursorVisible();
 }
 
 bool MainWindow::on_keyboard_input(int key)
@@ -244,7 +274,7 @@ bool MainWindow::on_keyboard_input(int key)
         ui->navi_page->setText(navigator.onEnter().c_str());
         qDebug() << "level " << navigator.get_current_level();
         if (3 == navigator.get_current_level()) {
-            ui->ContExp->setText(navigator.get_current_parent().c_str());
+            ui->FeatureExp->setText(navigator.get_current_parent().c_str());
         }
         break;
     case Qt::Key_End:

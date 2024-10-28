@@ -37,8 +37,7 @@
     </property>
     <property name="icon">
      <iconset theme="up">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -61,8 +60,7 @@
     </property>
     <property name="icon">
      <iconset theme="down">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <widget class="QLabel" name="remote_pic">
@@ -116,8 +114,7 @@
     </property>
     <property name="icon">
      <iconset theme="previous">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -143,8 +140,7 @@
     </property>
     <property name="icon">
      <iconset theme="next">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -339,8 +335,7 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="start">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="zoomButton">
@@ -357,8 +352,7 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="video">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <widget class="QFrame" name="frame">
@@ -367,7 +361,7 @@ color: rgb(233, 185, 110);</string>
       <x>860</x>
       <y>0</y>
       <width>364</width>
-      <height>221</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -548,34 +542,34 @@ color: rgb(233, 185, 110);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
-       <width>140</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Container expected:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
        <y>150</y>
        <width>140</width>
        <height>17</height>
       </rect>
      </property>
      <property name="text">
-      <string>Container reported:</string>
+      <string>Feature expected:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ContExp">
+    <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>120</y>
-       <width>200</width>
+       <x>10</x>
+       <y>180</y>
+       <width>140</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Feature reported:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="FeatureExp">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>150</y>
+       <width>210</width>
        <height>22</height>
       </rect>
      </property>
@@ -592,12 +586,82 @@ color: rgb(233, 185, 110);</string>
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="ContRep">
+    <widget class="QLabel" name="FeatureRep">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>150</y>
-       <width>200</width>
+       <x>140</x>
+       <y>180</y>
+       <width>210</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 236);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>210</y>
+       <width>140</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Name reported:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="NameRep">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>210</y>
+       <width>210</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(238, 238, 236);</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>View Page Index</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="index_page">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>120</y>
+       <width>210</width>
        <height>22</height>
       </rect>
      </property>
@@ -629,8 +693,7 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="rotate">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="testButton">
@@ -647,8 +710,7 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="text">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <widget class="QPushButton" name="captureButton">
@@ -665,17 +727,16 @@ color: rgb(233, 185, 110);</string>
     </property>
     <property name="icon">
      <iconset theme="camera-photo">
-      <normaloff/>
-     </iconset>
+      <normaloff>.</normaloff>.</iconset>
     </property>
    </widget>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>230</y>
+      <y>250</y>
       <width>361</width>
-      <height>350</height>
+      <height>310</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -780,7 +841,7 @@ color: rgb(233, 185, 110);</string>
         <x>100</x>
         <y>10</y>
         <width>260</width>
-        <height>311</height>
+        <height>260</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -838,7 +899,7 @@ color: rgb(233, 185, 110);</string>
      <x>0</x>
      <y>0</y>
      <width>1233</width>
-     <height>31</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
