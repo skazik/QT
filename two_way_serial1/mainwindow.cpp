@@ -518,9 +518,13 @@ void MainWindow::on_testButton_clicked()
     tree.printTree();
 //    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
 //    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
-      const char* end_name = "Elbow 1 Selected";
-      const char* start_name = "Reset Position";
-      traverse_pagetree_path(tree.getRoot(), "Main Menu", start_name, end_name);
+
+    const char* start_name = "Elbow 1 Selected";
+    const char* end_name = "Reset Position";
+    const char *tmp = start_name;
+    for (int i = 0; i < 2; ++i, tmp = end_name, end_name = start_name) {
+        traverse_pagetree_path(tree.getRoot(), "Main Menu", tmp, end_name);
+    }
 //    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
 }
 

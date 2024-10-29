@@ -56,7 +56,8 @@ SOURCES += \
     page_tree.cpp \
     serializer.cpp \
     web_camera.cpp \
-    utils.cpp
+    utils.cpp \
+    path_finder.cpp
 
 HEADERS += \
     communication.h \
