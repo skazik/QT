@@ -504,28 +504,35 @@ void MainWindow::on_loadButton_clicked()
 
 void MainWindow::on_testButton_clicked()
 {
-//    constexpr const char* kRootNodeSkipName = "Main Menu";
-
     uint8_t result[serializer::kVelocityByteArraySize];
     serializer::serialize_velocity(result);
     serializer::deserialize_velocity(result);
     std::cout << "----------serialization-test completed-------------\n";
 
-//    navigator::test_navigator(navigator);
-//    std::cout << "----------test_navigator completed-------------\n";
+#ifdef TEST_NAVIGATOR_
+    navigator::test_navigator(navigator);
+    std::cout << "----------test_navigator completed-------------\n";
+#endif
 
     tree.getRoot()->updateLevels();
     tree.printTree();
-//    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
-//    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
 
+#ifdef TRAVERSE_PAGETREE_
+    constexpr const char* kRootNodeSkipName = "Main Menu";
+    traverse_pagetree_json(tree.getRoot(), kRootNodeSkipName);
+    traverse_pagetree_yaml(tree.getRoot(), kRootNodeSkipName);
+#endif
+
+#ifdef TRAVERSE_PAGETREE_PATH_
     const char* start_name = "Elbow 1 Selected";
     const char* end_name = "Reset Position";
     const char *tmp = start_name;
     for (int i = 0; i < 2; ++i, tmp = end_name, end_name = start_name) {
         traverse_pagetree_path(tree.getRoot(), "Main Menu", tmp, end_name);
     }
-//    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
+    std::cout << "----------traversePageTree-test completed-------------\n" << std::flush;
+#endif
+
 }
 
 void MainWindow::SaveConfig() {
