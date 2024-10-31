@@ -14,6 +14,7 @@ BAUD_RATE = 115200
 RAND_DEFAULT = 0
 SCRIPT = "tests/test_script.yaml"
 SKIP_ROOT_NAME = "Main Menu"
+SLOW = 0
 
 
 def test_and_validate(log, ptree, generate, test):
@@ -79,6 +80,13 @@ def main():
         default=RAND_DEFAULT,
         help="optional random commands, default count: 0 (none).",
     )
+    parser.add_argument(
+        "-l",
+        "--slow",
+        type=int,
+        default=SLOW,
+        help="optional slow down command send by seconds, default: 0.",
+    )
     parser.add_argument("-t", "--test", action="store_true", help="run in test mode.")
     parser.add_argument("-d", "--debug", action="store_true", help="run in debug mode.")
     parser.add_argument(
@@ -97,6 +105,7 @@ def main():
 
     translator = Translator()
     serial = translator.get_serial_connection()
+    serial.set_slow_down(args.slow)
 
     if args.test:
         print("Test mode is enabled. ! Serial comms is not used !")

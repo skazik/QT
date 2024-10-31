@@ -13,4 +13,5 @@ DISTFILES += \
     tests/test_script.yaml \
     requirements.txt \
     src/path_finder.py \
-    tests/test_precondition.yaml
+    tests/test_precondition.yaml \
+    tmp.left-righ.yaml
