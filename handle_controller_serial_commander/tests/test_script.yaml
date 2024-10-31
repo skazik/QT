@@ -20,14 +20,14 @@
   Postcondition: "Bend & Rotate"
 
 # This is example of moving joystick Up
-- Precondition: "Joint Control Segment - link 1 selected"
+- Precondition: "Link 1 Joint Control"
   Command: "Move joystick y=1.0"
-  Postcondition: "Joint Control Segment - link 2 selected"
+  Postcondition: "Link 2 Joint Control"
 
 # This is example of moving joystick Down
-- Precondition: "Joint Control Segment - link 2 selected"
+- Precondition: "Link 2 Joint Control"
   Command: "Move joystick y=-1.0"
-  Postcondition: "Joint Control Segment - link 1 selected"
+  Postcondition: "Link 1 Joint Control"
 
 # This is example of navigate "home"
 - Precondition: "Bend & Rotate"

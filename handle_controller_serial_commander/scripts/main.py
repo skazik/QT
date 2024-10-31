@@ -25,12 +25,12 @@ def test_and_validate(log, ptree, generate, test):
     return
 
     if test:
-        path_finder = PathFinder()
+        path_finder_test = PathFinder()
         start_name = "Elbow 1 Selected"
         end_name = "Reset Position"
 
         for _i in range(2):
-            output_yaml = path_finder.traverse_pagetree_path(
+            output_yaml = path_finder_test.traverse_pagetree_path(
                 ptree.root, SKIP_ROOT_NAME, start_name, end_name
             )
             for entry in output_yaml:

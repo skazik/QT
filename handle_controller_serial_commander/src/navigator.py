@@ -1,3 +1,5 @@
+import re
+
 from page_tree import PageTree
 
 
@@ -43,14 +45,41 @@ class Navigator:
     def set_root(self, root):
         self.current_node = root
 
+    def update_node_name(self, up):
+        # Define regex pattern to match "Link #" with any number between 1 and 3
+        pattern = r"(.*)(Link\s([1-3]))(.*)"
+
+        match = re.match(pattern, self.current_node.name)
+        if match:
+            # Extract the pre-text, current link number, and post-text
+            pre_text, link_text, link_number, post_text = match.groups()
+
+            # Convert link_number to integer for calculation
+            link_number = int(link_number)
+
+            # Increment or decrement the link number based on `up` value
+            if up:
+                link_number = link_number + 1 if link_number < 3 else 1
+            else:
+                link_number = link_number - 1 if link_number > 1 else 3
+
+            # Update self.current_node.name with the new text
+            self.current_node.name = f"{pre_text}Link {link_number}{post_text}"
+
     def on_up(self):
         if self.qdebug_on:
+            print(f"on_up: current {self.current_node.name}", flush=True)
+            if "Link" in self.current_node.name:
+                self.update_node_name(True)
             self.print_current_page("onUp")
 
         return self.current_node.name if self.current_node else ""
 
     def on_down(self):
         if self.qdebug_on:
+            print(f"on_down: current {self.current_node.name}", flush=True)
+            if "Link" in self.current_node.name:
+                self.update_node_name(False)
             self.print_current_page("onDown")
 
         return self.current_node.name if self.current_node else ""

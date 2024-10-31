@@ -153,6 +153,7 @@ class Translator:
                 output_yaml = PathFinder().traverse_pagetree_path(
                     PageTree().root, SKIP_ROOT_NAME, current_name, self.precondition
                 )
+                save_cmd = self.command
                 self.preprocessing = True
                 self.log.info(
                     "-" * 10 + f'navigating to "{self.precondition}" view ---'
@@ -162,8 +163,8 @@ class Translator:
                     self.parse_and_send_entry(entry)
 
                 self.log.info("-" * 10 + "completed precondition auto processing ---\n")
+                self.command = save_cmd
                 self.preprocessing = False
-                return
 
         self.convert_command()  # result: self.cmd is filled
         cmd_bytearray = self.translate_script_cmd(self.cmd)
