@@ -73,6 +73,9 @@ pip install pandas
 pip install pyserial
 sudo snap install ruff
 sudo snap install code --classic # for preview .md files
-
+pip3 install pylint
+pip3 install ruff
+sudo apt-get install shellcheck
+sudo apt-get install aspell
 
 
