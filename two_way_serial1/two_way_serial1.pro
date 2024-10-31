@@ -19,16 +19,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-copy_files.commands = mkdir -p $$OUT_PWD/ ; cp $$PWD/PageTree.* $$OUT_PWD/
-copy_files.depends = $$SOURCES
+#copy_files.commands = mkdir -p $$OUT_PWD/ ; cp $$PWD/PageTree.* $$OUT_PWD/
+#copy_files.depends = $$SOURCES
+#QMAKE_EXTRA_TARGETS += copy_files
+#PRE_TARGETDEPS += copy_files
 
-QMAKE_EXTRA_TARGETS += copy_files
-PRE_TARGETDEPS += copy_files
 QMAKE_CXXFLAGS += -Wno-expansion-to-defined -Wno-deprecated-copy
 QMAKE_CXXFLAGS += -std=c++17
 
 # for VideoCap
-INCLUDEPATH += /usr/include/opencv4
+INCLUDEPATH += /usr/include/opencv4 include/
 LIBS += -L/usr/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc -lopencv_videoio
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv4
@@ -47,28 +47,28 @@ INCLUDEPATH += $$PWD/../common
 LIBS += `pkg-config --cflags --libs opencv4`
 
 SOURCES += \
-    communication.cpp \
-    key_filter.cpp \
-    led_indicator.cpp \
-    navigator.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    page_tree.cpp \
-    serializer.cpp \
-    web_camera.cpp \
-    utils.cpp \
-    path_finder.cpp
+    src/communication.cpp \
+    src/key_filter.cpp \
+    src/led_indicator.cpp \
+    src/navigator.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/page_tree.cpp \
+    src/serializer.cpp \
+    src/web_camera.cpp \
+    src/utils.cpp \
+    src/path_finder.cpp
 
 HEADERS += \
-    communication.h \
-    key_filter.h \
-    led_indicator.h \
-    mainwindow.h \
-    navigator.hpp \
-    page_tree.h \
-    serializer.h \
-    web_camera.h \
-    utils.h
+    include/communication.h \
+    include/key_filter.h \
+    include/led_indicator.h \
+    include/mainwindow.h \
+    include/navigator.hpp \
+    include/page_tree.h \
+    include/serializer.h \
+    include/web_camera.h \
+    include/utils.h
 
 FORMS += \
     mainwindow.ui
@@ -82,10 +82,7 @@ RESOURCES += \
     app_resource.qrc
 
 DISTFILES += \
-    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
-    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.json \
-    command_script_expamle.json \
-    ../build-two_way_serial1-Desktop_Qt_5_5_0_GCC_64bit-Debug/tmp_traverse_test.yaml \
-    command_script_expamle.yaml \
-    PageTree.csv \
-    PageTree.yaml
+    test_and_examples/command_script_expamle.json \
+    test_and_examples/command_script_expamle.yaml \
+    test_and_examples/PageTree.csv \
+    test_and_examples/PageTree.yaml

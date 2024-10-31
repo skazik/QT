@@ -1,10 +1,10 @@
 <RCC>
     <qresource prefix="/pictures">
-        <file>remote_ctrl.jpg</file>
-        <file>rear.dn.24.png</file>
-        <file>Remote_2.jpg</file>
-        <file>remote4.png</file>
-        <file>icon.png</file>
+        <file>ui/remote_ctrl.jpg</file>
+        <file>ui/rear.dn.24.png</file>
+        <file>ui/Remote_2.jpg</file>
+        <file>ui/remote4.png</file>
+        <file>ui/icon.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

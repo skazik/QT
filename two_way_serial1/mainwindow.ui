@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>230</y>
+      <y>240</y>
       <width>90</width>
       <height>40</height>
      </rect>
@@ -47,7 +47,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>405</y>
+      <y>390</y>
       <width>90</width>
       <height>40</height>
      </rect>
@@ -69,7 +69,7 @@
       <x>0</x>
       <y>220</y>
       <width>241</width>
-      <height>511</height>
+      <height>230</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -82,7 +82,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="app_resource.qrc">:/pictures/remote4.png</pixmap>
+     <pixmap resource="app_resource.qrc">:/pictures/ui/Remote_2.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>false</bool>
@@ -97,7 +97,7 @@
    <widget class="QPushButton" name="pushButton_left">
     <property name="geometry">
      <rect>
-      <x>15</x>
+      <x>30</x>
       <y>290</y>
       <width>40</width>
       <height>90</height>
@@ -123,7 +123,7 @@
    <widget class="QPushButton" name="pushButton_right">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>180</x>
       <y>290</y>
       <width>40</width>
       <height>90</height>
@@ -230,7 +230,7 @@ color: rgb(206, 92, 0);</string>
     </property>
     <property name="icon">
      <iconset resource="app_resource.qrc">
-      <normaloff>:/pictures/rear.dn.24.png</normaloff>:/pictures/rear.dn.24.png</iconset>
+      <normaloff>:/pictures/ui/rear.dn.24.png</normaloff>:/pictures/ui/rear.dn.24.png</iconset>
     </property>
     <property name="iconSize">
      <size>
