@@ -1,6 +1,7 @@
 import yaml
 import json
 
+#comment - current: usage of 'page_display_name' replaced to use 'page_name'
 def build_page_tree_dict(tree):
     """
     Recursively build a dictionary from the page tree for JSON serialization.
@@ -10,7 +11,7 @@ def build_page_tree_dict(tree):
     """
     # Create the dictionary for the current page
     page_dict = {
-        "page_display_name": tree.get('page_display_name', 'Unnamed Page'),
+        "page_name": tree.get('page_name', 'Unnamed Page'),
         "sub_pages": []
     }
 
@@ -46,7 +47,7 @@ def save_page_tree_yaml(tree, file, level=0):
     # Create the indentation for the current level
     indent = "  " * level
     # Write the current page's display name with indentation
-    file.write(f"{indent}- page_display_name: {tree.get('page_display_name', 'Unnamed Page')}\n")
+    file.write(f"{indent}- page_name: {tree.get('page_name', 'Unnamed Page')}\n")
 
     # Check if there are sub_pages and add them recursively
     sub_pages = tree.get('sub_pages', [])
@@ -64,7 +65,7 @@ def save_page_tree_csv(tree, file, level=0):
     :param level: The current depth level of the tree, used for indentation.
     """
     # Create the line with commas representing the level
-    line = "," * level + tree.get('page_display_name', 'Unnamed Page') + "\n"
+    line = "," * level + tree.get('page_name', 'Unnamed Page') + "\n"
     file.write(line)
 
     # Recursively write each sub-page if there are any
@@ -81,7 +82,7 @@ def save_page_tree(tree, file, level=0):
     :param level: The current depth level of the tree, used for indentation.
     """
     # Write the current page's display name with indentation based on its level
-    file.write("\t" * level + tree.get('page_display_name', 'Unnamed Page') + "\n")
+    file.write("\t" * level + tree.get('page_name', 'Unnamed Page') + "\n")
 
     # Recursively write each sub-page if there are any
     sub_pages = tree.get('sub_pages', [])
@@ -93,7 +94,7 @@ def print_page_tree(tree, level=0):
     Recursively print the page tree with proper indentation.
     """
     # Print the current page's display name with indentation based on its level
-    print("\t" * level + tree.get('page_display_name', 'Unnamed Page'))
+    print("\t" * level + tree.get('page_name', 'Unnamed Page'))
 
     # Recursively print each sub-page if there are any
     sub_pages = tree.get('sub_pages', [])
