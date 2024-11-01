@@ -16,16 +16,21 @@ def adjust_page_file(filename):
         value = value.replace("_segment", "_1")
         value = value.replace("system_information", "information_sub")
         value = value.replace("page_main_menu", "page_startup")
-        if "link_1" in value:
-            # Extract "link_1" and remove it from the original position
-            value = value.replace("link_1_", "").strip("_")
-            # Add "link_1" to the end of the modified value
-            if value.endswith('",'):
-                value = value[:-2] + "_link_1" + '",'
-            elif value.endswith('"'):
-                value = value[:-1] + "_link_1" + '"'
-            else:
-                value = f"{value}_link_1"
+        for link_num in range(1, 4):
+            link_tag = f"link_{link_num}"
+
+            if link_tag in value:
+                # Extract the link tag and remove it from the original position
+                value = value.replace(f"{link_tag}_", "").strip("_")
+
+                # Add the link tag to the end of the modified value
+                if value.endswith('",'):
+                    value = value[:-2] + f"_{link_tag}" + '",'
+                elif value.endswith('"'):
+                    value = value[:-1] + f"_{link_tag}" + '"'
+                else:
+                    value = f"{value}_{link_tag}"
+                break  # Stop after handling the first found link
 
         return value
 

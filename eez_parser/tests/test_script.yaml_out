@@ -22,10 +22,10 @@
 # This is example of moving joystick Up
 - Precondition: "page_joint_control_link_1"
   Command: "Move joystick y=1.0"
-  Postcondition: "page_link_2_joint_control"
+  Postcondition: "page_joint_control_link_2"
 
 # This is example of moving joystick Down
-- Precondition: "page_link_2_joint_control"
+- Precondition: "page_joint_control_link_2"
   Command: "Move joystick y=-1.0"
   Postcondition: "page_joint_control_link_1"
 
