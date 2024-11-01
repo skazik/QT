@@ -1,0 +1,223 @@
+---
+- Command: press joystick ok button
+  Postcondition: Bend & Rotate Segment
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Link 1 Bend & Rotate
+  Precondition: none
+- Command: press rear button
+  Postcondition: Bend & Rotate Segment
+  Precondition: none
+- Command: press rear button
+  Postcondition: Bend & Rotate
+  Precondition: none
+- Command: navigate Right
+  Postcondition: LED Lights
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Brightness
+  Precondition: none
+- Command: press rear button
+  Postcondition: LED Lights
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Shape Selection
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Straight
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Straight Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Straight
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Elbow 1
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Elbow 1 Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Elbow 1
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Elbow 2
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Elbow 2 Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Elbow 2
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Elbow 3
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Elbow 3 Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Elbow 3
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Stairstep
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Stairstep Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Stairstep
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Elbow 3
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Elbow 2
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Elbow 1
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Straight
+  Precondition: none
+- Command: press rear button
+  Postcondition: Shape Selection
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Joint Control
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Joint Control Segment
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Link 1 Joint Control
+  Precondition: none
+- Command: press rear button
+  Postcondition: Joint Control Segment
+  Precondition: none
+- Command: press rear button
+  Postcondition: Joint Control
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Setup
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Pack Robot
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Pack Robot Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Pack Robot
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Unpack Robot
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Unpack Robot Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Unpack Robot
+  Precondition: none
+- Command: navigate Right
+  Postcondition: System Connection
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: System Connection Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: System Connection
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Calibrate Joystick
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Calibrate Joystick Selected
+  Precondition: none
+- Command: press rear button
+  Postcondition: Calibrate Joystick
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Robot Calibration
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Home Segments
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Home Segments Select
+  Precondition: none
+- Command: press rear button
+  Postcondition: Home Segments
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Move to Straight
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Move to Straight Segment
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Link 1 Move to Straight
+  Precondition: none
+- Command: press rear button
+  Postcondition: Move to Straight Segment
+  Precondition: none
+- Command: press rear button
+  Postcondition: Move to Straight
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Set Position
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: Reset Position
+  Precondition: none
+- Command: press rear button
+  Postcondition: Set Position
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Move to Straight
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Home Segments
+  Precondition: none
+- Command: press rear button
+  Postcondition: Robot Calibration
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Calibrate Joystick
+  Precondition: none
+- Command: navigate Left
+  Postcondition: System Connection
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Unpack Robot
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Pack Robot
+  Precondition: none
+- Command: press rear button
+  Postcondition: Setup
+  Precondition: none
+- Command: navigate Right
+  Postcondition: Information
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: System Information
+  Precondition: none
+- Command: press rear button
+  Postcondition: Information
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Setup
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Joint Control
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Shape Selection
+  Precondition: none
+- Command: navigate Left
+  Postcondition: LED Lights
+  Precondition: none
+- Command: navigate Left
+  Postcondition: Bend & Rotate
+  Precondition: none

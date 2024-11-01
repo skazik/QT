@@ -1,0 +1,223 @@
+---
+- Command: press joystick ok button
+  Postcondition: page_bend_and_rotate_1
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_bend_and_rotate_link_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_bend_and_rotate_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_bend_and_rotate
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_led_lights
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_brightness
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_led_lights
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_shape_subion
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_straight
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_straight_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_straight
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_elbow_1
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_elbow_1_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_elbow_1
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_elbow_2
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_elbow_2_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_elbow_2
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_elbow_3
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_elbow_3_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_elbow_3
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_stairstep
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_stairstep_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_stairstep
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_elbow_3
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_elbow_2
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_elbow_1
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_straight
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_shape_subion
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_joint_control
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_joint_control_1
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_joint_control_link_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_joint_control_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_joint_control
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_setup
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_pack_robot
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_pack_robot_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_pack_robot
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_unpack_robot
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_unpack_robot_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_unpack_robot
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_system_connection
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_system_connection_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_system_connection
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_calibrate_joystick
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_calibrate_joystick_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_calibrate_joystick
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_robot_calibration
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_home_1
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_home_1_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_home_1
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_move_to_straight
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_move_to_straight_1
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_move_to_straight_link_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_move_to_straight_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_move_to_straight
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_set_position
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_reset_position
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_set_position
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_move_to_straight
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_home_1
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_robot_calibration
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_calibrate_joystick
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_system_connection
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_unpack_robot
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_pack_robot
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_setup
+  Precondition: page_none
+- Command: navigate Right
+  Postcondition: page_information
+  Precondition: page_none
+- Command: press joystick ok button
+  Postcondition: page_information_sub
+  Precondition: page_none
+- Command: press rear button
+  Postcondition: page_information
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_setup
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_joint_control
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_shape_subion
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_led_lights
+  Precondition: page_none
+- Command: navigate Left
+  Postcondition: page_bend_and_rotate
+  Precondition: page_none

@@ -1,0 +1,35 @@
+---
+# This is example of Joystick Button press
+- Precondition: "page_bend_and_rotate"
+  Command: "press joystick ok button"
+  Postcondition: "page_bend_and_rotate_1"
+
+# This is example of Rear Button press
+- Precondition: "page_bend_and_rotate_1"
+  Command: "press rear button"
+  Postcondition: "page_bend_and_rotate"
+
+# Navigate Right
+- Precondition: "page_bend_and_rotate"
+  Command: "Move joystick x=1.0"
+  Postcondition: "page_led_lights"
+
+# Navigate Left
+- Precondition: "page_led_lights"
+  Command: "Move joystick x=-1.0"
+  Postcondition: "page_bend_and_rotate"
+
+# This is example of moving joystick Up
+- Precondition: "page_joint_control_link_1"
+  Command: "Move joystick y=1.0"
+  Postcondition: "page_link_2_joint_control"
+
+# This is example of moving joystick Down
+- Precondition: "page_link_2_joint_control"
+  Command: "Move joystick y=-1.0"
+  Postcondition: "page_joint_control_link_1"
+
+# This is example of navigate "home"
+- Precondition: "page_bend_and_rotate"
+  Command: "navigate home"
+  Postcondition: "page_bend_and_rotate"
