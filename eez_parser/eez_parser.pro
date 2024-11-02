@@ -9,4 +9,5 @@ DISTFILES += \
     tests/test_script.yaml \
     tests/traverse_test.yaml_out \
     tests/test_script.yaml_out \
-    tests/test_precondition.yaml_out
+    tests/test_precondition.yaml_out \
+    find_duplicates.py

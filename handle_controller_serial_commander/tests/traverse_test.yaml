@@ -1,223 +1,172 @@
 ---
 - Command: press joystick ok button
-  Postcondition: Bend & Rotate Segment
+  Postcondition: page_startup
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Link 1 Bend & Rotate
+  Postcondition: page_shape_selection
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_straight
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_straight_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Bend & Rotate Segment
-  Precondition: none
-- Command: press rear button
-  Postcondition: Bend & Rotate
+  Postcondition: page_straight
   Precondition: none
 - Command: navigate Right
-  Postcondition: LED Lights
+  Postcondition: page_elbow_1
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Brightness
+  Postcondition: page_elbow_1_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: LED Lights
+  Postcondition: page_elbow_1
   Precondition: none
 - Command: navigate Right
-  Postcondition: Shape Selection
+  Postcondition: page_elbow_2
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Straight
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: Straight Selected
+  Postcondition: page_elbow_2_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Straight
+  Postcondition: page_elbow_2
   Precondition: none
 - Command: navigate Right
-  Postcondition: Elbow 1
+  Postcondition: page_elbow_3
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Elbow 1 Selected
+  Postcondition: page_elbow_3_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Elbow 1
+  Postcondition: page_elbow_3
   Precondition: none
 - Command: navigate Right
-  Postcondition: Elbow 2
+  Postcondition: page_stairstep
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Elbow 2 Selected
+  Postcondition: page_stairstep_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Elbow 2
+  Postcondition: page_stairstep
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_elbow_3
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_elbow_2
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_elbow_1
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_straight
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_shape_selection
   Precondition: none
 - Command: navigate Right
-  Postcondition: Elbow 3
+  Postcondition: page_camera_control
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Elbow 3 Selected
+  Postcondition: page_camera_control_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Elbow 3
+  Postcondition: page_camera_control
   Precondition: none
 - Command: navigate Right
-  Postcondition: Stairstep
+  Postcondition: page_bend_and_rotate
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Stairstep Selected
+  Postcondition: page_bend_and_rotate_1
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_bend_and_rotate_link_1
   Precondition: none
 - Command: press rear button
-  Postcondition: Stairstep
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Elbow 3
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Elbow 2
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Elbow 1
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Straight
+  Postcondition: page_bend_and_rotate_1
   Precondition: none
 - Command: press rear button
-  Postcondition: Shape Selection
+  Postcondition: page_bend_and_rotate
   Precondition: none
 - Command: navigate Right
-  Postcondition: Joint Control
+  Postcondition: page_joint_control
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Joint Control Segment
+  Postcondition: page_joint_control_1
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Link 1 Joint Control
+  Postcondition: page_joint_control_link_1
   Precondition: none
 - Command: press rear button
-  Postcondition: Joint Control Segment
+  Postcondition: page_joint_control_1
   Precondition: none
 - Command: press rear button
-  Postcondition: Joint Control
+  Postcondition: page_joint_control
   Precondition: none
 - Command: navigate Right
-  Postcondition: Setup
+  Postcondition: page_setup
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Pack Robot
+  Postcondition: page_calibrate_joystick
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Pack Robot Selected
+  Postcondition: page_calibrate_joystick_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Pack Robot
+  Postcondition: page_calibrate_joystick
   Precondition: none
 - Command: navigate Right
-  Postcondition: Unpack Robot
+  Postcondition: page_pack_robot
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Unpack Robot Selected
+  Postcondition: page_pack_robot_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Unpack Robot
+  Postcondition: page_pack_robot
   Precondition: none
 - Command: navigate Right
-  Postcondition: System Connection
+  Postcondition: page_unpack_robot
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: System Connection Selected
+  Postcondition: page_unpack_robot_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: System Connection
+  Postcondition: page_unpack_robot
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_pack_robot
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_calibrate_joystick
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_setup
   Precondition: none
 - Command: navigate Right
-  Postcondition: Calibrate Joystick
+  Postcondition: page_information
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: Calibrate Joystick Selected
+  Postcondition: page_information_sub
   Precondition: none
 - Command: press rear button
-  Postcondition: Calibrate Joystick
+  Postcondition: page_information
   Precondition: none
-- Command: navigate Right
-  Postcondition: Robot Calibration
+- Command: navigate Left
+  Postcondition: page_setup
   Precondition: none
-- Command: press joystick ok button
-  Postcondition: Home Segments
+- Command: navigate Left
+  Postcondition: page_joint_control
   Precondition: none
-- Command: press joystick ok button
-  Postcondition: Home Segments Select
+- Command: navigate Left
+  Postcondition: page_bend_and_rotate
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_camera_control
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_shape_selection
   Precondition: none
 - Command: press rear button
-  Postcondition: Home Segments
-  Precondition: none
-- Command: navigate Right
-  Postcondition: Move to Straight
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: Move to Straight Segment
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: Link 1 Move to Straight
-  Precondition: none
-- Command: press rear button
-  Postcondition: Move to Straight Segment
-  Precondition: none
-- Command: press rear button
-  Postcondition: Move to Straight
-  Precondition: none
-- Command: navigate Right
-  Postcondition: Set Position
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: Reset Position
-  Precondition: none
-- Command: press rear button
-  Postcondition: Set Position
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Move to Straight
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Home Segments
-  Precondition: none
-- Command: press rear button
-  Postcondition: Robot Calibration
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Calibrate Joystick
-  Precondition: none
-- Command: navigate Left
-  Postcondition: System Connection
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Unpack Robot
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Pack Robot
-  Precondition: none
-- Command: press rear button
-  Postcondition: Setup
-  Precondition: none
-- Command: navigate Right
-  Postcondition: Information
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: System Information
-  Precondition: none
-- Command: press rear button
-  Postcondition: Information
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Setup
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Joint Control
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Shape Selection
-  Precondition: none
-- Command: navigate Left
-  Postcondition: LED Lights
-  Precondition: none
-- Command: navigate Left
-  Postcondition: Bend & Rotate
+  Postcondition: page_startup
   Precondition: none

@@ -395,8 +395,8 @@ class PathFinder:
 
         while True:
             repeated_node = self.find_repeated_node(processed_entries)
-            self.log.trace(f"Repeated node: {repeated_node}")
             if repeated_node:
+                self.log.trace(f"Repeated node: {repeated_node}")
                 self.condense_subnodes(processed_entries, repeated_node)
                 continue
             break

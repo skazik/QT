@@ -9,9 +9,7 @@ from logger import Logger
 from navigator import Navigator
 from page_tree import PageTree
 from path_finder import PathFinder
-from serial_comms import SerialConnection
-
-SKIP_ROOT_NAME = "Main Menu"
+from serial_connection import SerialConnection
 
 
 class Translator:
@@ -27,6 +25,7 @@ class Translator:
             cls._instance.postcondition = None
             cls._instance.cmd = None
             cls._instance.preprocessing = False
+            cls._instance.skip_root_name = "page_startup"
         return cls._instance
 
     def __init__(self):
@@ -34,6 +33,9 @@ class Translator:
 
     def get_serial_connection(self):
         return self.serial_connection
+
+    def get_root_name(self):
+        return self.skip_root_name
 
     def parse_csv_string(self, csv_string, header=None):
         csv_file = StringIO(csv_string)
@@ -43,6 +45,7 @@ class Translator:
 
     def rand_and_send(self, count_max, test):
         array = ["u", "d", "l", "ri", "k", "re", "re"]
+        self.log.info("-"*20 + "rand_and_send started")
 
         # Seed the random number generator with the current time in seconds
         random.seed(int(time.time()))
@@ -60,6 +63,8 @@ class Translator:
             self.log.info("\nCtrl+C detected! Exiting the loop safely.")
         except Exception as e:
             self.log.critical(f"An error occurred: {e}")
+
+        self.log.info("-"*20 + f"rand_and_send completed {count_max} commands")
 
     def convert_command(self):
         # Convert the command to lowercase for case-insensitive comparison
@@ -151,7 +156,10 @@ class Translator:
                     f'current "{current_name}" mismatch precondition "{self.precondition}"'
                 )
                 output_yaml = PathFinder().traverse_pagetree_path(
-                    PageTree().root, SKIP_ROOT_NAME, current_name, self.precondition
+                    PageTree().root,
+                    self.skip_root_name,
+                    current_name,
+                    self.precondition,
                 )
                 save_cmd = self.command
                 self.preprocessing = True
@@ -286,20 +294,20 @@ class Translator:
         if input_str in ["u", "up"]:
             navigator.on_up()
             return translate_key_to_cmd("Key_Up")
-        elif input_str in ["d", "down", "dn"]:
+        if input_str in ["d", "down", "dn"]:
             navigator.on_down()
             return translate_key_to_cmd("Key_Down")
-        elif input_str in ["l", "left", "lt"]:
+        if input_str in ["l", "left", "lt"]:
             navigator.on_left()
             return translate_key_to_cmd("Key_Left")
-        elif input_str in ["ri", "right", "rt"]:
+        if input_str in ["ri", "right", "rt"]:
             navigator.on_right()
             return translate_key_to_cmd("Key_Right")
-        elif input_str in ["k", "ok"]:
+        if input_str in ["k", "ok"]:
             navigator.on_enter()
             return translate_key_to_cmd("Key_OK")
-        elif input_str in ["re", "rb", "rear", "rbutton", "rearbutton"]:
+        if input_str in ["re", "rb", "rear", "rbutton", "rearbutton"]:
             navigator.on_back()
             return translate_key_to_cmd("Key_Rear")
-        else:
-            return translate_key_to_cmd("Key_None")
+
+        return translate_key_to_cmd("Key_None")

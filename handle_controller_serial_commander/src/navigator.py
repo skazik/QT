@@ -47,7 +47,7 @@ class Navigator:
 
     def update_node_name(self, up):
         # Define regex pattern to match "Link #" with any number between 1 and 3
-        pattern = r"(.*)(Link\s([1-3]))(.*)"
+        pattern = r"(.*)(link_([1-3]))(.*)"
 
         match = re.match(pattern, self.current_node.name)
         if match:
@@ -64,12 +64,13 @@ class Navigator:
                 link_number = link_number - 1 if link_number > 1 else 3
 
             # Update self.current_node.name with the new text
-            self.current_node.name = f"{pre_text}Link {link_number}{post_text}"
+            self.current_node.name = f"{pre_text}link_{link_number}{post_text}"
+            print(f"updated name: {self.current_node.name}", flush=True)
 
     def on_up(self):
         if self.qdebug_on:
             print(f"on_up: current {self.current_node.name}", flush=True)
-            if "Link" in self.current_node.name:
+            if "link_" in self.current_node.name:
                 self.update_node_name(True)
             self.print_current_page("onUp")
 
@@ -78,7 +79,7 @@ class Navigator:
     def on_down(self):
         if self.qdebug_on:
             print(f"on_down: current {self.current_node.name}", flush=True)
-            if "Link" in self.current_node.name:
+            if "link_" in self.current_node.name:
                 self.update_node_name(False)
             self.print_current_page("onDown")
 

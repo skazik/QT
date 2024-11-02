@@ -1,5 +1,5 @@
-import os
 import sys
+import tempfile
 
 import yaml
 from logger import Logger
@@ -26,17 +26,22 @@ class PageNode:
 class PageTree:
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls, ui_eez_filename=None):
         if cls._instance is None:
+            if ui_eez_filename is None:
+                raise ValueError(
+                    "ui_eez_filename is required for the first instantiation of PageTree"
+                )
+
             cls._instance = super().__new__(cls)
             cls._instance.root = PageNode("Root")
-            cls._instance._parse_flx_page_tree()
+            cls._instance._parse_flx_page_tree(ui_eez_filename)
             cls.log = Logger()
 
             cls._instance.print_tree()  # ! self assigned level - don't remove
         return cls._instance
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         pass
 
     def _format_node(self, node, indent=0):
@@ -84,9 +89,9 @@ class PageTree:
         # Return the name of the second-level child
         return main.children[index].name
 
-    def _parse_flx_page_tree(self):
+    def _parse_flx_page_tree(self, ui_eez_filename):
         def save_page_tree_csv(tree, file, level=0):
-            line = "," * level + tree.get("page_display_name", "Unnamed Page") + "\n"
+            line = "," * level + tree.get("page_name", "Unnamed Page") + "\n"
             file.write(line)
 
             # Recursively write each sub-page if there are any
@@ -94,7 +99,7 @@ class PageTree:
             for sub_page in sub_pages:
                 save_page_tree_csv(sub_page, file, level + 1)
 
-        with open("../../boards/handle_controller/ui/ui.eez-project") as f:
+        with open(ui_eez_filename) as f:
             data = yaml.safe_load(f)
 
         # Extract the tree structure from the specified variable
@@ -105,12 +110,14 @@ class PageTree:
         # Load the page tree structure
         page_tree = yaml.safe_load(tree)
 
-        with open("tmp.csv", "w") as output_file:
+        with tempfile.NamedTemporaryFile(
+            mode="w+", suffix=".csv", delete=True
+        ) as temp_file:
             for sub_page in page_tree.get("sub_pages", []):
-                save_page_tree_csv(sub_page, output_file, level=0)
+                save_page_tree_csv(sub_page, temp_file, level=0)
 
-        self._parse_csv("tmp.csv")
-        os.remove("tmp.csv")
+            temp_file.seek(0)
+            self._parse_csv(temp_file.name)
 
     def _parse_csv(self, filepath):
         with open(filepath) as file:

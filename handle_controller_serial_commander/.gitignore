@@ -1,4 +1,6 @@
 __pycache__
+qt.pyproject*
+short_test.txt
+test.sh
+py_commander.*
 tmp*
-py_commander.pro.user.0ef72b1.22
-py_commander.pro.user
