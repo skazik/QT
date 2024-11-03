@@ -1,5 +1,6 @@
 import re
 
+from logger import Logger
 from page_tree import PageTree
 
 
@@ -9,21 +10,25 @@ class Navigator:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.history = []
-            cls._instance.current_level = 0
-            cls._instance.qdebug_on = True
-            cls._instance.current_feature = ""
-
-            # Initialize the Navigator with the root of the PageTree
-            page_tree = PageTree()
-            cls._instance.current_node = page_tree.root
-            # advance to level 3
-            cls._instance.on_enter(False)
-            cls._instance.on_enter(False)
         return cls._instance
 
     def __init__(self):
-        pass
+        if not hasattr(self, "_initialized"):  # To ensure single initialization
+            self.history = []
+            self.current_level = 0
+            self.qdebug_on = True
+            self.current_feature = ""
+            self.log = Logger()
+
+            # Initialize the Navigator with the root of the PageTree
+            page_tree = PageTree()
+            self.current_node = page_tree.root if hasattr(page_tree, "root") else None
+
+            # Advance to level 3
+            self.on_enter(False)
+            self.on_enter(False)
+
+            self._initialized = True  # Mark as initialized
 
     def get_current_feature(self):
         return self.current_feature
@@ -32,15 +37,13 @@ class Navigator:
         parent = self.history[-1]
         if parent:
             return parent.current_index
-        else:
-            return -1
+        return -1
 
     def get_current_view_name(self):
         parent = self.history[-1]
         if parent:
             return parent.children[parent.current_index].name
-        else:
-            return "none"
+        return "none"
 
     def set_root(self, root):
         self.current_node = root
@@ -54,6 +57,7 @@ class Navigator:
             # Extract the pre-text, current link number, and post-text
             pre_text, link_text, link_number, post_text = match.groups()
 
+            self.log.trace(f"{link_text}")
             # Convert link_number to integer for calculation
             link_number = int(link_number)
 
@@ -113,7 +117,7 @@ class Navigator:
 
         return self.current_node.name if self.current_node else ""
 
-    def on_enter(self, print=True):
+    def on_enter(self, _print=True):
         if not self.current_node:
             return ""
 
@@ -128,7 +132,7 @@ class Navigator:
             ]
             self.current_level += 1
 
-        if self.qdebug_on and print:
+        if self.qdebug_on and _print:
             self.print_current_page("onEnter")
 
         return self.current_node.name if self.current_node else ""

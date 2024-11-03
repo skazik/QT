@@ -10,7 +10,7 @@ arguments:
 ```
     -h, --help            show this help message and exit
     -c CMD, --cmd CMD     (Required) Path to the yaml command script file (e.g., 'tests/test_script.yaml')
-    -u UI, --ui UI        (Required) Path to the UI file (e.g., '~/flx/flxbot-firmware/boards/handle_controller/ui/ui.eez-project')
+    -u UI, --ui UI        (Required) Path to the UI file (e.g., '<path_to>ui.eez-project')
     -p PORT, --port PORT  Optional SERIAL_PORT, default: "/dev/ttyACM0"
     -b BAUD, --baud BAUD  Optional BAUD_RATE, default: 115200.
     -r RAND, --rand RAND  Optional random commands, default count: 0 (none).

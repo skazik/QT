@@ -25,6 +25,7 @@ class PageNode:
 
 class PageTree:
     _instance = None
+    _initialized = False
 
     def __new__(cls, ui_eez_filename=None):
         if cls._instance is None:
@@ -32,17 +33,22 @@ class PageTree:
                 raise ValueError(
                     "ui_eez_filename is required for the first instantiation of PageTree"
                 )
-
             cls._instance = super().__new__(cls)
-            cls._instance.root = PageNode("Root")
-            cls._instance._parse_flx_page_tree(ui_eez_filename)
-            cls.log = Logger()
-
-            cls._instance.print_tree()  # ! self assigned level - don't remove
         return cls._instance
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, ui_eez_filename=None):
+        if hasattr(self, "_initialized") and self._initialized:
+            return  # Avoid reinitializing for singleton instance
+
+        if ui_eez_filename is None:
+            raise ValueError("ui_eez_filename is required for PageTree initialization.")
+
+        # Initialize all members here
+        self.root = PageNode("Root")
+        self.log = Logger()
+        self._parse_flx_page_tree(ui_eez_filename)
+        self.print_tree()  # self-assigned level - don't remove
+        self._initialized = True
 
     def _format_node(self, node, indent=0):
         indent_str = " " * indent
@@ -82,7 +88,7 @@ class PageTree:
         main = self.root.children[0]  # First level child (main)
 
         # Check if 'main' has children and if the index is valid
-        if not main.children or not (0 <= index < len(main.children)):
+        if not main.children or len(main.children) <= index < 0:
             print(f"index {index} is out of bounds", flush=True)
             return "-"
 
@@ -103,9 +109,11 @@ class PageTree:
             data = yaml.safe_load(f)
 
         # Extract the tree structure from the specified variable
+        tree = ""
         for item in data["variables"]["globalVariables"]:
             if item["name"] == "main_page_info":
                 tree = item["defaultValue"]
+        assert tree, "Expected tree to be non-empty."
 
         # Load the page tree structure
         page_tree = yaml.safe_load(tree)
@@ -128,13 +136,12 @@ class PageTree:
             stack = [self.root]
 
             for line in file:
-                line = line.strip()
+                line_strip = line.strip()
 
                 # Count leading commas to determine level
-                level = self.count_leading_commas(line)
-                page_name = self.remove_ending_commas(line[level:])
+                level = self.count_leading_commas(line_strip)
+                page_name = self.remove_ending_commas(line_strip[level:])
 
-                # Create a new node for the current line
                 new_node = PageNode(page_name)
 
                 # Adjust the stack so that it contains only nodes up to the correct level
