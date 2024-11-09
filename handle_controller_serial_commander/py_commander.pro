@@ -8,9 +8,12 @@ DISTFILES += \
     src/logger.py \
     src/serial_comms.py \
     src/translations.py \
-    scripts/main.py \
     tests/traverse_test.yaml \
     tests/test_script.yaml \
     requirements.txt \
     src/path_finder.py \
     tmp.left-righ.yaml
+    tests/test_precondition.yaml \
+    scripts/serial_comms_tool.py \
+    src/serial_connection.py \
+    src/dev_tests.py

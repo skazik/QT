@@ -1,8 +1,5 @@
 ---
 - Command: press joystick ok button
-  Postcondition: page_startup
-  Precondition: none
-- Command: press joystick ok button
   Postcondition: page_shape_selection
   Precondition: none
 - Command: press joystick ok button
