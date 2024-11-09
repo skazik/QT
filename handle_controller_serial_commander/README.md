@@ -1,27 +1,26 @@
 usage:
 ```
-python3 scripts/main.py [-h] [-s SCRIPT] [-p PORT] [-b BAUD] [-r RAND] [-t] [-d] [-g]
+python3 serial_comms_tool.py [-h] -s SCRIPT -u UI [-p PORT] [-b BAUD] [-r RAND] [-t] [-d] [-g]
+
 ```
 
-Read `SCRIPT` and send to device.
+Read `CMD` <command script> and send to device.
 
-optional arguments:
+arguments:
 ```
     -h, --help            show this help message and exit
-    -s SCRIPT, --script SCRIPT
-                          optional, default: "tests/test_script.yaml"
-    -p PORT, --port PORT  optional SERIAL_PORT, default: "/dev/ttyACM0"
-    -b BAUD, --baud BAUD  optional BAUD_RATE, default: 115200.
-    -r RAND, --rand RAND  optional random commands, default count: 0 (none).
-    -t, --test            run in test mode.
-    -d, --debug           run in debug mode.
-    -g, --generate        generate tests/traverse_test.yaml
-
+    -c CMD, --cmd CMD     (Required) Path to the yaml command script file (e.g., 'tests/test_script')
+    -u UI, --ui UI        (Required) Path to the UI file (e.g., '<path_to>ui.eez-project')
+    -p PORT, --port PORT  Optional SERIAL_PORT, default: "/dev/ttyACM0"
+    -b BAUD, --baud BAUD  Optional BAUD_RATE, default: 115200.
+    -r RAND, --rand RAND  Optional random commands, default count: 0 (none).
+    -t, --test            Run in test mode.
+    -d, --debug           Run in debug mode.
+    -g, --generate        Generate tests/traverse_test
+    -f, --find            Test path_finder.
 ```
-
-Note: run script from ./handle_controller_serial_commander folder
 
 usage example:
 ```
-python scripts/main.py -p /dev/ttyUSB0 -s tests/traverse_test.yaml
+python3 scripts/serial_comms_tool.py -s tests/test_script -u <path_to>/ui.eez-project
 ```

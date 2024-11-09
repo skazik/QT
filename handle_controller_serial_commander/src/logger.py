@@ -5,6 +5,7 @@ from threading import Lock
 class Logger:
     _instance = None
     _lock = Lock()
+    _initialized = False
 
     def __new__(cls):
         """Implement singleton pattern with thread safety."""

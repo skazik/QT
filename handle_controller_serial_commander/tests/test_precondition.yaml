@@ -1,10 +1,10 @@
 ---
 # This is example of Precondition test
-- Precondition: "Elbow 1 Selected"
+- Precondition: "page_elbow_1_sub"
   Command: "press rear button"
-  Postcondition: "Elbow 1"
+  Postcondition: "page_elbow_1"
 
 # This is example of navigate "home"
-- Precondition: "Bend & Rotate"
+- Precondition: "page_bend_and_rotate"
   Command: "navigate home"
-  Postcondition: "Bend & Rotate"
+  Postcondition: "page_bend_and_rotate"

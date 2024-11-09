@@ -1,5 +1,5 @@
-import os
 import sys
+import tempfile
 
 import yaml
 from logger import Logger
@@ -25,19 +25,30 @@ class PageNode:
 
 class PageTree:
     _instance = None
+    _initialized = False
 
-    def __new__(cls):
+    def __new__(cls, ui_eez_filename=None):
         if cls._instance is None:
+            if ui_eez_filename is None:
+                raise ValueError(
+                    "ui_eez_filename is required for the first instantiation of PageTree"
+                )
             cls._instance = super().__new__(cls)
-            cls._instance.root = PageNode("Root")
-            cls._instance._parse_flx_page_tree()
-            cls.log = Logger()
-
-            cls._instance.print_tree()  # ! self assigned level - don't remove
         return cls._instance
 
-    def __init__(self):
-        pass
+    def __init__(self, ui_eez_filename=None):
+        if hasattr(self, "_initialized") and self._initialized:
+            return  # Avoid reinitializing for singleton instance
+
+        if ui_eez_filename is None:
+            raise ValueError("ui_eez_filename is required for PageTree initialization.")
+
+        # Initialize all members here
+        self.root = PageNode("Root")
+        self.log = Logger()
+        self._parse_flx_page_tree(ui_eez_filename)
+        self.print_tree()  # self-assigned level - don't remove
+        self._initialized = True
 
     def _format_node(self, node, indent=0):
         indent_str = " " * indent
@@ -77,16 +88,16 @@ class PageTree:
         main = self.root.children[0]  # First level child (main)
 
         # Check if 'main' has children and if the index is valid
-        if not main.children or not (0 <= index < len(main.children)):
+        if not main.children or len(main.children) <= index < 0:
             print(f"index {index} is out of bounds", flush=True)
             return "-"
 
         # Return the name of the second-level child
         return main.children[index].name
 
-    def _parse_flx_page_tree(self):
+    def _parse_flx_page_tree(self, ui_eez_filename):
         def save_page_tree_csv(tree, file, level=0):
-            line = "," * level + tree.get("page_display_name", "Unnamed Page") + "\n"
+            line = "," * level + tree.get("page_name", "Unnamed Page") + "\n"
             file.write(line)
 
             # Recursively write each sub-page if there are any
@@ -94,23 +105,27 @@ class PageTree:
             for sub_page in sub_pages:
                 save_page_tree_csv(sub_page, file, level + 1)
 
-        with open("../../boards/handle_controller/ui/ui.eez-project") as f:
+        with open(ui_eez_filename) as f:
             data = yaml.safe_load(f)
 
         # Extract the tree structure from the specified variable
+        tree = ""
         for item in data["variables"]["globalVariables"]:
             if item["name"] == "main_page_info":
                 tree = item["defaultValue"]
+        assert tree, "Expected tree to be non-empty."
 
         # Load the page tree structure
         page_tree = yaml.safe_load(tree)
 
-        with open("tmp.csv", "w") as output_file:
+        with tempfile.NamedTemporaryFile(
+            mode="w+", suffix=".csv", delete=True
+        ) as temp_file:
             for sub_page in page_tree.get("sub_pages", []):
-                save_page_tree_csv(sub_page, output_file, level=0)
+                save_page_tree_csv(sub_page, temp_file, level=0)
 
-        self._parse_csv("tmp.csv")
-        os.remove("tmp.csv")
+            temp_file.seek(0)
+            self._parse_csv(temp_file.name)
 
     def _parse_csv(self, filepath):
         with open(filepath) as file:
@@ -121,13 +136,12 @@ class PageTree:
             stack = [self.root]
 
             for line in file:
-                line = line.strip()
+                line_strip = line.strip()
 
                 # Count leading commas to determine level
-                level = self.count_leading_commas(line)
-                page_name = self.remove_ending_commas(line[level:])
+                level = self.count_leading_commas(line_strip)
+                page_name = self.remove_ending_commas(line_strip[level:])
 
-                # Create a new node for the current line
                 new_node = PageNode(page_name)
 
                 # Adjust the stack so that it contains only nodes up to the correct level
