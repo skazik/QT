@@ -45,11 +45,11 @@ class SerialConnection:
                 print("Serial port opened successfully", flush=True)
             else:
                 print("Failed to open serial. Abort", flush=True)
-                sys.exit()
+                sys.exit(3)
         except serial.SerialException as e:
             print(f"Error opening serial port: {e}", flush=True)
             print("use option --test for testing without serial port", flush=True)
-            sys.exit()
+            sys.exit(4)
 
     def close_serial(self):
         if self.test_mode:
@@ -83,7 +83,7 @@ class SerialConnection:
         navigator = Navigator()
 
         while self.ser.in_waiting > 0:
-            incoming_data = self.ser.readline().decode("utf-8").strip()
+            incoming_data = self.ser.readline().decode("utf-8", errors="ignore").strip()
 
             if self._is_ignored_message(incoming_data):
                 continue
@@ -116,7 +116,7 @@ class SerialConnection:
             else:
                 self.log.error(
                     f"    [error: view mismatch]------------------ "
-                    f"{reported} != {view}\n"
+                    f'exp:"{view}" != rpt:"{reported}"'
                 )
 
     def _check_view_idx_sync(self, incoming_data, navigator):
@@ -130,7 +130,7 @@ class SerialConnection:
             else:
                 print(
                     f"    [error: view mismatch]------------------ "
-                    f"{current} != {reported}",
+                    f'exp:"{current}" != rpt:"{reported}"',
                     flush=True,
                 )
 

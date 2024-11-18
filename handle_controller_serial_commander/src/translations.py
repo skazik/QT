@@ -33,11 +33,14 @@ class Translator:
         self.cmd = None
         self.preprocessing = False
         self.skip_root_name = "page_startup"
-
+        self.interval = 1
         self._initialized = True
 
     def get_serial_connection(self):
         return self.serial_connection
+
+    def set_interval(self, interval):
+        self.interval = interval
 
     def get_root_name(self):
         return self.skip_root_name
@@ -59,7 +62,7 @@ class Translator:
                 parsed_data = self.parse_csv_string(random.choice(array))
                 for row in parsed_data:
                     cmd_bytearray = self.translate_script_cmd(row[0])
-                    self.serial_connection.send_to_device(cmd_bytearray, 1)
+                    self.serial_connection.send_to_device(cmd_bytearray, self.interval)
         except KeyboardInterrupt:
             self.log.info("\nCtrl+C detected! Exiting the loop safely.")
 
@@ -173,7 +176,7 @@ class Translator:
 
         self.convert_command()  # result: self.cmd is filled
         cmd_bytearray = self.translate_script_cmd(self.cmd)
-        self.serial_connection.send_to_device(cmd_bytearray, 1)
+        self.serial_connection.send_to_device(cmd_bytearray, self.interval)
 
     def is_valid_yaml(self, file_path):
         if os.path.splitext(file_path)[1].lower() not in [".yaml", ".yml"]:
@@ -223,7 +226,7 @@ class Translator:
                 parsed_data = self.parse_csv_string(line)
                 for row in parsed_data:
                     cmd_bytearray = self.translate_script_cmd(row[0])
-                    timeout_int = int(row[1]) if len(row) > 1 else 1
+                    timeout_int = int(row[1]) if len(row) > 1 else self.interval
                     self.serial_connection.send_to_device(cmd_bytearray, timeout_int)
 
     def translate_and_send(self, file_path):

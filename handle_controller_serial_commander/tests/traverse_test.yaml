@@ -1,5 +1,33 @@
 ---
+- Command: press rear button
+- Command: press rear button
+- Command: press rear button
+- Command: navigate Left
+- Command: navigate Left
+- Command: navigate Left
+  Postcondition: page_bend_and_rotate
 - Command: press joystick ok button
+  Postcondition: page_bend_and_rotate_1
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_bend_and_rotate_link_1
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_bend_and_rotate_1
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_bend_and_rotate
+  Precondition: none
+- Command: navigate Right
+  Postcondition: page_led_lights
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_led_lights_sub
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_led_lights
+  Precondition: none
+- Command: navigate Right
   Postcondition: page_shape_selection
   Precondition: none
 - Command: press joystick ok button
@@ -63,30 +91,6 @@
   Postcondition: page_shape_selection
   Precondition: none
 - Command: navigate Right
-  Postcondition: page_camera_control
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_camera_control_sub
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_camera_control
-  Precondition: none
-- Command: navigate Right
-  Postcondition: page_bend_and_rotate
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_bend_and_rotate_1
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_bend_and_rotate_link_1
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_bend_and_rotate_1
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_bend_and_rotate
-  Precondition: none
-- Command: navigate Right
   Postcondition: page_joint_control
   Precondition: none
 - Command: press joystick ok button
@@ -105,15 +109,6 @@
   Postcondition: page_setup
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: page_calibrate_joystick
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_calibrate_joystick_sub
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_calibrate_joystick
-  Precondition: none
-- Command: navigate Right
   Postcondition: page_pack_robot
   Precondition: none
 - Command: press joystick ok button
@@ -131,11 +126,44 @@
 - Command: press rear button
   Postcondition: page_unpack_robot
   Precondition: none
-- Command: navigate Left
-  Postcondition: page_pack_robot
+- Command: navigate Right
+  Postcondition: page_system_connection
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_system_connection_sub
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_system_connection
+  Precondition: none
+- Command: navigate Right
+  Postcondition: page_calibrate_joystick
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_calibrate_joystick_sub
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_calibrate_joystick
+  Precondition: none
+- Command: navigate Right
+  Postcondition: page_robot_calibration
+  Precondition: none
+- Command: press joystick ok button
+  Postcondition: page_robot_calibration_sub
+  Precondition: none
+- Command: press rear button
+  Postcondition: page_robot_calibration
   Precondition: none
 - Command: navigate Left
   Postcondition: page_calibrate_joystick
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_system_connection
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_unpack_robot
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_pack_robot
   Precondition: none
 - Command: press rear button
   Postcondition: page_setup
@@ -156,14 +184,11 @@
   Postcondition: page_joint_control
   Precondition: none
 - Command: navigate Left
-  Postcondition: page_bend_and_rotate
-  Precondition: none
-- Command: navigate Left
-  Postcondition: page_camera_control
-  Precondition: none
-- Command: navigate Left
   Postcondition: page_shape_selection
   Precondition: none
-- Command: press rear button
-  Postcondition: page_startup
+- Command: navigate Left
+  Postcondition: page_led_lights
+  Precondition: none
+- Command: navigate Left
+  Postcondition: page_bend_and_rotate
   Precondition: none

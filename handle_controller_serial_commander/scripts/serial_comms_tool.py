@@ -1,8 +1,6 @@
+#!/usr/bin/python3
 import argparse
 import os
-import sys
-
-sys.path.append("src")  # pylint: disable=C0413
 
 from dev_tests import test_and_validate
 from logger import Logger
@@ -12,12 +10,13 @@ from translations import Translator
 SERIAL_PORT = "/dev/ttyACM0"
 BAUD_RATE = 115200
 RAND_DEFAULT = 0
+INTERVAL = 1
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Read `CMD` <command script>.yaml and send to device.",
-        usage="%(prog)s [-h] -s CMD -u UI [-p PORT] [-b BAUD] [-r RAND] [-t] [-d] [-g]",
+        usage="%(prog)s [-h] -c CMD -u UI [-p PORT] [-b BAUD] [-r RAND] [-i INTERVAL] [-t] [-d] [-g]",
     )
     parser.add_argument(
         "-c",
@@ -54,6 +53,13 @@ def main():
         default=RAND_DEFAULT,
         help="Optional random commands, default count: 0 (none).",
     )
+    parser.add_argument(
+        "-i",
+        "--interval",
+        type=int,
+        default=INTERVAL,
+        help="Optional interval between sending CMD to device, default 1 second.",
+    )
     parser.add_argument("-t", "--test", action="store_true", help="Run in test mode.")
     parser.add_argument("-d", "--debug", action="store_true", help="Run in debug mode.")
     parser.add_argument(
@@ -71,6 +77,7 @@ def main():
         log.set_debug_mode()
 
     translator = Translator()
+    translator.set_interval(args.interval)
     serial = translator.get_serial_connection()
 
     if args.test:

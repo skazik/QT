@@ -131,7 +131,7 @@ class PageTree:
         with open(filepath) as file:
             if not file:
                 print(f"Error: Unable to open file {filepath}")
-                sys.exit(0)
+                sys.exit(1)
 
             stack = [self.root]
 

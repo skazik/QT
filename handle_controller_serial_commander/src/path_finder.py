@@ -339,13 +339,13 @@ class PathFinder:
     ):
         if start_node[0] is None:
             self.log.critical(f"Error: start_node with name '{start_name}' not found.")
-            sys.exit()
+            sys.exit(2)
         if end_node[0] is None:
             self.log.critical(f"Error: end_node with name '{end_name}' not found.")
-            sys.exit()
+            sys.exit(2)
         if first_level_start_node[0] is None or first_level_end_node[0] is None:
             self.log.critical("Error: Could not find start or end nodes in the tree.")
-            sys.exit()
+            sys.exit(2)
 
     def debug_initial_setup(
         self,
