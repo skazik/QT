@@ -1,40 +1,39 @@
 Startup
 	Bend & Rotate
-		Bend & Rotate 
-			Link 1 Bend & Rotate
+		Bend & Rotate 1
+			Link 1
 	LED Lights
-		Brightness
+		LED Lights
 	Shape Selection
 		Straight
-			Straight 
+			Straight
 		Elbow 1
-			Elbow 1 
+			Elbow 1
 		Elbow 2
-			Elbow 2 
+			Elbow 2
 		Elbow 3
-			Elbow 3 
+			Elbow 3
 		Stairstep
-			Stairstep 
+			Stairstep
 	Joint Control
-		Joint Control 
-			Link 1 Joint Control
+		Joint Control 1
+			Link 1
 	Setup
 		Pack Robot
-			Pack Robot 
+			Pack Robot
 		Unpack Robot
-			Unpack Robot 
+			Unpack Robot
 		System Connection
-			System Connection 
+			System Connection
 		Calibrate Joystick
-			Calibrate Joystick 
+			Calibrate Joystick
 		Robot Calibration
 			Home Segments
-				Home Segments 
+				Home Segments
 			Move to Straight
-				Move to Straight 
-					Link 1 Move to Straight
+				Move to Straight
+					Link 1
 			Set Position
 				Reset Position
 	Information
-		System Information
-
+		Information

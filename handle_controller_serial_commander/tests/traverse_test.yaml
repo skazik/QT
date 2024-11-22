@@ -1,7 +1,11 @@
 ---
-- Command: press joystick ok button
+- Command: press rear button
+- Command: press rear button
+- Command: press rear button
+- Command: navigate Left
+- Command: navigate Left
+- Command: navigate Left
   Postcondition: page_bend_and_rotate
-  Precondition: none
 - Command: press joystick ok button
   Postcondition: page_bend_and_rotate_1
   Precondition: none
@@ -18,13 +22,13 @@
   Postcondition: page_led_lights
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: page_brightness
+  Postcondition: page_led_lights_sub
   Precondition: none
 - Command: press rear button
   Postcondition: page_led_lights
   Precondition: none
 - Command: navigate Right
-  Postcondition: page_shape_subion
+  Postcondition: page_shape_selection
   Precondition: none
 - Command: press joystick ok button
   Postcondition: page_straight
@@ -84,7 +88,7 @@
   Postcondition: page_straight
   Precondition: none
 - Command: press rear button
-  Postcondition: page_shape_subion
+  Postcondition: page_shape_selection
   Precondition: none
 - Command: navigate Right
   Postcondition: page_joint_control
@@ -144,43 +148,7 @@
   Postcondition: page_robot_calibration
   Precondition: none
 - Command: press joystick ok button
-  Postcondition: page_home_1
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_home_1_sub
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_home_1
-  Precondition: none
-- Command: navigate Right
-  Postcondition: page_move_to_straight
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_move_to_straight_1
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_move_to_straight_link_1
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_move_to_straight_1
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_move_to_straight
-  Precondition: none
-- Command: navigate Right
-  Postcondition: page_set_position
-  Precondition: none
-- Command: press joystick ok button
-  Postcondition: page_reset_position
-  Precondition: none
-- Command: press rear button
-  Postcondition: page_set_position
-  Precondition: none
-- Command: navigate Left
-  Postcondition: page_move_to_straight
-  Precondition: none
-- Command: navigate Left
-  Postcondition: page_home_1
+  Postcondition: page_robot_calibration_sub
   Precondition: none
 - Command: press rear button
   Postcondition: page_robot_calibration
@@ -216,7 +184,7 @@
   Postcondition: page_joint_control
   Precondition: none
 - Command: navigate Left
-  Postcondition: page_shape_subion
+  Postcondition: page_shape_selection
   Precondition: none
 - Command: navigate Left
   Postcondition: page_led_lights

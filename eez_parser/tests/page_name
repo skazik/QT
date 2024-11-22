@@ -3,8 +3,8 @@ page_startup
 		page_bend_and_rotate_1
 			page_bend_and_rotate_link_1
 	page_led_lights
-		page_brightness
-	page_shape_subion
+		page_led_lights_sub
+	page_shape_selection
 		page_straight
 			page_straight_sub
 		page_elbow_1
@@ -28,13 +28,12 @@ page_startup
 		page_calibrate_joystick
 			page_calibrate_joystick_sub
 		page_robot_calibration
-			page_home_1
-				page_home_1_sub
+			page_home_segments
+				page_home_segments_sub
 			page_move_to_straight
-				page_move_to_straight_1
+				page_move_to_straight_sub
 					page_move_to_straight_link_1
 			page_set_position
 				page_reset_position
 	page_information
 		page_information_sub
-

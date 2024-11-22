@@ -1,5 +1,5 @@
 rm PageTree.*
 rm eez.extract.txt
-rm *.trim
+rm tests/*.trim
 ls -ltr
 
